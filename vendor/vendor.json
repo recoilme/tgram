@@ -93,7 +93,7 @@
 			"revisionTime": "2015-09-07T02:38:54Z"
 		},
 		{
-			"checksumSHA1": "pnWl2phV8bBppSJxXRCUCOtWxGs=",
+			"checksumSHA1": "UOvCw+0ZoNk93FTjaoHBeCsil/k=",
 			"path": "github.com/recoilme/slowpoke",
 			"revision": "ec828cbb00d97fbc921960e9688de968d5a44291",
 			"revisionTime": "2018-06-15T11:10:34Z"
@@ -123,7 +123,7 @@
 			"revisionTime": "2018-03-12T19:33:55Z"
 		},
 		{
-			"checksumSHA1": "92yl7ti18GSPI//+jIst56twALE=",
+			"checksumSHA1": "j+bmn/vfOL5hDKrv5xN71RReIEw=",
 			"path": "golang.org/x/sys/unix",
 			"revision": "bb24a47a89eac6c1227fbcb2ae37a8b9ed323366",
 			"revisionTime": "2017-08-30T08:51:02Z"

@@ -12,6 +12,7 @@ import (
 
 	"github.com/recoilme/slowpoke"
 	"github.com/recoilme/tgram/articles"
+	"github.com/recoilme/tgram/front"
 	"github.com/recoilme/tgram/users"
 	//"github.com/thinkerou/favicon"
 )
@@ -51,6 +52,10 @@ func main() {
 
 func InitRouter() *gin.Engine {
 	r := gin.Default()
+
+	r.LoadHTMLGlob("views/*.html")
+
+	r.GET("/", front.Index)
 	//r.Use(favicon.New("./favicon.ico"))
 	r.Use(CORSMiddleware())
 	v1 := r.Group("/api")
