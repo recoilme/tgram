@@ -77,7 +77,7 @@ func UsersRegistration(c *gin.Context) {
 		return
 	}
 
-	if err := SaveOne(&userModelValidator.userModel); err != nil {
+	if err := SaveOne(&userModelValidator.UserModel); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, common.NewError("database", err))
 		return
 	}
@@ -88,7 +88,7 @@ func UsersRegistration(c *gin.Context) {
 		fmt.Println()
 	*/
 
-	c.Set("my_user_model", userModelValidator.userModel)
+	c.Set("my_user_model", userModelValidator.UserModel)
 	serializer := UserSerializer{c}
 	c.JSON(http.StatusCreated, gin.H{"user": serializer.Response()})
 }
@@ -128,8 +128,8 @@ func UserUpdate(c *gin.Context) {
 		return
 	}
 
-	userModelValidator.userModel.ID = myUserModel.ID
-	if err := myUserModel.Update(userModelValidator.userModel); err != nil {
+	userModelValidator.UserModel.ID = myUserModel.ID
+	if err := myUserModel.Update(userModelValidator.UserModel); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, common.NewError("database", err))
 		return
 	}

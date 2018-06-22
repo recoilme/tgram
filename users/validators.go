@@ -17,7 +17,7 @@ type UserModelValidator struct {
 		Bio      string `form:"bio" json:"bio" binding:"max=1024"`
 		Image    string `form:"image" json:"image" binding:"omitempty,url"`
 	} `json:"user"`
-	userModel UserModel `json:"-"`
+	UserModel UserModel `json:"-"`
 }
 
 // There are some difference when you create or update a model, you need to fill the DataModel before
@@ -28,15 +28,15 @@ func (self *UserModelValidator) Bind(c *gin.Context) error {
 	if err != nil {
 		return err
 	}
-	self.userModel.Username = self.User.Username
-	self.userModel.Email = self.User.Email
-	self.userModel.Bio = self.User.Bio
+	self.UserModel.Username = self.User.Username
+	self.UserModel.Email = self.User.Email
+	self.UserModel.Bio = self.User.Bio
 
 	if self.User.Password != common.NBRandomPassword {
-		self.userModel.setPassword(self.User.Password)
+		self.UserModel.setPassword(self.User.Password)
 	}
 	if self.User.Image != "" {
-		self.userModel.Image = &self.User.Image
+		self.UserModel.Image = &self.User.Image
 	}
 	return nil
 }

@@ -49,7 +49,6 @@ func ArticleCreate(c *gin.Context) {
 }
 
 func ArticleList(c *gin.Context) {
-	//condition := ArticleModel{}
 	//log.Println("ArticleList")
 	tag := c.Query("tag")
 	author := c.Query("author")
