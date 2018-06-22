@@ -1,0 +1,112 @@
+// Common tools and helper functions
+package common
+
+import (
+	"encoding/binary"
+	"fmt"
+	"math/rand"
+	"time"
+
+	"github.com/dgrijalva/jwt-go"
+
+	"gopkg.in/go-playground/validator.v8"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+)
+
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+// A helper function to generate random string
+func RandString(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
+}
+
+// Keep this two config private, it should not expose to open source
+const NBSecretPassword = "A String Very Very Very Strong!!@##$!@#$"
+const NBRandomPassword = "A String Very Very Very Niubilty!!@##$!@#4"
+
+// A Util function to generate jwt_token which can be used in the request header
+func GenToken(id uint32) string {
+	jwt_token := jwt.New(jwt.GetSigningMethod("HS256"))
+	// Set some claims
+	jwt_token.Claims = jwt.MapClaims{
+		"id":  id,
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
+	}
+	// Sign and get the complete encoded token as a string
+	token, _ := jwt_token.SignedString([]byte(NBSecretPassword))
+	return token
+}
+
+// My own Error type that will help return my customized Error info
+//  {"database": {"hello":"no such table", error: "not_exists"}}
+type CommonError struct {
+	Errors map[string]interface{} `json:"errors"`
+}
+
+// To handle the error returned by c.Bind in gin framework
+// https://github.com/go-playground/validator/blob/v9/_examples/translations/main.go
+func NewValidatorError(err error) CommonError {
+	res := CommonError{}
+	res.Errors = make(map[string]interface{})
+	errs := err.(validator.ValidationErrors)
+	for _, v := range errs {
+		// can translate each error one at a time.
+		//fmt.Println("gg",v.NameNamespace)
+		if v.Param != "" {
+			res.Errors[v.Field] = fmt.Sprintf("{%v: %v}", v.Tag, v.Param)
+		} else {
+			res.Errors[v.Field] = fmt.Sprintf("{key: %v}", v.Tag)
+		}
+
+	}
+	return res
+}
+
+// Warp the error info in a object
+func NewError(key string, err error) CommonError {
+	res := CommonError{}
+	res.Errors = make(map[string]interface{})
+	res.Errors[key] = err.Error()
+	return res
+}
+
+// Changed the c.MustBindWith() ->  c.ShouldBindWith().
+// I don't want to auto return 400 when error happened.
+// origin function is here: https://github.com/gin-gonic/gin/blob/master/context.go
+func Bind(c *gin.Context, obj interface{}) error {
+	b := binding.Default(c.Request.Method, c.ContentType())
+	return c.ShouldBindWith(obj, b)
+}
+
+func Uint32toBin(id uint32) []byte {
+	id32 := make([]byte, 4)
+	binary.BigEndian.PutUint32(id32, id)
+	return id32
+}
+
+func BintoUint32(b []byte) uint32 {
+
+	return binary.BigEndian.Uint32(b)
+}
+
+func GetMasterSlave(master uint32, slave uint32) ([]byte, []byte) {
+	master32 := Uint32toBin(master)
+	slave32 := Uint32toBin(slave)
+
+	var masterslave = make([]byte, 0)
+	masterslave = append(masterslave, master32...)
+	masterslave = append(masterslave, ':')
+	masterslave = append(masterslave, slave32...)
+
+	var slavemaster = make([]byte, 0)
+	slavemaster = append(slavemaster, slave32...)
+	slavemaster = append(slavemaster, ':')
+	slavemaster = append(slavemaster, master32...)
+	return masterslave, slavemaster
+}

@@ -1,12 +1,23 @@
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
+# IDEs and editors
+/.idea
+.project
+.classpath
+*.launch
+.settings/
 
-# Test binary, build with `go test -c`
-*.test
 
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
+#System Files
+.DS_Store
+Thumbs.db
+
+vendor/*
+!vendor/vendor.json
+
+tmp/*
+gorm.db
+coverage.txt
+
+bak.*
+
+*.idx
+db
