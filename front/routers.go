@@ -31,6 +31,21 @@ func Login(c *gin.Context) {
 	renderTemplate(c, "login", gin.H{})
 }
 
+func Logout(c *gin.Context) {
+	c.SetCookie("token", "", 0, "/", "", false, true)
+	c.Redirect(http.StatusFound, "/")
+}
+
+func Settings(c *gin.Context) {
+	var user users.UserModel
+	iuser, uexists := c.Get("my_user_model")
+	if uexists {
+		user = iuser.(users.UserModel)
+		log.Println("UserModel:", user)
+	}
+	renderTemplate(c, "settings", gin.H{"my_user_model": user})
+}
+
 func LoginPost(c *gin.Context) {
 
 	loginValidator := users.NewLoginValidator()

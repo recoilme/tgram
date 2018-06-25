@@ -1,3 +1,5 @@
+{{template "header" .}}
+{{template "menu_user" .}}
 <div class="settings-page">
   <div class="container page">
     <div class="row">
@@ -8,27 +10,30 @@
         <form>
           <fieldset>
               <fieldset class="form-group">
-                <input class="form-control" type="text" placeholder="URL of profile picture">
+                <input name="image" class="form-control" type="text" placeholder="URL of profile picture" value="{{.my_user_model.Image}}">
               </fieldset>
               <fieldset class="form-group">
-                <input class="form-control form-control-lg" type="text" placeholder="Your Name">
+                <input name="username" class="form-control form-control-lg" type="text" placeholder="Your Name" value="{{.my_user_model.Username}}">
               </fieldset>
               <fieldset class="form-group">
-                <textarea class="form-control form-control-lg" rows="8" placeholder="Short bio about you"></textarea>
+                <textarea name="bio" class="form-control form-control-lg" rows="8" placeholder="Short bio about you" value="{{.my_user_model.Bio}}"></textarea>
               </fieldset>
               <fieldset class="form-group">
-                <input class="form-control form-control-lg" type="text" placeholder="Email">
+                <input name="email" class="form-control form-control-lg" type="text" placeholder="Email" value="{{.my_user_model.Email}}">
               </fieldset>
               <fieldset class="form-group">
-                <input class="form-control form-control-lg" type="password" placeholder="Password">
+                <input name="password" class="form-control form-control-lg" type="password" placeholder="Password" value="">
               </fieldset>
               <button class="btn btn-lg btn-primary pull-xs-right">
                 Update Settings
               </button>
           </fieldset>
         </form>
+        <hr/>
+        <a href="logout" class="btn btn-outline-danger">Or click here to logout.</a>
       </div>
 
     </div>
   </div>
 </div>
+{{template "footer" .}}

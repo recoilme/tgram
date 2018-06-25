@@ -66,8 +66,8 @@ func SetUserStatus() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//t, e := c.Cookie("token")
 		//log.Println("SetUserStatus", t, e)
-		if tokenStr, err := c.Cookie("token"); err == nil || tokenStr != "" {
-			//log.Println("SetUserStatus:", "token", tokenStr)
+		if tokenStr, err := c.Cookie("token"); err == nil && tokenStr != "" {
+			log.Println("SetUserStatus:", "token", tokenStr, err)
 			// Parse takes the token string and a function for looking up the key. The latter is especially
 			// useful if you use multiple keys for your application.  The standard is to use 'kid' in the
 			// head of the token to identify which key to use, but the parsed token (head and claims) is provided
@@ -91,7 +91,10 @@ func SetUserStatus() gin.HandlerFunc {
 				fmt.Println(err)
 				c.Set("is_logged_in", false)
 			}
+		} else {
+			c.Set("is_logged_in", false)
 		}
+
 	}
 }
 
