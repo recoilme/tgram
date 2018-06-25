@@ -72,7 +72,7 @@ func (u *UserModel) setPassword(password string) error {
 
 // Database will only save the hashed string, you should check it by util function.
 // 	if err := serModel.checkPassword("password0"); err != nil { password error }
-func (u *UserModel) checkPassword(password string) error {
+func (u *UserModel) CheckPassword(password string) error {
 	bytePassword := []byte(password)
 	byteHashedPassword := []byte(u.PasswordHash)
 	return bcrypt.CompareHashAndPassword(byteHashedPassword, bytePassword)

@@ -6,7 +6,7 @@
         <div class="col-md-6 offset-md-3 col-xs-12">
           <h1 class="text-xs-center">Sign up</h1>
           <p class="text-xs-center">
-            <a href="/login">Have an account?</a>
+            <a href="/register">Need an account?</a>
           </p>
   
           <ul class="error-messages">
@@ -16,10 +16,7 @@
             {{end}}
           </ul>
   
-          <form action="/register" method="post">
-            <fieldset class="form-group">
-              <input name="username" class="form-control form-control-lg" type="text" placeholder="Your Name">
-            </fieldset>
+          <form action="/login" method="post">
             <fieldset class="form-group">
               <input name="email" class="form-control form-control-lg" type="text" placeholder="Email">
             </fieldset>

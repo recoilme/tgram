@@ -55,9 +55,13 @@ func InitRouter() *gin.Engine {
 
 	r.LoadHTMLGlob("views/*.html")
 
-	r.GET("/", front.Index)
 	r.GET("/register", front.Register)
 	r.POST("/register", front.RegisterPost)
+
+	r.Use(users.SetUserStatus()) // .AuthMiddleware(false))
+	r.GET("/", front.Index)
+	r.GET("/login", front.Login)
+	r.POST("/login", front.LoginPost)
 	//r.Use(favicon.New("./favicon.ico"))
 	r.Use(CORSMiddleware())
 	v1 := r.Group("/api")

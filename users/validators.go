@@ -66,7 +66,7 @@ type LoginValidator struct {
 		Email    string `form:"email" json:"email" binding:"exists,email"`
 		Password string `form:"password"json:"password" binding:"exists,min=8,max=255"`
 	} `json:"user"`
-	userModel UserModel `json:"-"`
+	UserModel UserModel `json:"-"`
 }
 
 func (self *LoginValidator) Bind(c *gin.Context) error {
@@ -75,7 +75,7 @@ func (self *LoginValidator) Bind(c *gin.Context) error {
 		return err
 	}
 
-	self.userModel.Email = self.User.Email
+	self.UserModel.Email = self.User.Email
 	return nil
 }
 
