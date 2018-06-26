@@ -1,8 +1,6 @@
 package articles
 
 import (
-	"fmt"
-
 	"github.com/gosimple/slug"
 	"github.com/recoilme/tgram/common"
 
@@ -17,7 +15,7 @@ type ArticleModelValidator struct {
 		Body        string   `form:"body" json:"body" binding:"max=2048"`
 		Tags        []string `form:"tagList" json:"tagList"`
 	} `json:"article"`
-	articleModel ArticleModel `json:"-"`
+	ArticleModel ArticleModel `json:"-"`
 }
 
 func NewArticleModelValidator() ArticleModelValidator {
@@ -43,13 +41,13 @@ func (s *ArticleModelValidator) Bind(c *gin.Context) error {
 	if err != nil {
 		return err
 	}
-	s.articleModel.Slug = slug.Make(s.Article.Title)
-	s.articleModel.Title = s.Article.Title
-	s.articleModel.Description = s.Article.Description
-	s.articleModel.Body = s.Article.Body
-	s.articleModel.Author = GetArticleUserModel(myUserModel)
-	fmt.Println("s.Article.Tags:", s.Article.Tags)
-	s.articleModel.setTags(s.Article.Tags)
+	s.ArticleModel.Slug = slug.Make(s.Article.Title)
+	s.ArticleModel.Title = s.Article.Title
+	s.ArticleModel.Description = s.Article.Description
+	s.ArticleModel.Body = s.Article.Body
+	s.ArticleModel.Author = GetArticleUserModel(myUserModel)
+	//fmt.Println("s.Article.Tags:", s.Article.Tags)
+	s.ArticleModel.setTags(s.Article.Tags)
 	return nil
 }
 

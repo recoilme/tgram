@@ -1,12 +1,13 @@
 {{ define "home" }}
 <div class="home-page">
-
+  {{ if not .my_user_model.Username}}
   <div class="banner">
     <div class="container">
       <h1 class="logo-font">conduit</h1>
       <p>A place to share your knowledge.</p>
     </div>
   </div>
+  {{ end }}
 
   <div class="container page">
     <div class="row">

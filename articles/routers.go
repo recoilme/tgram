@@ -38,13 +38,13 @@ func ArticleCreate(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, common.NewValidatorError(err))
 		return
 	}
-	fmt.Println(articleModelValidator.articleModel)
+	//fmt.Println(articleModelValidator.ArticleModel)
 
-	if err := SaveOne(&articleModelValidator.articleModel); err != nil {
+	if err := SaveOne(&articleModelValidator.ArticleModel); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, common.NewError("database", err))
 		return
 	}
-	serializer := ArticleSerializer{c, articleModelValidator.articleModel}
+	serializer := ArticleSerializer{c, articleModelValidator.ArticleModel}
 	c.JSON(http.StatusCreated, gin.H{"article": serializer.Response()})
 }
 
@@ -115,8 +115,8 @@ func ArticleUpdate(c *gin.Context) {
 		return
 	}
 
-	articleModelValidator.articleModel.ID = articleModel.ID
-	if err := articleModel.Update(articleModelValidator.articleModel); err != nil {
+	articleModelValidator.ArticleModel.ID = articleModel.ID
+	if err := articleModel.Update(articleModelValidator.ArticleModel); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, common.NewError("database", err))
 		return
 	}

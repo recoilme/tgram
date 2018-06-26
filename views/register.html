@@ -36,15 +36,15 @@
   
           <form action="/register" method="post">
             <fieldset class="form-group">
-              <input name="username" class="form-control form-control-lg" type="text" placeholder="Your Name">
+              <input name="username" class="form-control form-control-lg" type="text" placeholder="Your Name (min 4)" value="{{.Username}}">
             </fieldset>
             <fieldset class="form-group">
-              <input name="email" class="form-control form-control-lg" type="text" placeholder="Email">
+              <input name="email" class="form-control form-control-lg" type="text" placeholder="Email" value="{{.Email}}">
             </fieldset>
             <fieldset class="form-group">
-              <input name="password" class="form-control form-control-lg" type="password" placeholder="Password">
+              <input name="password" class="form-control form-control-lg" type="password" placeholder="Password (min 8)" value="{{.Password}}">
             </fieldset>
-            <button class="btn btn-lg btn-primary pull-xs-right">
+            <button type="submit" class="btn btn-lg btn-primary pull-xs-right">
               Sign up
             </button>
           </form>

@@ -168,11 +168,12 @@ func SaveOne(user *UserModel) (err error) {
 //  err := db.Model(userModel).Update(UserModel{Username: "wangzitian0"}).Error
 func (model *UserModel) Update(data interface{}) (err error) {
 	user := data.(UserModel)
-	if user.Email != "" && user.Email != model.Email {
+
+	if user.Email != "" { //&& user.Email != model.Email {
 		sp.Delete(dbUserMail, []byte(model.Email))
 	}
 
-	if user.Username != "" && user.Username != model.Username {
+	if user.Username != "" { //&& user.Username != model.Username {
 		sp.Delete(dbUserMail, []byte(model.Username))
 	}
 
