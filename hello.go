@@ -67,6 +67,8 @@ func InitRouter() *gin.Engine {
 	r.GET("/logout", front.Logout)
 	r.GET("/editor", front.Editor)
 	r.POST("/editor", front.Editor)
+	r.GET("/article/:slug", front.ArticleGet)
+	//r.POST("/article/:slug/comments", front.Comment)
 	//r.Use(favicon.New("./favicon.ico"))
 	r.Use(CORSMiddleware())
 	v1 := r.Group("/api")

@@ -174,13 +174,13 @@ func ArticleCommentCreate(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, common.NewValidatorError(err))
 		return
 	}
-	commentModelValidator.commentModel.Article = articleModel
+	commentModelValidator.CommentModel.Article = articleModel
 	//fmt.Println("ArticleCommentCreate commentModelValidator.commentModel.Article", articleModel)
-	if err := SaveOneComment(&commentModelValidator.commentModel); err != nil {
+	if err := SaveOneComment(&commentModelValidator.CommentModel); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, common.NewError("database", err))
 		return
 	}
-	serializer := CommentSerializer{c, commentModelValidator.commentModel}
+	serializer := CommentSerializer{c, commentModelValidator.CommentModel}
 	c.JSON(http.StatusCreated, gin.H{"comment": serializer.Response()})
 }
 
@@ -214,6 +214,7 @@ func ArticleCommentList(c *gin.Context) {
 	serializer := CommentsSerializer{c, articleModel.Comments}
 	c.JSON(http.StatusOK, gin.H{"comments": serializer.Response()})
 }
+
 func TagList(c *gin.Context) {
 	tagModels, err := getAllTags()
 	if err != nil {

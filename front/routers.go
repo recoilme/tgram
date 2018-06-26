@@ -1,6 +1,7 @@
 package front
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -177,4 +178,98 @@ func Settings(c *gin.Context) {
 
 func renderTemplate(c *gin.Context, tmpl string, p interface{}) {
 	c.HTML(http.StatusOK, tmpl+".html", p)
+}
+
+// Article render article
+func ArticleGet(c *gin.Context) {
+	slug := c.Param("slug")
+	if slug == "<nil>" {
+		return
+	}
+	if c.Request.Method == "GET" && slug != "<nil>" {
+
+		if slug == "" {
+			fmt.Println("slug is nil", slug)
+			return
+		}
+		if slug == "feed" {
+			//ArticleFeed(c)
+			return
+		}
+		articleModel, err := articles.FindOneArticle(&articles.ArticleModel{Slug: slug})
+		log.Println("ArticleRetrieve", "articleModel", articleModel, err)
+		if err != nil {
+			c.HTML(http.StatusBadRequest, "article.html", gin.H{
+				"ErrorTitle":   "Invalid slug",
+				"ErrorMessage": err.Error()})
+			return
+		}
+		var user users.UserModel
+		iuser, uexists := c.Get("my_user_model")
+		if uexists {
+			user = iuser.(users.UserModel)
+		}
+
+		serializer := articles.ArticleSerializer{c, articleModel}
+
+		articleModels := serializer.Response()
+		log.Println("articleModels", "", articleModels)
+		//var articleModels articles.ArticleResponse
+		renderTemplate(c, "article", gin.H{
+			"my_user_model": user,
+			"ArticleModel":  articleModels})
+	}
+	return
+	/*
+		response := ArticleResponse{
+			ID:          s.ID,
+			Slug:        slug.Make(s.Title),
+			Title:       s.Title,
+			Description: s.Description,
+			Body:        s.Body,
+			CreatedAt:   s.CreatedAt.UTC().Format("2006-01-02T15:04:05.999Z"),
+			//UpdatedAt:      s.UpdatedAt.UTC().Format(time.RFC3339Nano),
+			UpdatedAt:      s.UpdatedAt.UTC().Format("2006-01-02T15:04:05.999Z"),
+			Author:         authorSerializer.Response(),
+			Favorite:       s.isFavoriteBy(GetArticleUserModel(myUserModel)),
+			FavoritesCount: s.favoritesCount(),
+		}
+	*/
+}
+
+// Comment create/delete comment
+func Comment(c *gin.Context) {
+	if c.Request.Method == "POST" {
+		slug := c.Param("slug")
+		log.Println("CommentCreate", slug)
+		articleModel, err := articles.FindOneArticle(&articles.ArticleModel{Slug: slug})
+		//fmt.Println("ArticleCommentCreate found article")
+		if err != nil {
+			//c.JSON(http.StatusNotFound, common.NewError("comment", errors.New("Invalid slug")))
+			c.HTML(http.StatusBadRequest, "article.html", gin.H{
+				"ErrorTitle":   "Invalid slug",
+				"ErrorMessage": err.Error()})
+			return
+		}
+		commentModelValidator := articles.NewCommentModelValidator()
+		if err := commentModelValidator.Bind(c); err != nil {
+			//c.JSON(http.StatusUnprocessableEntity, common.NewValidatorError(err))
+			c.HTML(http.StatusBadRequest, "article.html", gin.H{
+				"ErrorTitle":   "Invalid Comment",
+				"ErrorMessage": err.Error()})
+			return
+		}
+		commentModelValidator.CommentModel.Article = articleModel
+		//fmt.Println("ArticleCommentCreate commentModelValidator.commentModel.Article", articleModel)
+		if err := articles.SaveOneComment(&commentModelValidator.CommentModel); err != nil {
+			//c.JSON(http.StatusUnprocessableEntity, common.NewError("database", err))
+			c.HTML(http.StatusBadRequest, "article.html", gin.H{
+				"ErrorTitle":   "Invalid Comment",
+				"ErrorMessage": err.Error()})
+			return
+		}
+		//c.Redirect(http.StatusFound, "/article/"+slug)
+		//serializer := articles.CommentSerializer{c, commentModelValidator.CommentModel}
+		//c.JSON(http.StatusCreated, gin.H{"comment": serializer.Response()})
+	}
 }

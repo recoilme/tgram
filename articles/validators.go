@@ -55,7 +55,7 @@ type CommentModelValidator struct {
 	Comment struct {
 		Body string `form:"body" json:"body" binding:"max=2048"`
 	} `json:"comment"`
-	commentModel CommentModel `json:"-"`
+	CommentModel CommentModel `json:"-"`
 }
 
 func NewCommentModelValidator() CommentModelValidator {
@@ -69,7 +69,7 @@ func (s *CommentModelValidator) Bind(c *gin.Context) error {
 	if err != nil {
 		return err
 	}
-	s.commentModel.Body = s.Comment.Body
-	s.commentModel.Author = GetArticleUserModel(myUserModel)
+	s.CommentModel.Body = s.Comment.Body
+	s.CommentModel.Author = GetArticleUserModel(myUserModel)
 	return nil
 }
