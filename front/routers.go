@@ -213,7 +213,7 @@ func ArticleGet(c *gin.Context) {
 		serializer := articles.ArticleSerializer{c, articleModel}
 
 		articleModels := serializer.Response()
-		log.Println("articleModels", "", articleModels)
+		//log.Println("articleModels", "", articleModels)
 		//var articleModels articles.ArticleResponse
 		renderTemplate(c, "article", gin.H{
 			"my_user_model": user,
