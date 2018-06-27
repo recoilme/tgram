@@ -1,6 +1,7 @@
 package front
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -12,6 +13,12 @@ import (
 	"github.com/recoilme/tgram/users"
 )
 
+type Page struct {
+	ID     int
+	Href   string
+	Active string
+}
+
 // Index show main page
 func Index(c *gin.Context) {
 	var user users.UserModel
@@ -20,10 +27,50 @@ func Index(c *gin.Context) {
 		user = iuser.(users.UserModel)
 	}
 
-	//c.gin.H["my_user_model"] = loggedInInterface.(userModelValidator.UserModel)
+	tag := c.Query("tag")
+	author := c.Query("author")
+	favorited := c.Query("favorited")
+	limit := c.Query("limit")
+	offset := c.Query("offset")
+
+	articleModels, modelCount, err := articles.FindManyArticle(tag, author, limit, offset, favorited)
+	if err != nil {
+		c.JSON(http.StatusNotFound, common.NewError("articles", errors.New("Invalid param")))
+		return
+	}
+	serializer := articles.ArticlesSerializer{c, articleModels}
+	articles := serializer.Response()
+	//c.JSON(http.StatusOK, gin.H{"articles": serializer.Response(), "articlesCount": modelCount})
+
+	pages := make([]Page, 0, 0)
+	offset_int, _ := strconv.Atoi(offset)
+	for i := 0; i < modelCount; i += 5 {
+		var active string
+		if i == offset_int {
+			active = "active"
+		}
+		p := Page{ID: (i / 5) + 1, Href: fmt.Sprintf("/?limit=5&offset=%d", i), Active: active}
+		pages = append(pages, p)
+	}
+	log.Println("pages", pages)
 	renderTemplate(c, "index", gin.H{
 		"my_user_model": user,
+		"articles":      articles,
+		"pages":         pages,
 	})
+	/*
+		ID:          s.ID,
+		Slug:        slug.Make(s.Title),
+		Title:       s.Title,
+		Description: s.Description,
+		Body:        s.Body,
+		CreatedAt:   s.CreatedAt.UTC().Format("2006-01-02T15:04:05.999Z"),
+		//UpdatedAt:      s.UpdatedAt.UTC().Format(time.RFC3339Nano),
+		UpdatedAt:      s.UpdatedAt.UTC().Format("2006-01-02T15:04:05.999Z"),
+		Author:         authorSerializer.Response(),
+		Favorite:       s.isFavoriteBy(GetArticleUserModel(myUserModel)),
+		FavoritesCount: s.favoritesCount(),
+	*/
 }
 
 // Register new user

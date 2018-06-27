@@ -331,12 +331,14 @@ func FindManyArticle(tag, author, limit, offset, favorited string) ([]ArticleMod
 	var cnt uint64
 	var offset_int, limit_int int
 
-	limit_int = 20
+	limit_int = 5
 
 	offset_int, _ = strconv.Atoi(offset)
 
 	limit_int, _ = strconv.Atoi(limit)
-
+	if limit_int == 0 {
+		limit_int = 5
+	}
 	if tag != "" {
 		var masterstar = make([]byte, 0)
 		masterstar = append(masterstar, []byte(tag)...)
@@ -407,7 +409,7 @@ func FindManyArticle(tag, author, limit, offset, favorited string) ([]ArticleMod
 		//no params
 		log.Println("no params")
 		keys, err := sp.Keys(dbArticle, nil, uint32(limit_int), uint32(offset_int), false)
-
+		log.Println("no params", len(keys), limit_int)
 		if err != nil {
 			return models, 0, err
 		}

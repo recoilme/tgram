@@ -64,6 +64,7 @@ func UpdateContextUserModel(c *gin.Context, my_user_id uint32) {
 // This middleware sets whether the user is logged in or not
 func SetUserStatus() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		UpdateContextUserModel(c, 0)
 		//t, e := c.Cookie("token")
 		//log.Println("SetUserStatus", t, e)
 		if tokenStr, err := c.Cookie("token"); err == nil && tokenStr != "" {
