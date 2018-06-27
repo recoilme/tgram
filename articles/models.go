@@ -298,7 +298,7 @@ func FindOneArticle(article *ArticleModel) (model ArticleModel, err error) {
 	return model, err
 }
 
-func (self *ArticleModel) getComments() (err error) {
+func (self *ArticleModel) GetComments() (err error) {
 	cids := self.CommentsIds
 	log.Println("getComments:", cids)
 	var comments []CommentModel

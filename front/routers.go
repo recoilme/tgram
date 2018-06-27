@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/recoilme/tgram/articles"
@@ -213,11 +214,31 @@ func ArticleGet(c *gin.Context) {
 		serializer := articles.ArticleSerializer{c, articleModel}
 
 		articleModels := serializer.Response()
-		//log.Println("articleModels", "", articleModels)
+
+		err = articleModel.GetComments()
+		if err != nil {
+			c.HTML(http.StatusBadRequest, "article.html", gin.H{
+				"ErrorTitle":   "Database Error",
+				"ErrorMessage": err.Error()})
+			return
+		}
+		serializerCom := articles.CommentsSerializer{c, articleModel.Comments}
+		comments := serializerCom.Response()
+
+		log.Println("comments", comments)
 		//var articleModels articles.ArticleResponse
+
+		/*
+				ID        uint32                `json:"id"`
+			Body      string                `json:"body"`
+			CreatedAt string                `json:"createdAt"`
+			UpdatedAt string                `json:"updatedAt"`
+			Author    users.ProfileResponse `json:"author"`
+		*/
 		renderTemplate(c, "article", gin.H{
 			"my_user_model": user,
-			"ArticleModel":  articleModels})
+			"ArticleModel":  articleModels,
+			"Comments":      comments})
 	}
 	return
 	/*
@@ -268,8 +289,30 @@ func Comment(c *gin.Context) {
 				"ErrorMessage": err.Error()})
 			return
 		}
-		//c.Redirect(http.StatusFound, "/article/"+slug)
+		c.Redirect(http.StatusFound, "/article/"+slug)
 		//serializer := articles.CommentSerializer{c, commentModelValidator.CommentModel}
 		//c.JSON(http.StatusCreated, gin.H{"comment": serializer.Response()})
+	}
+}
+
+func CommentDelete(c *gin.Context) {
+	if c.Request.Method == "GET" {
+		slug := c.Param("slug")
+		if slug == "<nil>" {
+			return
+		}
+		id64, err := strconv.ParseUint(c.Param("id"), 10, 32)
+		id := uint(id64)
+		if err != nil {
+			//c.JSON(http.StatusNotFound, common.NewError("comment", errors.New("Invalid id")))
+			return
+		}
+		err = articles.DeleteCommentModel(id)
+		if err != nil {
+			//c.JSON(http.StatusNotFound, common.NewError("comment", errors.New("Invalid id")))
+			return
+		}
+		c.Redirect(http.StatusFound, "/article/"+slug)
+
 	}
 }

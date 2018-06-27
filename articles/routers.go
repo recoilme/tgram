@@ -206,7 +206,7 @@ func ArticleCommentList(c *gin.Context) {
 		c.JSON(http.StatusNotFound, common.NewError("comments", errors.New("Invalid slug")))
 		return
 	}
-	err = articleModel.getComments()
+	err = articleModel.GetComments()
 	if err != nil {
 		c.JSON(http.StatusNotFound, common.NewError("comments", errors.New("Database error")))
 		return

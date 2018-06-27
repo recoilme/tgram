@@ -1,8 +1,11 @@
 {{template "header" .}}
+{{ $username := ""}}
 {{ if .my_user_model.Username}}
   {{template "menu_user" .}}
+  
 {{ else }}
   {{ template "menu" . }}
+  
 {{ end }}
 <ul class="error-messages">
     {{ if .ErrorTitle}}
@@ -86,20 +89,34 @@
             </button>
           </div>
         </form>
+        {{ $username := .my_user_model.Username}}
+        {{ $slug := .ArticleModel.Slug}}
+        {{range .Comments}}
         
         <div class="card">
           <div class="card-block">
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <p class="card-text">{{.Body}}</p>
           </div>
           <div class="card-footer">
-            <a href="" class="comment-author">
-              <img src="http://i.imgur.com/Qr71crq.jpg" class="comment-author-img" />
+            <a href="/@{{.Author.Username}}" class="comment-author">
+              <img src="{{.Author.Image}}" class="comment-author-img" />
             </a>
             &nbsp;
-            <a href="" class="comment-author">Jacob Schmidt</a>
-            <span class="date-posted">Dec 29th</span>
+            <a href="/@{{.Author.Username}}" class="comment-author">{{.Author.Username}}</a>
+            <span class="date-posted">{{.UpdatedAt}}</span>
+
+            {{ if eq $username .Author.Username }}
+            
+            <span class="mod-options">
+              <a href="/article/{{$slug}}/comment/{{.ID}}" class="comment-author">
+              <i class="ion-trash-a"></i>
+              </a>
+            </span>
+
+            {{end}}
           </div>
         </div>
+        {{end}}
 
         
       </div>
