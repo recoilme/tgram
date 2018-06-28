@@ -2,17 +2,21 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 
+	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dgrijalva/jwt-go/request"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/text/language"
 
 	"github.com/recoilme/slowpoke"
-	"github.com/recoilme/tgram/articles"
-	"github.com/recoilme/tgram/front"
+	"github.com/recoilme/tgram/common"
 	"github.com/recoilme/tgram/users"
 	//"github.com/thinkerou/favicon"
 )
@@ -50,42 +54,150 @@ func main() {
 
 }
 
+// Strips 'TOKEN ' prefix from token string
+func stripBearerPrefixFromTokenString(tok string) (string, error) {
+	// Should be a bearer token
+	if len(tok) > 5 && strings.ToUpper(tok[0:6]) == "TOKEN " {
+		return tok[6:], nil
+	}
+	return tok, nil
+}
+
+// general hook
+func SubDomain() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var lang = "ru"
+		var token *jwt.Token
+		var uid uint32
+
+		hosts := strings.Split(c.Request.Host, ".")
+		var host = hosts[0]
+		if host == "localhost:8081" {
+			// dev
+			c.Redirect(http.StatusFound, "http://sub."+host)
+			return
+		}
+		if host == "tgr" {
+			// tgr.am
+
+			t, _, err := language.ParseAcceptLanguage(c.Request.Header.Get("Accept-Language"))
+			if err == nil && len(t) > 0 {
+				if len(t[0].String()) >= 2 {
+					// some lang found
+					if len(t[0].String()) == 2 || len(t[0].String()) == 3 {
+						// some lang 3 char
+						lang = t[0].String()
+					} else {
+						// remove country code en-US
+						langs := strings.Split(t[0].String(), "-")
+						if len(langs[0]) == 2 || len(langs[0]) == 3 {
+							lang = langs[0]
+						}
+					}
+				}
+			}
+			// redirect on subdomain
+			c.Redirect(http.StatusFound, "http://"+lang+".tgr.am")
+			return
+		}
+		if len(host) < 2 || len(host) > 3 {
+			c.Redirect(http.StatusFound, "http://"+lang+".tgr.am")
+			return
+		}
+		//fmt.Println("lang:", lang, "host:", host)
+		// store subdomain
+		c.Set("lang", lang)
+
+		// token from cookie
+		if tokenStr, err := c.Cookie("token"); err == nil && tokenStr != "" {
+			token, _ = jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+				// Don't forget to validate the alg is what you expect:
+				if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+					return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+				}
+
+				// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+				return []byte(common.NBSecretPassword), nil
+			})
+		}
+		// token from header
+		if token == nil {
+			// parse from header
+			var AuthorizationHeaderExtractor = &request.PostExtractionFilter{
+				request.HeaderExtractor{"Authorization"},
+				stripBearerPrefixFromTokenString,
+			}
+			// Extractor for OAuth2 access tokens.  Looks in 'Authorization'
+			// header then 'access_token' argument for a token.
+			var MyAuth2Extractor = &request.MultiExtractor{
+				AuthorizationHeaderExtractor,
+				request.ArgumentExtractor{"access_token"},
+			}
+			token, _ = request.ParseFromRequest(c.Request, MyAuth2Extractor, func(token *jwt.Token) (interface{}, error) {
+				b := ([]byte(common.NBSecretPassword))
+				return b, nil
+			})
+		}
+		if token != nil {
+			//token found
+			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+				uid = uint32(claims["id"].(float64))
+			}
+		}
+
+		// set uid
+		c.Set("uid", uid)
+		var user users.UserModel
+		_, exists := c.Get("user")
+		if !exists {
+			if uid > 0 {
+				// get from db
+			}
+		}
+		c.Set("user", user)
+
+	}
+}
+
 func InitRouter() *gin.Engine {
 	r := gin.Default()
+	r.Use(SubDomain())
+	/*
+		fmt.Printf("r: %+v\n", r)
+		r.LoadHTMLGlob("views/*.html")
 
-	r.LoadHTMLGlob("views/*.html")
+		r.GET("/register", front.Register)
+		r.POST("/register", front.Register)
 
-	r.GET("/register", front.Register)
-	r.POST("/register", front.Register)
+		r.Use(users.SetUserStatus())
 
-	r.Use(users.SetUserStatus())
+		r.GET("/login", front.Login)
+		r.POST("/login", front.Login)
+		r.GET("/settings", front.Settings)
+		r.POST("/settings", front.Settings)
+		r.GET("/logout", front.Logout)
+		r.GET("/editor", front.Editor)
+		r.POST("/editor", front.Editor)
+		r.GET("/article/:slug", front.ArticleGet)
+		r.POST("/article/:slug/comments", front.Comment)
+		r.GET("/article/:slug/comment/:id", front.CommentDelete)
+		r.GET("/", front.Index)
+		//r.Use(favicon.New("./favicon.ico"))
+		r.Use(CORSMiddleware())
+		v1 := r.Group("/api")
 
-	r.GET("/login", front.Login)
-	r.POST("/login", front.Login)
-	r.GET("/settings", front.Settings)
-	r.POST("/settings", front.Settings)
-	r.GET("/logout", front.Logout)
-	r.GET("/editor", front.Editor)
-	r.POST("/editor", front.Editor)
-	r.GET("/article/:slug", front.ArticleGet)
-	r.POST("/article/:slug/comments", front.Comment)
-	r.GET("/article/:slug/comment/:id", front.CommentDelete)
-	r.GET("/", front.Index)
-	//r.Use(favicon.New("./favicon.ico"))
-	r.Use(CORSMiddleware())
-	v1 := r.Group("/api")
+		users.UsersRegister(v1.Group("/users"))
 
-	users.UsersRegister(v1.Group("/users"))
+		v1.Use(users.AuthMiddleware(false))
+		articles.ArticlesAnonymousRegister(v1.Group("/articles"))
+		articles.TagsAnonymousRegister(v1.Group("/tags"))
 
-	v1.Use(users.AuthMiddleware(false))
-	articles.ArticlesAnonymousRegister(v1.Group("/articles"))
-	articles.TagsAnonymousRegister(v1.Group("/tags"))
+		v1.Use(users.AuthMiddleware(true))
+		users.UserRegister(v1.Group("/user"))
+		users.ProfileRegister(v1.Group("/profiles"))
 
-	v1.Use(users.AuthMiddleware(true))
-	users.UserRegister(v1.Group("/user"))
-	users.ProfileRegister(v1.Group("/profiles"))
-
-	articles.ArticlesRegister(v1.Group("/articles"))
+		articles.ArticlesRegister(v1.Group("/articles"))
+	*/
 	return r
 }
 
