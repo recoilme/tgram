@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	dbUser = "db/%s/u/user"
+	dbUser = "db/%s/user"
 )
 
 type User struct {
@@ -26,10 +26,10 @@ type User struct {
 func SaveNew(user *User) (err error) {
 	f := fmt.Sprintf(dbUser, user.Lang)
 	uname := []byte(user.Username)
-	_ = f
 	// check username
-	exists, _ := sp.Has(f, uname)
-	if exists {
+	err = sp.GetGob(f, uname, &user)
+
+	if err == nil {
 		return errors.New("Username " + user.Username + " taken")
 	}
 	// store
