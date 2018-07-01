@@ -99,6 +99,12 @@
 			"revisionTime": "2018-06-15T11:10:34Z"
 		},
 		{
+			"checksumSHA1": "IopMW+arBezL5bqOfrVU6UEfn28=",
+			"path": "github.com/thinkerou/favicon",
+			"revision": "94a442a49da6e2d44bdd5e0d2e2e185c43a19d93",
+			"revisionTime": "2017-07-10T14:05:20Z"
+		},
+		{
 			"checksumSHA1": "kdas0zQNtQqfUMEMFGkUF1OcgPc=",
 			"path": "github.com/ugorji/go/codec",
 			"revision": "f3cacc17c85ecb7f1b6a9e373ee85d1480919868",
@@ -129,6 +135,30 @@
 			"revisionTime": "2017-08-30T08:51:02Z"
 		},
 		{
+			"checksumSHA1": "3sCjRA74RgmvCmiAphA1nBZGvwQ=",
+			"path": "golang.org/x/text/internal/language",
+			"revision": "6ddec15f6ad41e5f923285a7f51fb026349034d9",
+			"revisionTime": "2018-02-22T13:01:40Z"
+		},
+		{
+			"checksumSHA1": "0WeaHBRw/H2FNQDf9I/k/2k54SE=",
+			"path": "golang.org/x/text/internal/language/compact",
+			"revision": "6ddec15f6ad41e5f923285a7f51fb026349034d9",
+			"revisionTime": "2018-02-22T13:01:40Z"
+		},
+		{
+			"checksumSHA1": "hyNCcTwMQnV6/MK8uUW9E5H0J0M=",
+			"path": "golang.org/x/text/internal/tag",
+			"revision": "6ddec15f6ad41e5f923285a7f51fb026349034d9",
+			"revisionTime": "2018-02-22T13:01:40Z"
+		},
+		{
+			"checksumSHA1": "2OHU6Wp5JE+WVMoRRCSdDRR1COA=",
+			"path": "golang.org/x/text/language",
+			"revision": "6ddec15f6ad41e5f923285a7f51fb026349034d9",
+			"revisionTime": "2018-02-22T13:01:40Z"
+		},
+		{
 			"checksumSHA1": "39V1idWER42Lmcmg2Uy40wMzOlo=",
 			"path": "gopkg.in/go-playground/validator.v8",
 			"revision": "5f57d2222ad794d0dffb07e664ea05e2ee07d60c",
@@ -141,5 +171,5 @@
 			"revisionTime": "2017-04-07T17:21:22Z"
 		}
 	],
-	"rootPath": "/github.com/recoilme/tgram"
+	"rootPath": "github.com/recoilme/tgram"
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -13,13 +14,19 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/gin-gonic/gin"
+	"github.com/thinkerou/favicon"
 	"golang.org/x/text/language"
 
 	"github.com/recoilme/slowpoke"
-	"github.com/recoilme/tgram/common"
-	"github.com/recoilme/tgram/users"
+
+	"github.com/recoilme/tgram/models"
+	"github.com/recoilme/tgram/routers"
 	//"github.com/thinkerou/favicon"
 )
+
+// Keep this two config private, it should not expose to open source
+const NBSecretPassword = "A String Very Very Very Strong!!@##$!@#$"
+const NBRandomPassword = "A String Very Very Very Niubilty!!@##$!@#4"
 
 func main() {
 	srv := &http.Server{
@@ -107,7 +114,7 @@ func SubDomain() gin.HandlerFunc {
 		//fmt.Println("lang:", lang, "host:", host)
 		// store subdomain
 		c.Set("lang", lang)
-
+		c.Set("path", c.Request.URL.Path)
 		// token from cookie
 		if tokenStr, err := c.Cookie("token"); err == nil && tokenStr != "" {
 			token, _ = jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
@@ -117,7 +124,7 @@ func SubDomain() gin.HandlerFunc {
 				}
 
 				// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-				return []byte(common.NBSecretPassword), nil
+				return []byte(NBSecretPassword), nil
 			})
 		}
 		// token from header
@@ -134,7 +141,7 @@ func SubDomain() gin.HandlerFunc {
 				request.ArgumentExtractor{"access_token"},
 			}
 			token, _ = request.ParseFromRequest(c.Request, MyAuth2Extractor, func(token *jwt.Token) (interface{}, error) {
-				b := ([]byte(common.NBSecretPassword))
+				b := ([]byte(NBSecretPassword))
 				return b, nil
 			})
 		}
@@ -147,7 +154,7 @@ func SubDomain() gin.HandlerFunc {
 
 		// set uid
 		c.Set("uid", uid)
-		var user users.UserModel
+		var user models.User //users.UserModel
 		_, exists := c.Get("user")
 		if !exists {
 			if uid > 0 {
@@ -158,13 +165,26 @@ func SubDomain() gin.HandlerFunc {
 
 	}
 }
+func fmtStr(value interface{}) string {
+	return fmt.Sprintf("%s", value)
+}
 
 func InitRouter() *gin.Engine {
 	r := gin.Default()
+
+	r.Use(favicon.New("./favicon.ico"))
+	r.SetFuncMap(template.FuncMap{
+		"fmtStr": fmtStr,
+	})
+	r.LoadHTMLGlob("views/*.html")
+
 	r.Use(SubDomain())
+	r.GET("/", routers.Index)
+	r.GET("/register", routers.Register)
+	r.POST("/register", routers.Register)
 	/*
 		fmt.Printf("r: %+v\n", r)
-		r.LoadHTMLGlob("views/*.html")
+
 
 		r.GET("/register", front.Register)
 		r.POST("/register", front.Register)

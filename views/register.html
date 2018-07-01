@@ -1,21 +1,6 @@
 {{template "header" .}}
+{{template "menu" .}}
 
-<nav class="navbar navbar-light">
-  <div class="container">
-    <a class="navbar-brand" href="/">conduit</a>
-    <ul class="nav navbar-nav pull-xs-right">
-      <li class="nav-item">
-        <a class="nav-link" href="/">Home</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link active" href="register">Sign up</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="login">Sign in</a>
-      </li>
-    </ul>
-  </div>
-</nav>
 
 <div class="auth-page">
     <div class="container page">
@@ -36,13 +21,10 @@
   
           <form action="/register" method="post">
             <fieldset class="form-group">
-              <input name="username" class="form-control form-control-lg" type="text" placeholder="Your Name (min 4)" value="{{.Username}}">
+              <input name="username" class="form-control form-control-lg" type="text" placeholder="Your Name" value="{{.Username}}">
             </fieldset>
             <fieldset class="form-group">
-              <input name="email" class="form-control form-control-lg" type="text" placeholder="Email" value="{{.Email}}">
-            </fieldset>
-            <fieldset class="form-group">
-              <input name="password" class="form-control form-control-lg" type="password" placeholder="Password (min 8)" value="{{.Password}}">
+              <input name="password" class="form-control form-control-lg" type="password" placeholder="Password (min 4)" value="{{.Password}}">
             </fieldset>
             <button type="submit" class="btn btn-lg btn-primary pull-xs-right">
               Sign up
