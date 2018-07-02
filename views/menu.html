@@ -1,19 +1,47 @@
 {{define "menu"}}
-{{if .uid}}
-
+{{if .username}}
+<nav class="navbar navbar-light">
+  <div class="container">
+    <a class="navbar-brand" href="/">tgr.am</a>
+    <ul class="nav navbar-nav pull-xs-right">
+      <li class="nav-item">
+        <!-- Add "active" class when you're on that page" -->
+        <a class="nav-link {{if eq (tostr .path) "/"}}active{{end}}" href="/">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{if eq (tostr .path) "/editor"}}active{{end}}" href="/editor">
+          &nbsp;New Post
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{if eq (tostr .path) "/settings"}}active{{end}}" href="/settings">
+          &nbsp;Settings
+        </a>
+      </li>
+      <li class="nav-item">
+          
+        <a class="nav-link {{if eq (tostr .path) "/{{.username}}"}}active{{end}}" href="/@{{.username}}">
+          <img class="user-pic" src="{{.image}}">
+          {{.username}}
+        </a>
+      </li>
+      
+    </ul>
+  </div>
+</nav>
 {{ else}}
 <nav class="navbar navbar-light">
   <div class="container">
     <a class="navbar-brand" href="/">tgr.am</a>
     <ul class="nav navbar-nav pull-xs-right">
       <li class="nav-item">
-        <a class="nav-link {{if eq (fmtStr .path) "/"}}active{{end}}" href="/">Home</a>
+        <a class="nav-link {{if eq (tostr .path) "/"}}active{{end}}" href="/">Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{if eq (fmtStr .path) "/register"}}active{{end}}" href="register">Sign up</a>
+        <a class="nav-link {{if eq (tostr .path) "/register"}}active{{end}}" href="register">Sign up</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link {{if eq (fmtStr .path) "/login"}}active{{end}}" href="login">Sign in</a>
+        <a class="nav-link {{if eq (tostr .path) "/login"}}active{{end}}" href="login">Sign in</a>
       </li>
     </ul>
   </div>

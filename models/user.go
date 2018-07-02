@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	sp "github.com/recoilme/slowpoke"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -23,16 +24,53 @@ type User struct {
 
 // You could input an UserModel which will be saved in database returning with error info
 // 	if err := SaveOne(&userModel); err != nil { ... }
-func SaveNew(user *User) (err error) {
+func UserNew(user *User) (err error) {
 	f := fmt.Sprintf(dbUser, user.Lang)
 	uname := []byte(user.Username)
 	// check username
-	err = sp.GetGob(f, uname, &user)
-
-	if err == nil {
+	taken, _ := sp.Has(f, uname)
+	if taken {
 		return errors.New("Username " + user.Username + " taken")
 	}
+	fmt.Println("reg pwd", user.Password)
+	bytePassword := []byte(user.Password)
+	// Make sure the second param `bcrypt generator cost` between [4, 32)
+	passwordHash, _ := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
+	user.Password = ""
+	user.PasswordHash = string(passwordHash)
+
 	// store
 	return sp.SetGob(f, uname, user)
+}
 
+func UserCheckGet(lang, username, password string) (u *User, err error) {
+	f := fmt.Sprintf(dbUser, lang)
+	uname := []byte(username)
+
+	err = sp.GetGob(f, uname, &u)
+	if err != nil {
+		return nil, err
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(password))
+	if err != nil {
+		return nil, errors.New("Password not match")
+	}
+	return u, nil
+}
+
+func UserSave(user *User) (err error) {
+	f := fmt.Sprintf(dbUser, user.Lang)
+	uname := []byte(user.Username)
+	return sp.SetGob(f, uname, user)
+}
+
+func UserGet(lang, username string) (u *User, err error) {
+	f := fmt.Sprintf(dbUser, lang)
+	uname := []byte(username)
+
+	err = sp.GetGob(f, uname, &u)
+	if err != nil {
+		return nil, err
+	}
+	return u, nil
 }

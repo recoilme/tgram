@@ -1,0 +1,22 @@
+{{define "menu"}}
+{{if .uid}}
+
+{{ else}}
+<nav class="navbar navbar-light">
+  <div class="container">
+    <a class="navbar-brand" href="/">tgr.am</a>
+    <ul class="nav navbar-nav pull-xs-right">
+      <li class="nav-item">
+        <a class="nav-link {{if eq (fmtStr .path) "/"}}active{{end}}" href="/">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{if eq (fmtStr .path) "/register"}}active{{end}}" href="register">Sign up</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{if eq (fmtStr .path) "/login"}}active{{end}}" href="login">Sign in</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+{{ end }}
+{{ end }}
