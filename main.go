@@ -81,6 +81,8 @@ func InitRouter() *gin.Engine {
 
 	r.GET("/editor", routers.Editor)
 	r.POST("/editor", routers.Editor)
+
+	r.GET("/@:username/:aid", routers.Article)
 	/*
 		fmt.Printf("r: %+v\n", r)
 

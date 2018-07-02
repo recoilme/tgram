@@ -4,9 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
+	"strconv"
 	"strings"
+	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -283,14 +284,44 @@ func Login(c *gin.Context) {
 
 func Editor(c *gin.Context) {
 
-	log.Println("Editor", c.Request)
 	switch c.Request.Method {
 	case "GET":
 		c.HTML(http.StatusOK, "article_edit.html", c.Keys)
 	case "POST":
-		x, _ := ioutil.ReadAll(c.Request.Body)
-		fmt.Printf("%s", string(x))
+		var err error
+		if c.Request.ContentLength > 7*1024*1024 {
+			renderErr(c, errors.New("Too long content"))
+			return
+		}
+		body, err := ioutil.ReadAll(c.Request.Body)
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		var a models.Article
+		a.Lang = c.MustGet("lang").(string)
+		a.Author = c.MustGet("username").(string)
+		a.CreatedAt = time.Now()
+		a.Body = string(body)
+		aid, err := models.ArticleNew(&a)
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		a.ID = aid
+		a.Body = ""
+		c.JSON(http.StatusCreated, a) //gin.H{"article": serializer.Response()})
+		//c.Redirect(http.StatusFound, fmt.Sprint("@/%s/%d", a.Author, aid))
+	}
+}
 
-		return
+func Article(c *gin.Context) {
+
+	switch c.Request.Method {
+	case "GET":
+		aid, _ := strconv.Atoi(c.Param("aid"))
+		username := c.Param("username")
+		a, _ := models.ArticleGet(c.MustGet("lang").(string), username, uint32(aid))
+		c.JSON(http.StatusOK, a)
 	}
 }

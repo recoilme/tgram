@@ -96,15 +96,16 @@ Fenced Code block
     theme: 'bubble'
     });
     function sen() {
-        alert(JSON.stringify(quill.getContents()))
+        //alert(JSON.stringify(quill.getContents()))
         var xhr = new XMLHttpRequest();
         var url = "/editor";
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
+            if (xhr.readyState === 4 && xhr.status === 201) {
                 var json = JSON.parse(xhr.responseText);
-                console.log(json.email + ", " + json.password);
+                window.location.replace('/@'+ json.Author + '/' + json.ID);
+                //console.log(json.ID + ", " + json.Author);
             }
         };
         var data = JSON.stringify(quill.getContents())//JSON.stringify({"email": "hey@mail.com", "password": "101010"});
