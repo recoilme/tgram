@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/binary"
 	"fmt"
+	"html/template"
 	"strconv"
 	"time"
 
@@ -22,6 +23,7 @@ type Article struct {
 	Image     string
 	CreatedAt time.Time
 	Lang      string
+	HTML      template.HTML
 }
 
 func Uint32toBin(id uint32) []byte {
@@ -99,6 +101,7 @@ func AllArticles(lang, limit, offset string) ([]Article, int, error) {
 			fmt.Println("kerr", err)
 			break
 		}
+
 		models = append(models, model)
 	}
 	cnt, _ = sp.Count(fAids)

@@ -311,6 +311,10 @@ func Editor(c *gin.Context) {
 			return
 		}
 		var a models.Article
+		unsafe := blackfriday.Run(body)
+		html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+		a.HTML = template.HTML(html)
+
 		a.Lang = c.MustGet("lang").(string)
 		a.Author = c.MustGet("username").(string)
 		a.Image = c.MustGet("image").(string)
