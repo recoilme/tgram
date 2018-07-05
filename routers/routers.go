@@ -3,6 +3,7 @@ package routers
 import (
 	"errors"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -11,8 +12,10 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/recoilme/tgram/models"
 	"golang.org/x/text/language"
+	"gopkg.in/russross/blackfriday.v2"
 )
 
 const NBSecretPassword = "A String Very Very Very Strong!!@##$!@#$"
@@ -112,7 +115,16 @@ func ToStr(value interface{}) string {
 	return fmt.Sprintf("%s", value)
 }
 
+func ToDate(t time.Time) string {
+
+	return t.Format("01.02.2006 15:04")
+	//year, month, day := t.Date()
+	//return fmt.Sprintf("%02d.%02d.%02d %02d:%02d", day, month, year, t.Hour, t.Minute)
+}
+
 func Index(c *gin.Context) {
+	articles, _, _ := models.AllArticles(c.MustGet("lang").(string), "", "")
+	c.Set("articles", articles)
 	c.HTML(http.StatusOK, "index.html", c.Keys)
 }
 
@@ -289,8 +301,8 @@ func Editor(c *gin.Context) {
 		c.HTML(http.StatusOK, "article_edit.html", c.Keys)
 	case "POST":
 		var err error
-		if c.Request.ContentLength > 7*1024*1024 {
-			renderErr(c, errors.New("Too long content"))
+		if c.Request.ContentLength > 10*1024*1024 {
+			renderErr(c, errors.New("Too long content >10Mb"))
 			return
 		}
 		body, err := ioutil.ReadAll(c.Request.Body)
@@ -301,6 +313,7 @@ func Editor(c *gin.Context) {
 		var a models.Article
 		a.Lang = c.MustGet("lang").(string)
 		a.Author = c.MustGet("username").(string)
+		a.Image = c.MustGet("image").(string)
 		a.CreatedAt = time.Now()
 		a.Body = string(body)
 		aid, err := models.ArticleNew(&a)
@@ -321,7 +334,29 @@ func Article(c *gin.Context) {
 	case "GET":
 		aid, _ := strconv.Atoi(c.Param("aid"))
 		username := c.Param("username")
-		a, _ := models.ArticleGet(c.MustGet("lang").(string), username, uint32(aid))
-		c.JSON(http.StatusOK, a)
+		a, err := models.ArticleGet(c.MustGet("lang").(string), username, uint32(aid))
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		unsafe := blackfriday.Run([]byte(a.Body))
+		html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+		/*
+			buf := []byte(a.Body)
+			if len(buf) < 8 {
+				renderErr(c, err)
+				return
+			}
+			html, err := quill.Render(buf[7 : len(buf)-1])
+			if err != nil {
+				renderErr(c, err)
+				return
+			}*/
+		r := template.HTML(html)
+		a.Body = ""
+		c.Set("article", a)
+		c.Set("body", r)
+		c.HTML(http.StatusBadRequest, "article.html", c.Keys)
+		//c.JSON(http.StatusOK, a)
 	}
 }

@@ -9,7 +9,9 @@ import (
 )
 
 const (
-	dbUser = "db/%s/user"
+	dbUser        = "db/%s/user"
+	dbMasterSlave = "db/%s/userms"
+	dbSlaveMaster = "db/%s/usersm"
 )
 
 type User struct {
@@ -73,4 +75,48 @@ func UserGet(lang, username string) (u *User, err error) {
 		return nil, err
 	}
 	return u, nil
+}
+
+func Following(lang, u, v string) (err error) {
+	masterslave, slavemaster := GetMasterSlave(u, v)
+	err = sp.Set(fmt.Sprintf(dbMasterSlave, lang), masterslave, nil)
+	if err != nil {
+		return err
+	}
+	err = sp.Set(fmt.Sprintf(dbSlaveMaster, lang), slavemaster, nil)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
+func Unfollowing(lang, u, v string) (err error) {
+	masterslave, slavemaster := GetMasterSlave(u, v)
+	_, err = sp.Delete(fmt.Sprintf(dbMasterSlave, lang), masterslave)
+	if err != nil {
+		return err
+	}
+	_, err = sp.Delete(fmt.Sprintf(dbSlaveMaster, lang), slavemaster)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
+func GetMasterSlave(master string, slave string) ([]byte, []byte) {
+	master32 := []byte(master)
+	slave32 := []byte(slave)
+
+	var masterslave = make([]byte, 0)
+	masterslave = append(masterslave, master32...)
+	masterslave = append(masterslave, ':')
+	masterslave = append(masterslave, slave32...)
+
+	var slavemaster = make([]byte, 0)
+	slavemaster = append(slavemaster, slave32...)
+	slavemaster = append(slavemaster, ':')
+	slavemaster = append(slavemaster, master32...)
+	return masterslave, slavemaster
 }

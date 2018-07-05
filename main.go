@@ -61,7 +61,8 @@ func InitRouter() *gin.Engine {
 	r.Use(favicon.New("./favicon.ico"))
 
 	r.SetFuncMap(template.FuncMap{
-		"tostr": routers.ToStr,
+		"tostr":  routers.ToStr,
+		"todate": routers.ToDate,
 	})
 	r.LoadHTMLGlob("views/*.html")
 

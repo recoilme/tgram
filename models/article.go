@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/binary"
 	"fmt"
+	"strconv"
 	"time"
 
 	sp "github.com/recoilme/slowpoke"
@@ -18,6 +19,7 @@ type Article struct {
 	ID        uint32
 	Body      string
 	Author    string
+	Image     string
 	CreatedAt time.Time
 	Lang      string
 }
@@ -63,4 +65,45 @@ func ArticleGet(lang, username string, aid uint32) (a *Article, err error) {
 		return nil, err
 	}
 	return a, nil
+}
+
+func AllArticles(lang, limit, offset string) ([]Article, int, error) {
+	var models []Article
+	var err error
+	var cnt uint64
+	var offset_int, limit_int int
+
+	offset_int, _ = strconv.Atoi(offset)
+
+	limit_int, _ = strconv.Atoi(limit)
+	if limit_int == 0 {
+		limit_int = 5
+	}
+
+	fAids := fmt.Sprintf(dbAids, lang)
+	//if err = sp.Set(fAids, id32, []byte(a.Author)); err != nil {
+	keys, err := sp.Keys(fAids, nil, uint32(limit_int), uint32(offset_int), false)
+	//log.Println("no params", len(keys), limit_int)
+	if err != nil {
+		return models, 0, err
+	}
+	for _, key := range keys {
+		var model Article
+
+		uidb, err := sp.Get(fAids, key)
+		if err != nil {
+			break
+		}
+		fAUser := fmt.Sprintf(dbAUser, lang, string(uidb))
+		if err = sp.GetGob(fAUser, key, &model); err != nil {
+			fmt.Println("kerr", err)
+			break
+		}
+		models = append(models, model)
+	}
+	cnt, _ = sp.Count(fAids)
+
+	//log.Println("models", err, models)
+	return models, int(cnt), err
+
 }
