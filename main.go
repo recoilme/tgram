@@ -56,7 +56,11 @@ func main() {
 }
 
 func InitRouter() *gin.Engine {
-	r := gin.Default()
+	gin.SetMode(gin.ReleaseMode)
+	r := gin.New() // .Default()
+	r.Use(gin.Recovery())
+	//r.Use(gin.Logger())
+	//gin.DefaultWriter = ioutil.Discard
 
 	r.Use(favicon.New("./favicon.ico"))
 
