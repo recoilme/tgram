@@ -93,6 +93,9 @@ func InitRouter() *gin.Engine {
 
 	r.GET("follow/:user/*action", routers.Follow)
 	r.GET("unfollow/:user/*action", routers.Unfollow)
+
+	r.GET("fav/:aid/*action", routers.Fav)
+	r.GET("unfav/:aid/*action", routers.Unfav)
 	/*
 		fmt.Printf("r: %+v\n", r)
 

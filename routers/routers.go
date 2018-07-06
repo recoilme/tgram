@@ -354,18 +354,20 @@ func Article(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-		/*
-			unsafe := blackfriday.Run([]byte(a.Body))
-			html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
 
-			r := template.HTML(html)
-			a.Body = ""*/
 		c.Set("article", a)
 		c.Set("body", a.HTML)
-		isFolow := models.IsFollowing(c.MustGet("lang").(string), username, c.MustGet("username").(string))
+		isFolow := models.IsFollowing(c.MustGet("lang").(string), "fol", username, c.MustGet("username").(string))
 		c.Set("isfollow", isFolow)
-		cnt := models.FollowCount(c.MustGet("lang").(string), username)
-		c.Set("followcnt", cnt)
+		followcnt := models.FollowCount(c.MustGet("lang").(string), "fol", username)
+		c.Set("followcnt", followcnt)
+
+		// fav
+		isFav := models.IsFollowing(c.MustGet("lang").(string), "fav", c.Param("aid"), c.MustGet("username").(string))
+		c.Set("isfav", isFav)
+		favcnt := models.FollowCount(c.MustGet("lang").(string), "fav", c.Param("aid"))
+		c.Set("favcnt", favcnt)
+
 		c.HTML(http.StatusBadRequest, "article.html", c.Keys)
 		//c.JSON(http.StatusOK, a)
 	}
@@ -390,7 +392,7 @@ func Follow(c *gin.Context) {
 	case "GET":
 		user := c.Param("user")
 		action := c.Param("action")
-		err := models.Following(c.MustGet("lang").(string), user, c.MustGet("username").(string))
+		err := models.Following(c.MustGet("lang").(string), "fol", user, c.MustGet("username").(string))
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -404,7 +406,35 @@ func Unfollow(c *gin.Context) {
 	case "GET":
 		user := c.Param("user")
 		action := c.Param("action")
-		err := models.Unfollowing(c.MustGet("lang").(string), user, c.MustGet("username").(string))
+		err := models.Unfollowing(c.MustGet("lang").(string), "fol", user, c.MustGet("username").(string))
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		c.Redirect(http.StatusFound, action)
+	}
+}
+
+func Fav(c *gin.Context) {
+	switch c.Request.Method {
+	case "GET":
+		aid := c.Param("aid")
+		action := c.Param("action")
+
+		err := models.Following(c.MustGet("lang").(string), "fav", aid, c.MustGet("username").(string))
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		c.Redirect(http.StatusFound, action)
+	}
+}
+func Unfav(c *gin.Context) {
+	switch c.Request.Method {
+	case "GET":
+		aid := c.Param("aid")
+		action := c.Param("action")
+		err := models.Unfollowing(c.MustGet("lang").(string), "fav", aid, c.MustGet("username").(string))
 		if err != nil {
 			renderErr(c, err)
 			return

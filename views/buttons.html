@@ -21,8 +21,14 @@
   <i class="ion-trash-a"></i>&nbsp;Delete Article
 </a>
 {{else}}
-<a href="/favorite/{{.article.ID}}" class="btn btn-sm btn-outline-primary">
-  <i class="ion-heart"></i>&nbsp;Favorite Article
+{{if .isfav}}
+<a href="/unfav/{{.article.ID}}/@{{.article.Author}}/{{.article.ID}}" class="btn btn-sm btn-outline-secondary">
+  <i class="ion-heart"></i>&nbsp;UnFavorite Article <span class="counter">({{.favcnt}})</span>
 </a>
+{{else}}
+<a href="/fav/{{.article.ID}}/@{{.article.Author}}/{{.article.ID}}" class="btn btn-sm btn-outline-primary">
+  <i class="ion-heart"></i>&nbsp;Favorite Article <span class="counter">({{.favcnt}})</span>
+</a>
+{{end}}
 {{end}}
 {{end}}

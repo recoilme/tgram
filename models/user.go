@@ -10,8 +10,8 @@ import (
 
 const (
 	dbUser        = "db/%s/user"
-	dbMasterSlave = "db/%s/userms"
-	dbSlaveMaster = "db/%s/usersm"
+	dbMasterSlave = "db/%s/%sms"
+	dbSlaveMaster = "db/%s/%ssm"
 )
 
 type User struct {
@@ -77,13 +77,13 @@ func UserGet(lang, username string) (u *User, err error) {
 	return u, nil
 }
 
-func Following(lang, u, v string) (err error) {
+func Following(lang, cat, u, v string) (err error) {
 	masterslave, slavemaster := GetMasterSlave(u, v)
-	err = sp.Set(fmt.Sprintf(dbMasterSlave, lang), masterslave, nil)
+	err = sp.Set(fmt.Sprintf(dbMasterSlave, lang, cat), masterslave, nil)
 	if err != nil {
 		return err
 	}
-	err = sp.Set(fmt.Sprintf(dbSlaveMaster, lang), slavemaster, nil)
+	err = sp.Set(fmt.Sprintf(dbSlaveMaster, lang, cat), slavemaster, nil)
 	if err != nil {
 		return err
 	}
@@ -91,31 +91,31 @@ func Following(lang, u, v string) (err error) {
 	return err
 }
 
-func IsFollowing(lang, u, v string) bool {
+func IsFollowing(lang, cat, u, v string) bool {
 	_, slavemaster := GetMasterSlave(u, v)
-	has, _ := sp.Has(fmt.Sprintf(dbSlaveMaster, lang), slavemaster)
+	has, _ := sp.Has(fmt.Sprintf(dbSlaveMaster, lang, cat), slavemaster)
 	return has
 }
 
-func FollowCount(lang, u string) int {
+func FollowCount(lang, cat, u string) int {
 
 	master32 := []byte(u)
 	var masterstar = make([]byte, 0)
 	masterstar = append(masterstar, master32...)
 	masterstar = append(masterstar, '*')
 
-	keys, _ := sp.Keys(fmt.Sprintf(dbMasterSlave, lang), masterstar, 0, 0, true)
+	keys, _ := sp.Keys(fmt.Sprintf(dbMasterSlave, lang, cat), masterstar, 0, 0, true)
 
 	return len(keys)
 }
 
-func Unfollowing(lang, u, v string) (err error) {
+func Unfollowing(lang, cat, u, v string) (err error) {
 	masterslave, slavemaster := GetMasterSlave(u, v)
-	_, err = sp.Delete(fmt.Sprintf(dbMasterSlave, lang), masterslave)
+	_, err = sp.Delete(fmt.Sprintf(dbMasterSlave, lang, cat), masterslave)
 	if err != nil {
 		return err
 	}
-	_, err = sp.Delete(fmt.Sprintf(dbSlaveMaster, lang), slavemaster)
+	_, err = sp.Delete(fmt.Sprintf(dbSlaveMaster, lang, cat), slavemaster)
 	if err != nil {
 		return err
 	}
