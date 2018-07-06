@@ -1,0 +1,21 @@
+{{ define "buttons" }}
+{{if eq .article.Author .username}}
+<a href="/editor/{{.article.ID}}" class="btn btn-sm btn-outline-secondary">
+    <i class="ion-edit"></i>&nbsp;Edit Article
+</a>
+{{else}}
+<a href="/follow/{{.article.ID}}" class="btn btn-sm btn-outline-secondary">
+  <i class="ion-plus-round"></i>&nbsp;Follow {{.article.Author}} <span class="counter">()</span>
+</a>
+{{end}}
+&nbsp;&nbsp;
+{{if eq .article.Author .username}}
+<a href="/delete/a/{{.article.ID}}" class="btn btn-sm btn-outline-danger">
+  <i class="ion-trash-a"></i>&nbsp;Delete Article
+</a>
+{{else}}
+<a href="/favorite/{{.article.ID}}" class="btn btn-sm btn-outline-primary">
+  <i class="ion-heart"></i>&nbsp;Favorite Article
+</a>
+{{end}}
+{{end}}

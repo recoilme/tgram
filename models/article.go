@@ -69,6 +69,18 @@ func ArticleGet(lang, username string, aid uint32) (a *Article, err error) {
 	return a, nil
 }
 
+func ArticleDelete(lang, username string, aid uint32) (err error) {
+	fAUser := fmt.Sprintf(dbAUser, lang, username)
+
+	_, err = sp.Delete(fAUser, Uint32toBin(aid))
+	if err != nil {
+		return err
+	}
+	fAids := fmt.Sprintf(dbAids, lang)
+	sp.Delete(fAids, Uint32toBin(aid))
+	return nil
+}
+
 func AllArticles(lang, limit, offset string) ([]Article, int, error) {
 	var models []Article
 	var err error

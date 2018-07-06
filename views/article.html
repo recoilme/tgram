@@ -12,19 +12,8 @@
           <a href="" class="author">{{.article.Author}}</a>
           <span class="date">{{.article.CreatedAt | todate}}</span>
         </div>
-        <button class="btn btn-sm btn-outline-secondary">
-          <i class="ion-plus-round"></i>
-          &nbsp;
-          Follow {{.article.Author}} <span class="counter">(?)</span>
-        </button>
-        &nbsp;&nbsp;
-        <button class="btn btn-sm btn-outline-primary">
-          <i class="ion-heart"></i>
-          &nbsp;
-          Favorite Post <span class="counter">()</span>
-        </button>
+        {{ template "buttons" .}}
       </div>
-
     </div>
   </div>
 
@@ -43,20 +32,9 @@
         <a href="profile.html"><img src="{{.article.Image}}" /></a>
         <div class="info">
           <a href="" class="author">{{.article.Author}}</a>
-          <span class="date">{{.article.CreatedAt}}</span>
+          <span class="date">{{.article.CreatedAt| todate}}</span>
         </div>
-
-        <button class="btn btn-sm btn-outline-secondary">
-          <i class="ion-plus-round"></i>
-          &nbsp;
-          Follow {{.article.Author}} <span class="counter">(10)</span>
-        </button>
-        &nbsp;
-        <button class="btn btn-sm btn-outline-primary">
-          <i class="ion-heart"></i>
-          &nbsp;
-          Favorite Post <span class="counter">(29)</span>
-        </button>
+        {{ template "buttons" .}}
       </div>
     </div>
 

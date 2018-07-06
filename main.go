@@ -59,7 +59,7 @@ func InitRouter() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New() // .Default()
 	r.Use(gin.Recovery())
-	//r.Use(gin.Logger())
+	r.Use(gin.Logger())
 	//gin.DefaultWriter = ioutil.Discard
 
 	r.Use(favicon.New("./favicon.ico"))
@@ -84,10 +84,12 @@ func InitRouter() *gin.Engine {
 	r.GET("/login", routers.Login)
 	r.POST("/login", routers.Login)
 
-	r.GET("/editor", routers.Editor)
+	r.GET("/editor/:aid", routers.Editor)
 	r.POST("/editor", routers.Editor)
 
 	r.GET("/@:username/:aid", routers.Article)
+
+	r.GET("/delete/a/:aid", routers.ArticleDelete)
 	/*
 		fmt.Printf("r: %+v\n", r)
 

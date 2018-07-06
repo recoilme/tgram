@@ -298,6 +298,18 @@ func Editor(c *gin.Context) {
 
 	switch c.Request.Method {
 	case "GET":
+		aid, _ := strconv.Atoi(c.Param("aid"))
+		if aid > 0 {
+			// check username
+			aid, _ := strconv.Atoi(c.Param("aid"))
+			username := c.MustGet("username").(string)
+			a, err := models.ArticleGet(c.MustGet("lang").(string), username, uint32(aid))
+			if err != nil {
+				renderErr(c, err)
+				return
+			}
+			c.Set("html", a.HTML)
+		}
 		c.HTML(http.StatusOK, "article_edit.html", c.Keys)
 	case "POST":
 		var err error
@@ -333,7 +345,6 @@ func Editor(c *gin.Context) {
 }
 
 func Article(c *gin.Context) {
-
 	switch c.Request.Method {
 	case "GET":
 		aid, _ := strconv.Atoi(c.Param("aid"))
@@ -345,22 +356,26 @@ func Article(c *gin.Context) {
 		}
 		unsafe := blackfriday.Run([]byte(a.Body))
 		html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
-		/*
-			buf := []byte(a.Body)
-			if len(buf) < 8 {
-				renderErr(c, err)
-				return
-			}
-			html, err := quill.Render(buf[7 : len(buf)-1])
-			if err != nil {
-				renderErr(c, err)
-				return
-			}*/
+
 		r := template.HTML(html)
 		a.Body = ""
 		c.Set("article", a)
 		c.Set("body", r)
 		c.HTML(http.StatusBadRequest, "article.html", c.Keys)
 		//c.JSON(http.StatusOK, a)
+	}
+}
+
+func ArticleDelete(c *gin.Context) {
+	switch c.Request.Method {
+	case "GET":
+		aid, _ := strconv.Atoi(c.Param("aid"))
+		username := c.MustGet("username").(string)
+		err := models.ArticleDelete(c.MustGet("lang").(string), username, uint32(aid))
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		c.Redirect(http.StatusFound, "/")
 	}
 }

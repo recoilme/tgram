@@ -51,6 +51,7 @@
 {{ template "menu" . }}
 <div class="container page" id="scrolling-container">
     <div class="quill-container" id="quill-container" name="quill-container">
+        {{.html}}
     </div>
     <div class="markdown" style="display: none;"><pre></pre></div>
     <button type="submit" class="btn btn-lg btn-primary pull-xs-left" onclick="sen()" >Publish</button>
@@ -65,7 +66,7 @@
         }
     });
     function sen() {
-        alert(markDownEl.textContent)
+        //alert(markDownEl.textContent)
         var xhr = new XMLHttpRequest();
         var url = "/editor";
         xhr.open("POST", url, true);
