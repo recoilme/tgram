@@ -91,6 +91,24 @@ func Following(lang, u, v string) (err error) {
 	return err
 }
 
+func IsFollowing(lang, u, v string) bool {
+	_, slavemaster := GetMasterSlave(u, v)
+	has, _ := sp.Has(fmt.Sprintf(dbSlaveMaster, lang), slavemaster)
+	return has
+}
+
+func FollowCount(lang, u string) int {
+
+	master32 := []byte(u)
+	var masterstar = make([]byte, 0)
+	masterstar = append(masterstar, master32...)
+	masterstar = append(masterstar, '*')
+
+	keys, _ := sp.Keys(fmt.Sprintf(dbMasterSlave, lang), masterstar, 0, 0, true)
+
+	return len(keys)
+}
+
 func Unfollowing(lang, u, v string) (err error) {
 	masterslave, slavemaster := GetMasterSlave(u, v)
 	_, err = sp.Delete(fmt.Sprintf(dbMasterSlave, lang), masterslave)

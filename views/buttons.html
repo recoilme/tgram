@@ -1,12 +1,19 @@
 {{ define "buttons" }}
+
 {{if eq .article.Author .username}}
 <a href="/editor/{{.article.ID}}" class="btn btn-sm btn-outline-secondary">
     <i class="ion-edit"></i>&nbsp;Edit Article
 </a>
 {{else}}
-<a href="/follow/{{.article.ID}}" class="btn btn-sm btn-outline-secondary">
-  <i class="ion-plus-round"></i>&nbsp;Follow {{.article.Author}} <span class="counter">()</span>
-</a>
+  {{if .isfollow}}
+  <a href="/unfollow/{{.article.Author}}/@{{.article.Author}}/{{.article.ID}}" class="btn btn-sm btn-outline-secondary">
+    <i class="ion-minus-round"></i>&nbsp;Unfollow {{.article.Author}} <span class="counter">({{.followcnt}})</span>
+  </a>
+  {{else}}
+  <a href="/follow/{{.article.Author}}/@{{.article.Author}}/{{.article.ID}}" class="btn btn-sm btn-outline-secondary">
+    <i class="ion-plus-round"></i>&nbsp;Follow {{.article.Author}} <span class="counter">({{.followcnt}})</span>
+  </a>
+  {{end}}
 {{end}}
 &nbsp;&nbsp;
 {{if eq .article.Author .username}}

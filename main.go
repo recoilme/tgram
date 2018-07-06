@@ -90,6 +90,9 @@ func InitRouter() *gin.Engine {
 	r.GET("/@:username/:aid", routers.Article)
 
 	r.GET("/delete/a/:aid", routers.ArticleDelete)
+
+	r.GET("follow/:user/*action", routers.Follow)
+	r.GET("unfollow/:user/*action", routers.Unfollow)
 	/*
 		fmt.Printf("r: %+v\n", r)
 

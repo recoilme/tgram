@@ -354,13 +354,18 @@ func Article(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-		unsafe := blackfriday.Run([]byte(a.Body))
-		html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+		/*
+			unsafe := blackfriday.Run([]byte(a.Body))
+			html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
 
-		r := template.HTML(html)
-		a.Body = ""
+			r := template.HTML(html)
+			a.Body = ""*/
 		c.Set("article", a)
-		c.Set("body", r)
+		c.Set("body", a.HTML)
+		isFolow := models.IsFollowing(c.MustGet("lang").(string), username, c.MustGet("username").(string))
+		c.Set("isfollow", isFolow)
+		cnt := models.FollowCount(c.MustGet("lang").(string), username)
+		c.Set("followcnt", cnt)
 		c.HTML(http.StatusBadRequest, "article.html", c.Keys)
 		//c.JSON(http.StatusOK, a)
 	}
@@ -377,5 +382,33 @@ func ArticleDelete(c *gin.Context) {
 			return
 		}
 		c.Redirect(http.StatusFound, "/")
+	}
+}
+
+func Follow(c *gin.Context) {
+	switch c.Request.Method {
+	case "GET":
+		user := c.Param("user")
+		action := c.Param("action")
+		err := models.Following(c.MustGet("lang").(string), user, c.MustGet("username").(string))
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		c.Redirect(http.StatusFound, action)
+	}
+}
+
+func Unfollow(c *gin.Context) {
+	switch c.Request.Method {
+	case "GET":
+		user := c.Param("user")
+		action := c.Param("action")
+		err := models.Unfollowing(c.MustGet("lang").(string), user, c.MustGet("username").(string))
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		c.Redirect(http.StatusFound, action)
 	}
 }
