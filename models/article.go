@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"html/template"
+	"log"
 	"strconv"
 	"time"
 
@@ -119,6 +120,42 @@ func AllArticles(lang, limit, offset string) ([]Article, int, error) {
 	cnt, _ = sp.Count(fAids)
 
 	//log.Println("models", err, models)
+	return models, int(cnt), err
+
+}
+
+func ArticlesAuthor(author, lang, limit, offset string) ([]Article, int, error) {
+	var models []Article
+	var err error
+	var cnt uint64
+	var offset_int, limit_int int
+
+	offset_int, _ = strconv.Atoi(offset)
+
+	limit_int, _ = strconv.Atoi(limit)
+	if limit_int == 0 {
+		limit_int = 5
+	}
+
+	fAUser := fmt.Sprintf(dbAUser, lang, author)
+	keys, err := sp.Keys(fAUser, nil, uint32(limit_int), uint32(offset_int), false)
+
+	if err != nil {
+		return models, 0, err
+	}
+	for _, key := range keys {
+		var model Article
+
+		if err = sp.GetGob(fAUser, key, &model); err != nil {
+			fmt.Println("kerr", err)
+			break
+		}
+
+		models = append(models, model)
+	}
+	cnt, _ = sp.Count(fAUser)
+
+	log.Println("models", err, models)
 	return models, int(cnt), err
 
 }

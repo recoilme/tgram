@@ -76,62 +76,30 @@ func InitRouter() *gin.Engine {
 	r.GET("/register", routers.Register)
 	r.POST("/register", routers.Register)
 
+	r.GET("/login", routers.Login)
+	r.POST("/login", routers.Login)
+
+	r.GET("/@:username/:aid", routers.Article)
+	r.GET("/@:username", routers.Author)
+
+	r.Use(routers.GoToRegister())
+
 	r.GET("/settings", routers.Settings)
 	r.POST("/settings", routers.Settings)
 
 	r.GET("/logout", routers.Logout)
 
-	r.GET("/login", routers.Login)
-	r.POST("/login", routers.Login)
+	r.GET("/delete/a/:aid", routers.ArticleDelete)
 
 	r.GET("/editor/:aid", routers.Editor)
 	r.POST("/editor", routers.Editor)
-
-	r.GET("/@:username/:aid", routers.Article)
-
-	r.GET("/delete/a/:aid", routers.ArticleDelete)
 
 	r.GET("follow/:user/*action", routers.Follow)
 	r.GET("unfollow/:user/*action", routers.Unfollow)
 
 	r.GET("fav/:aid/*action", routers.Fav)
 	r.GET("unfav/:aid/*action", routers.Unfav)
-	/*
-		fmt.Printf("r: %+v\n", r)
 
-
-		r.GET("/register", front.Register)
-		r.POST("/register", front.Register)
-
-		r.Use(users.SetUserStatus())
-
-		r.GET("/login", front.Login)
-		r.POST("/login", front.Login)
-		r.GET("/settings", front.Settings)
-		r.POST("/settings", front.Settings)
-		r.GET("/logout", front.Logout)
-		r.GET("/editor", front.Editor)
-		r.POST("/editor", front.Editor)
-		r.GET("/article/:slug", front.ArticleGet)
-		r.POST("/article/:slug/comments", front.Comment)
-		r.GET("/article/:slug/comment/:id", front.CommentDelete)
-		r.GET("/", front.Index)
-		//r.Use(favicon.New("./favicon.ico"))
-		r.Use(CORSMiddleware())
-		v1 := r.Group("/api")
-
-		users.UsersRegister(v1.Group("/users"))
-
-		v1.Use(users.AuthMiddleware(false))
-		articles.ArticlesAnonymousRegister(v1.Group("/articles"))
-		articles.TagsAnonymousRegister(v1.Group("/tags"))
-
-		v1.Use(users.AuthMiddleware(true))
-		users.UserRegister(v1.Group("/user"))
-		users.ProfileRegister(v1.Group("/profiles"))
-
-		articles.ArticlesRegister(v1.Group("/articles"))
-	*/
 	return r
 }
 

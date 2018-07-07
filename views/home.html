@@ -10,8 +10,15 @@
               <a class="nav-link disabled" href="/articles/feed?limit=10&offset=0">Your Feed</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="/articles?limit=10&offset=0">Global Feed</a>
+              <a class="nav-link {{if eq (tostr .path) "/"}}active{{end}}" href="/articles?limit=10&offset=0">Global Feed</a>
             </li>
+            {{if eq "/@" (printf "%.2s" .path)}}
+            <li class="nav-item">
+              <a class="nav-link active" href="/@{{.username}}">
+                {{ .path }}
+              </a>
+            </li>
+            {{end}}
           </ul>
         </div>
         {{range .articles}}

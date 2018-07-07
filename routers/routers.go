@@ -420,8 +420,9 @@ func Fav(c *gin.Context) {
 	case "GET":
 		aid := c.Param("aid")
 		action := c.Param("action")
+		username := c.MustGet("username").(string)
 
-		err := models.Following(c.MustGet("lang").(string), "fav", aid, c.MustGet("username").(string))
+		err := models.Following(c.MustGet("lang").(string), "fav", aid, username)
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -441,4 +442,19 @@ func Unfav(c *gin.Context) {
 		}
 		c.Redirect(http.StatusFound, action)
 	}
+}
+
+func GoToRegister() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if c.MustGet("username").(string) == "" {
+			c.Redirect(http.StatusFound, "/register")
+		}
+	}
+}
+
+func Author(c *gin.Context) {
+	author := c.Param("username")
+	articles, _, _ := models.ArticlesAuthor(author, c.MustGet("lang").(string), "", "")
+	c.Set("articles", articles)
+	c.HTML(http.StatusOK, "index.html", c.Keys)
 }
