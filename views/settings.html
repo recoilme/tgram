@@ -1,36 +1,24 @@
 {{template "header" .}}
 {{template "menu" .}}
-<div class="settings-page">
-  <div class="container page">
-    <div class="row">
 
-      <div class="col-md-6 offset-md-3 col-xs-12">
         <h1 class="text-xs-center">Your Settings, {{.username}}</h1>
         
         <form action="/settings" method="post">
-          <fieldset>
-              <fieldset class="form-group">
+          <section>
+              
                 <input name="image" class="form-control" type="text" placeholder="URL of profile picture" value="{{.image}}">
-              </fieldset>
-              <fieldset class="form-group">
+
                 <textarea name="bio" class="form-control form-control-lg" rows="8" placeholder="Short bio about you">{{.bio}}</textarea>
-              </fieldset>
-              <fieldset class="form-group">
+
                 <input name="email" class="form-control form-control-lg" type="text" placeholder="Email" value="{{.email}}">
-              </fieldset>
-              <fieldset class="form-group">
+
                 <input name="password" class="form-control form-control-lg" type="password" placeholder="Password" value="">
-              </fieldset>
+
               <button type="submit" class="btn btn-lg btn-primary pull-xs-right">
                 Update Settings
               </button>
-          </fieldset>
+          </section>
         </form>
         <hr/>
         <a href="logout" class="btn btn-outline-danger">Or click here to logout.</a>
-      </div>
-
-    </div>
-  </div>
-</div>
 {{template "footer" .}}

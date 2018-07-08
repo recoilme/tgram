@@ -1,27 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" >
-
-<head>
-  <meta charset="UTF-8">
-  <title>tgr.am Editor</title>
-    <!-- Import Ionicon icons & Google Fonts our Bootstrap theme relies on -->
-    <link href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css">
-    <link href="//fonts.googleapis.com/css?family=Titillium+Web:700|Source+Serif+Pro:400,700|Merriweather+Sans:400,700|Source+Sans+Pro:400,300,600,700,300italic,400italic,600italic,700italic" rel="stylesheet" type="text/css">
-    <!-- Import the custom Bootstrap 4 theme from our hosted CDN -->
-    <link rel="stylesheet" href="//demo.productionready.io/main.css">
-      
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>tgr.am</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=PT+Serif:400,400i,700,700i" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-editor/5.23.3/js/medium-editor.min.js"></script>
     <script src="http://ionicabizau.github.io/medium-editor-markdown/dist/me-markdown.standalone.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/medium-editor/5.23.3/css/medium-editor.css" type="text/css" media="screen" charset="utf-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/medium-editor/5.23.3/css/themes/default.min.css" type="text/css" media="screen" charset="utf-8">
-    <style>
-            html {
-                height: 100%;
-            }
-            body {
-                margin: 50;
-                height: 100%;
-            }
+   
+  <link rel="stylesheet" href="https://unpkg.com/awsm.css/dist/awsm.min.css" >   
+  
+  <style>
         
             /* Tell Quill not to scroll */
             #quill-container {
@@ -45,20 +36,188 @@
                 /*visibility:hidden;*/
             }
             </style>
+    <style>
+            /* Forms
+               ========================================================================== */
+            /**
+             * Known limitation: by default, Chrome and Safari on OS X allow very limited
+             * styling of `select`, unless a `border` property is set.
+             */
+            /**
+             * 1. Correct color not being inherited.
+             *    Known issue: affects color of disabled elements.
+             * 2. Correct font properties not being inherited.
+             * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
+             */
+             button,
+            input,
+            optgroup,
+            select,
+            textarea {
+              color: inherit;
+              /* 1 */
+              font: inherit;
+              /* 2 */
+              margin: 0;
+              /* 3 */ }
+            
+            /**
+             * Address `overflow` set to `hidden` in IE 8/9/10/11.
+             */
+            button {
+              overflow: visible; }
+            
+            /**
+             * Address inconsistent `text-transform` inheritance for `button` and `select`.
+             * All other form control elements do not inherit `text-transform` values.
+             * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
+             * Correct `select` style inheritance in Firefox.
+             */
+            button,
+            select {
+              text-transform: none; }
+            
+            /**
+             * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+             *    and `video` controls.
+             * 2. Correct inability to style clickable `input` types in iOS.
+             * 3. Improve usability and consistency of cursor style between image-type
+             *    `input` and others.
+             */
+            button,
+            html input[type="button"],
+            input[type="reset"],
+            input[type="submit"] {
+              -webkit-appearance: button;
+              /* 2 */
+              cursor: pointer;
+              /* 3 */ }
+            
+            /**
+             * Re-set default cursor for disabled elements.
+             */
+            button[disabled],
+            input[disabled] {
+              cursor: default; }
+            
+            /**
+             * Remove inner padding and border in Firefox 4+.
+             */
+            button::-moz-focus-inner,
+            input::-moz-focus-inner {
+              border: 0;
+              padding: 0; }
+            
+            /**
+             * Address Firefox 4+ setting `line-height` on `input` using `!important` in
+             * the UA stylesheet.
+             */
+            input {
+              line-height: normal; }
+            
+            input {
+              width: 100%; }
+            
+            textarea {
+              width: 100%; }
+            
+            /**
+             * It's recommended that you don't attempt to style these elements.
+             * Firefox's implementation doesn't respect box-sizing, padding, or width.
+             *
+             * 1. Address box sizing set to `content-box` in IE 8/9/10.
+             * 2. Remove excess padding in IE 8/9/10.
+             */
+            input[type="checkbox"],
+            input[type="radio"] {
+              box-sizing: border-box;
+              /* 1 */
+              padding: 0;
+              /* 2 */ }
+            
+            /**
+             * Fix the cursor style for Chrome's increment/decrement buttons. For certain
+             * `font-size` values of the `input`, it causes the cursor style of the
+             * decrement button to change from `default` to `text`.
+             */
+            input[type="number"]::-webkit-inner-spin-button,
+            input[type="number"]::-webkit-outer-spin-button {
+              height: auto; }
+            
+            /**
+             * Remove inner padding and search cancel button in Safari and Chrome on OS X.
+             * Safari (but not Chrome) clips the cancel button when the search input has
+             * padding (and `textfield` appearance).
+             */
+            input[type="search"]::-webkit-search-cancel-button,
+            input[type="search"]::-webkit-search-decoration {
+              -webkit-appearance: none; }
+            
+            /**
+             * Define consistent border, margin, and padding.
+             */
+            fieldset {
+              border: 0;
+              padding: 0; }
+            
+            /**
+             * 1. Correct `color` not being inherited in IE 8/9/10/11.
+             * 2. Remove padding so people aren't caught out if they zero out fieldsets.
+             */
+            legend {
+              border: 0;
+              /* 1 */
+              padding: 0;
+              /* 2 */ }
+            
+            /**
+             * Remove default vertical scrollbar in IE 8/9/10/11.
+             */
+            textarea {
+              overflow: auto; }
+            
+            /**
+             * Don't inherit the `font-weight` (applied by a rule above).
+             * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
+             */
+            optgroup {
+              font-weight: bold; }
+            
+            fieldset {
+                border: 1px solid silver;
+                margin: 0 2px;
+                padding: .35em .625em .75em;
+            }
+            
+            body > footer {
+                margin-top: 30px;
+            }
+            
+            img.u-square {
+                border-radius: 50%;
+            }
+            img.small {
+              max-width: 40px;
+            }
+                </style>
 </head>
 
 <body>
+
 {{ template "menu" . }}
-<div class="container page" id="scrolling-container">
-    <div class="quill-container" id="quill-container" name="quill-container">
-        {{.html}}
-    </div>
+<section>
+        <textarea class="editable medium-editor-textarea">
+            {{.html}}
+        </textarea>
+</section>
+
     <div class="markdown" style="display: none;"><pre></pre></div>
+<section>
     <button type="submit" class="btn btn-lg btn-primary pull-xs-left" onclick="sen()" >Publish</button>
-</div>
+</section>
 <script>
     var markDownEl = document.querySelector(".markdown > pre");
-    new MediumEditor(document.querySelector(".quill-container"), {
+    new MediumEditor(document.querySelector(".editable"), {
         extensions: {
             markdown: new MeMarkdown(function (md) {
                 markDownEl.textContent = md;
@@ -82,6 +241,4 @@
         xhr.send(data);
     }
 </script>
-
-</body>
-</html>
+{{ template "footer" . }}

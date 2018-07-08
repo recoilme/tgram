@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/thinkerou/favicon"
 
@@ -63,6 +64,7 @@ func InitRouter() *gin.Engine {
 	//gin.DefaultWriter = ioutil.Discard
 
 	r.Use(favicon.New("./favicon.ico"))
+	r.Use(static.Serve("/m", static.LocalFile("./media", false)))
 
 	r.SetFuncMap(template.FuncMap{
 		"tostr":  routers.ToStr,

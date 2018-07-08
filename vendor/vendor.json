@@ -21,6 +21,12 @@
 			"revisionTime": "2017-01-09T09:34:21Z"
 		},
 		{
+			"checksumSHA1": "WBCkV1yTg/nbmiEcQ9Q3iW93a5o=",
+			"path": "github.com/gin-contrib/static",
+			"revision": "73da7037e716e63aa2b0ffceb630dfa7be299086",
+			"revisionTime": "2018-03-01T03:08:58Z"
+		},
+		{
 			"checksumSHA1": "vxn438lJU2Z68UXACH24Sj0Aqgg=",
 			"path": "github.com/gin-gonic/gin",
 			"revision": "737d2fb7ab4ad358c5fa01b7a08ce346dcaebd79",
@@ -75,6 +81,12 @@
 			"revisionTime": "2017-11-07T05:05:31Z"
 		},
 		{
+			"checksumSHA1": "CmsybclORAnDz2dvxD1C//Wwe8g=",
+			"path": "github.com/microcosm-cc/bluemonday",
+			"revision": "f0761eb8ed07c1cc892ef631b00c33463b9b6868",
+			"revisionTime": "2018-06-21T20:19:46Z"
+		},
+		{
 			"checksumSHA1": "ZTcgWKWHsrX0RXYVXn5Xeb8Q0go=",
 			"path": "github.com/modern-go/concurrent",
 			"revision": "bacd9c7ef1dd9b15be4a9909b8ac7a4e313eec94",
@@ -97,6 +109,12 @@
 			"path": "github.com/recoilme/slowpoke",
 			"revision": "ec828cbb00d97fbc921960e9688de968d5a44291",
 			"revisionTime": "2018-06-15T11:10:34Z"
+		},
+		{
+			"checksumSHA1": "HkNUuhYSk5C2fTMa536jBiORq44=",
+			"path": "github.com/shurcooL/sanitized_anchor_name",
+			"revision": "86672fcb3f950f35f2e675df2240550f2a50762f",
+			"revisionTime": "2017-09-05T02:47:45Z"
 		},
 		{
 			"checksumSHA1": "IopMW+arBezL5bqOfrVU6UEfn28=",
@@ -125,6 +143,18 @@
 		{
 			"checksumSHA1": "GtamqiJoL7PGHsN454AoffBFMa8=",
 			"path": "golang.org/x/net/context",
+			"revision": "892bf7b0c6e2f93b51166bf3882e50277fa5afc6",
+			"revisionTime": "2018-03-12T19:33:55Z"
+		},
+		{
+			"checksumSHA1": "L68uqaYKEOxkq2xwnNV2bRP7yO4=",
+			"path": "golang.org/x/net/html",
+			"revision": "892bf7b0c6e2f93b51166bf3882e50277fa5afc6",
+			"revisionTime": "2018-03-12T19:33:55Z"
+		},
+		{
+			"checksumSHA1": "RLqClvtTLYRcgfKnfLcCnHNvv2Y=",
+			"path": "golang.org/x/net/html/atom",
 			"revision": "892bf7b0c6e2f93b51166bf3882e50277fa5afc6",
 			"revisionTime": "2018-03-12T19:33:55Z"
 		},
@@ -163,6 +193,12 @@
 			"path": "gopkg.in/go-playground/validator.v8",
 			"revision": "5f57d2222ad794d0dffb07e664ea05e2ee07d60c",
 			"revisionTime": "2016-07-18T13:41:25Z"
+		},
+		{
+			"checksumSHA1": "WrnWl9sC9qr8Ny0wkfKfnuwIxDM=",
+			"path": "gopkg.in/russross/blackfriday.v2",
+			"revision": "cadec560ec52d93835bf2f15bd794700d3a2473b",
+			"revisionTime": "2017-08-06T17:10:14Z"
 		},
 		{
 			"checksumSHA1": "fALlQNY1fM99NesfLJ50KguWsio=",
