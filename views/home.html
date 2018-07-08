@@ -1,5 +1,36 @@
 {{ define "home" }}
+
+{{if eq (print "/@" .username) .path}}
 <section>
-  <img src="./m/img/dutch.gif">
+
+  <img align="left" class="u-square medium" src="{{.image}}">
+  {{.username}} 
+  {{if .isfollow}}
+  <a href="/unfollow/{{.author.Username}}/@{{.author.Username}}" >
+    <i class="ion-minus-round"></i>&nbsp;Unfollow {{.author.Username}} <span class="counter">({{.followcnt}})</span>
+  </a>
+  {{else}}
+  <a href="/follow/{{.author.Username}}/@{{.author.Username}}">
+    <i class="ion-plus-round"></i>&nbsp;Follow {{.author.Username}} <span class="counter">({{.followcnt}})</span>
+  </a>
+  {{end}}
+  <br> {{.author.Bio}}
 </section>
+<p>
+
+</p>
+<hr>
+{{end}}
+
+{{if gt  (len .articles) 0}}
+  {{range .articles}}
+  {{.HTML}}
+  <hr>
+  {{end}}
+{{else}}
+<section>
+    <img  src="./m/img/dutch.gif">
+  </section>
+{{end}}
+
 {{ end }}

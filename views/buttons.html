@@ -1,5 +1,5 @@
 {{ define "buttons" }}
-
+a:{{.author}}
 {{if eq .article.Author .username}}
 <a href="/editor/{{.article.ID}}" class="btn btn-sm btn-outline-secondary">
     <i class="ion-edit"></i>&nbsp;Edit Article

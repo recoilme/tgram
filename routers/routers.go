@@ -347,9 +347,10 @@ func Editor(c *gin.Context) {
 func Article(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
+		lang := c.MustGet("lang").(string)
 		aid, _ := strconv.Atoi(c.Param("aid"))
 		username := c.Param("username")
-		a, err := models.ArticleGet(c.MustGet("lang").(string), username, uint32(aid))
+		a, err := models.ArticleGet(lang, username, uint32(aid))
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -357,18 +358,18 @@ func Article(c *gin.Context) {
 
 		c.Set("article", a)
 		c.Set("body", a.HTML)
-		isFolow := models.IsFollowing(c.MustGet("lang").(string), "fol", username, c.MustGet("username").(string))
+		isFolow := models.IsFollowing(lang, "fol", username, c.MustGet("username").(string))
 		c.Set("isfollow", isFolow)
-		followcnt := models.FollowCount(c.MustGet("lang").(string), "fol", username)
+		followcnt := models.FollowCount(lang, "fol", username)
 		c.Set("followcnt", followcnt)
 
 		// fav
-		isFav := models.IsFollowing(c.MustGet("lang").(string), "fav", c.Param("aid"), c.MustGet("username").(string))
+		isFav := models.IsFollowing(lang, "fav", c.Param("aid"), c.MustGet("username").(string))
 		c.Set("isfav", isFav)
-		favcnt := models.FollowCount(c.MustGet("lang").(string), "fav", c.Param("aid"))
+		favcnt := models.FollowCount(lang, "fav", c.Param("aid"))
 		c.Set("favcnt", favcnt)
 
-		c.HTML(http.StatusBadRequest, "article.html", c.Keys)
+		c.HTML(http.StatusOK, "article.html", c.Keys)
 		//c.JSON(http.StatusOK, a)
 	}
 }
@@ -453,8 +454,25 @@ func GoToRegister() gin.HandlerFunc {
 }
 
 func Author(c *gin.Context) {
-	author := c.Param("username")
-	articles, _, _ := models.ArticlesAuthor(author, c.MustGet("lang").(string), "", "")
+	authorStr := c.Param("username")
+	lang := c.MustGet("lang").(string)
+	author, err := models.UserGet(lang, authorStr)
+	if err != nil {
+		renderErr(c, err)
+		return
+	}
+	articles, _, _ := models.ArticlesAuthor(authorStr, lang, "", "")
 	c.Set("articles", articles)
+	c.Set("author", author)
+	isFolow := models.IsFollowing(lang, "fol", authorStr, c.MustGet("username").(string))
+	c.Set("isfollow", isFolow)
+	followcnt := models.FollowCount(lang, "fol", authorStr)
+	c.Set("followcnt", followcnt)
+
+	// fav
+	isFav := models.IsFollowing(lang, "fav", c.Param("aid"), c.MustGet("username").(string))
+	c.Set("isfav", isFav)
+	favcnt := models.FollowCount(lang, "fav", c.Param("aid"))
+	c.Set("favcnt", favcnt)
 	c.HTML(http.StatusOK, "index.html", c.Keys)
 }
