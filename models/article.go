@@ -19,7 +19,7 @@ const (
 
 type Article struct {
 	ID        uint32
-	Body      string
+	Body      string `form:"body" json:"body" binding:"max=4096"`
 	Author    string
 	Image     string
 	CreatedAt time.Time

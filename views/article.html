@@ -12,10 +12,22 @@
   </p>
 </article>
 <hr />
-<form  action="/article/@{{.article.Author}}/{{.article.ID}}/comments" method="post">
-    <textarea name="body" placeholder="Write a comment..." rows="3"></textarea>
+<form  action="/comments/@{{.article.Author}}/{{.article.ID}}" method="post">
+    <textarea style="min-height: 100px" name="body" class="editable" placeholder="Write a comment..." rows="3"></textarea>
+
+    <textarea style="min-height: 100px" name="markdown" class="markdown" placeholder="Write a comment..." rows="3"></textarea>
     <button type="submit" >
      Post Comment
     </button>
 </form>
+<script>
+  var markDownEl = document.querySelector(".markdown");
+  new MediumEditor(document.querySelector(".editable"), {
+      extensions: {
+          markdown: new MeMarkdown(function (md) {
+              markDownEl.value = md;
+          })
+      }
+  });
+</script>
 {{template "footer" .}}

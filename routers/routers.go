@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
-	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -116,14 +116,10 @@ func ToStr(value interface{}) string {
 }
 
 func ToDate(t time.Time) string {
-
-	return t.Format("01.02.2006 15:04")
-	//year, month, day := t.Date()
-	//return fmt.Sprintf("%02d.%02d.%02d %02d:%02d", day, month, year, t.Hour, t.Minute)
+	return t.Format("02.01.2006 15:04")
 }
 
 func Home(c *gin.Context) {
-
 	c.HTML(http.StatusOK, "home.html", c.Keys)
 }
 
@@ -316,22 +312,31 @@ func Editor(c *gin.Context) {
 				renderErr(c, err)
 				return
 			}
-			c.Set("html", a.HTML)
+			str := strings.Replace(a.Body, "\n\n", "\n", -1)
+			c.Set("body", str)
 		}
 		c.HTML(http.StatusOK, "article_edit.html", c.Keys)
 	case "POST":
 		var err error
-		if c.Request.ContentLength > 10*1024*1024 {
-			renderErr(c, errors.New("Too long content >10Mb"))
-			return
-		}
-		body, err := ioutil.ReadAll(c.Request.Body)
+		/*
+			if c.Request.ContentLength > 10*1024*1024 {
+				renderErr(c, errors.New("Too long content >10Mb"))
+				return
+			}
+			body, err := ioutil.ReadAll(c.Request.Body)
+			if err != nil {
+				renderErr(c, err)
+				return
+			}*/
+		var a models.Article
+		err = c.ShouldBind(&a)
 		if err != nil {
 			renderErr(c, err)
 			return
 		}
-		var a models.Article
-		unsafe := blackfriday.Run(body)
+		a.Body = strings.Replace(a.Body, "\n", "\n\n", -1)
+		log.Println("bod", a.Body)
+		unsafe := blackfriday.Run([]byte(a.Body))
 		html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
 		a.HTML = template.HTML(html)
 
@@ -339,7 +344,7 @@ func Editor(c *gin.Context) {
 		a.Author = c.MustGet("username").(string)
 		a.Image = c.MustGet("image").(string)
 		a.CreatedAt = time.Now()
-		a.Body = string(body)
+		//a.Body = string(body)
 		aid, err := models.ArticleNew(&a)
 		if err != nil {
 			renderErr(c, err)
@@ -347,7 +352,8 @@ func Editor(c *gin.Context) {
 		}
 		a.ID = aid
 		a.Body = ""
-		c.JSON(http.StatusCreated, a) //gin.H{"article": serializer.Response()})
+		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
+		//c.JSON(http.StatusCreated, a) //gin.H{"article": serializer.Response()})
 		//c.Redirect(http.StatusFound, fmt.Sprint("@/%s/%d", a.Author, aid))
 	}
 }
@@ -483,4 +489,16 @@ func Author(c *gin.Context) {
 	favcnt := models.FollowCount(lang, "fav", c.Param("aid"))
 	c.Set("favcnt", favcnt)
 	c.HTML(http.StatusOK, "author.html", c.Keys)
+}
+
+func CommentNew(c *gin.Context) {
+	switch c.Request.Method {
+	case "POST":
+		lang := c.MustGet("lang").(string)
+		aid, _ := strconv.Atoi(c.Param("aid"))
+		username := c.Param("username")
+		c.Request.ParseForm()
+
+		log.Println(lang, aid, username, c.Request.PostForm)
+	}
 }

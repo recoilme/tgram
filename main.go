@@ -103,6 +103,7 @@ func InitRouter() *gin.Engine {
 	r.GET("fav/:aid/*action", routers.Fav)
 	r.GET("unfav/:aid/*action", routers.Unfav)
 
+	r.POST("/comments/@:username/:aid", routers.CommentNew)
 	return r
 }
 

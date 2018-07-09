@@ -1,39 +1,16 @@
 {{ template "header" . }}
 {{ template "menu" . }}
 <section>
-        <textarea style="min-height: 300px" class="editable">
-            {{.html}}
-        </textarea>
+<form  action="/editor" method="post">
+
+    <textarea id="mde" name="body" style="min-height: 300px">{{.body}}</textarea>
+  
+    <button type="submit" >Publish</button>
+</form>
 </section>
 
-    <div class="markdown" style="display: none;"><pre></pre></div>
-<section>
-    <button type="submit" class="btn btn-lg btn-primary pull-xs-left" onclick="sen()" >Publish</button>
-</section>
 <script>
-    var markDownEl = document.querySelector(".markdown > pre");
-    new MediumEditor(document.querySelector(".editable"), {
-        extensions: {
-            markdown: new MeMarkdown(function (md) {
-                markDownEl.textContent = md;
-            })
-        }
-    });
-    function sen() {
-        //alert(markDownEl.textContent)
-        var xhr = new XMLHttpRequest();
-        var url = "/editor";
-        xhr.open("POST", url, true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 201) {
-                var json = JSON.parse(xhr.responseText);
-                window.location.replace('/@'+ json.Author + '/' + json.ID);
-                //console.log(json.ID + ", " + json.Author);
-            }
-        };
-        var data = markDownEl.textContent//JSON.stringify({"email": "hey@mail.com", "password": "101010"});
-        xhr.send(data);
-    }
+    var simplemde = new SimpleMDE({ element: document.getElementById("mde") });
 </script>
+
 {{ template "footer" . }}
