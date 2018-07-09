@@ -1,38 +1,39 @@
-{{template "header" .}}
-{{template "menu_user" .}}
+{{ template "header" . }}
+{{ template "menu" . }}
+<section>
+        <textarea style="min-height: 300px" class="editable">
+            {{.html}}
+        </textarea>
+</section>
 
-<div class="editor-page">
-  <div class="container page">
-    <div class="row">
-        <ul class="error-messages">
-            {{ if .ErrorTitle}}
-              <li>{{.ErrorTitle}}</li>
-              <li>{{.ErrorMessage}}</li>
-            {{end}}
-          </ul>
-      <div class="col-md-10 offset-md-1 col-xs-12">
-        
-        <form action="/editor" method="post">
-       
-            <fieldset class="form-group">
-                <input name="title" value="{{.Title}}" type="text" class="form-control form-control-lg" placeholder="Article Title (minimum 4)">
-            </fieldset>
-            <fieldset class="form-group">
-                <input name="description" value="{{.Description}}" type="text" class="form-control" placeholder="What's this article about?">
-            </fieldset>
-            <fieldset class="form-group">
-                <textarea id="editor-container" name="body" class="form-control" rows="8" placeholder="Write your article (in markdown)">{{.Body}}</textarea>
-            </fieldset>
-            <fieldset class="form-group">
-                <input name="tags" value="{{.Tags}}" type="text" class="form-control" placeholder="Enter tags"><div class="tag-list"></div>
-            </fieldset>
-            <button class="btn btn-lg pull-xs-right btn-primary" type="submit">
-                Publish Article
-            </button>
-        </form>
-      </div>
-
-    </div>
-  </div>
-</div>
-{{template "footer" .}}
+    <div class="markdown" style="display: none;"><pre></pre></div>
+<section>
+    <button type="submit" class="btn btn-lg btn-primary pull-xs-left" onclick="sen()" >Publish</button>
+</section>
+<script>
+    var markDownEl = document.querySelector(".markdown > pre");
+    new MediumEditor(document.querySelector(".editable"), {
+        extensions: {
+            markdown: new MeMarkdown(function (md) {
+                markDownEl.textContent = md;
+            })
+        }
+    });
+    function sen() {
+        //alert(markDownEl.textContent)
+        var xhr = new XMLHttpRequest();
+        var url = "/editor";
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 201) {
+                var json = JSON.parse(xhr.responseText);
+                window.location.replace('/@'+ json.Author + '/' + json.ID);
+                //console.log(json.ID + ", " + json.Author);
+            }
+        };
+        var data = markDownEl.textContent//JSON.stringify({"email": "hey@mail.com", "password": "101010"});
+        xhr.send(data);
+    }
+</script>
+{{ template "footer" . }}

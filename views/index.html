@@ -1,8 +1,4 @@
-{{template "header" .}}
-{{ if .my_user_model.Username}}
-  {{template "menu_user" .}}
-{{ else }}
-  {{ template "menu" . }}
-{{ end }}
-{{template "home" .}}
-{{template "footer" .}}
+{{ template "header" . }}
+{{ template "menu" . }}
+{{ template "home" . }}
+{{ template "footer" . }}

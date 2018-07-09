@@ -1,18 +1,56 @@
 {{define "menu"}}
-<nav class="navbar navbar-light">
-  <div class="container">
-    <a class="navbar-brand" href="/">conduit</a>
-    <ul class="nav navbar-nav pull-xs-right">
-      <li class="nav-item">
-        <a class="nav-link active" href="/">Home</a>
+<header>
+    <nav>
+      <ul>
+        <li>
+          {{if eq "/" .path}}
+            Home
+          {{else}}
+            <a href="/">Home</a>
+          {{end}}
+        </li>
+{{if .username}}
+      <li>
+        {{if eq "/editor/0" .path}}
+        New Post
+        {{else}}
+          <a href="/editor/0">New Post</a>
+        {{end}}
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="register">Sign up</a>
+      <li>
+          {{if eq "/settings" .path}}
+          Settings
+          {{else}}
+            <a href="/settings">Settings</a>
+          {{end}}
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="login">Sign in</a>
+      <li>
+          {{if eq (print "/@" .username) .path}}
+          @{{.username}}
+          {{else}}
+            <a href="/@{{.username}}">
+              @{{.username}}
+            </a>
+          {{end}}
       </li>
-    </ul>
-  </div>
+{{ else}}
+      <li>
+          {{if eq "/register" .path}}
+          Sign up
+          {{else}}
+            <a href="/register">Sign up</a>
+          {{end}}
+      </li>
+      <li>
+          {{if eq "/login" .path}}
+          Sign in
+          {{else}}
+            <a href="/login">Sign in</a>
+          {{end}}
+      </li>
+{{ end }}
+</ul>
 </nav>
+</header>
+<main>
 {{ end }}

@@ -1,79 +1,47 @@
 {{ define "home" }}
-<div class="home-page">
-  {{ if not .my_user_model.Username}}
-  <div class="banner">
-    <div class="container">
-      <h1 class="logo-font">conduit</h1>
-      <p>A place to share your knowledge.</p>
-    </div>
-  </div>
-  {{ end }}
 
-  <div class="container page">
-    <div class="row">
+{{if eq (print "/@" .username) .path}}
+<section>
 
-      <div class="col-md-9">
-        <div class="feed-toggle">
-          <ul class="nav nav-pills outline-active">
-            <li class="nav-item">
-              <a class="nav-link disabled" href="/articles/feed?limit=10&offset=0">Your Feed</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="/articles?limit=10&offset=0">Global Feed</a>
-            </li>
-          </ul>
-        </div>
-        {{range .articles}}
-        <div class="article-preview">
-          <div class="article-meta">
-            <a href="/@{{.Author.Username}}"><img src="{{.Author.Image}}" /></a>
-            <div class="info">
-              <a href="/@{{.Author.Username}}" class="author">{{.Author.Username}}</a>
-              <span class="date">{{.CreatedAt}}</span>
-            </div>
-            <button class="btn btn-outline-primary btn-sm pull-xs-right">
-              <i class="ion-heart"></i> {{.FavoritesCount}}
-            </button>
-          </div>
-          <a href="/article/{{.Slug}}" class="preview-link">
-            <h1>{{.Title}}</h1>
-            <p>{{.Description}}</p>
-            <span>Read more...</span>
-          </a>
-        </div>
-        {{end}}
+  <img align="left"  style="margin-right:20px" class="u-square medium" src="{{.image}}">
+  {{.username}} 
+  {{if .isfollow}}
+    <a href="/unfollow/{{.author.Username}}/@{{.author.Username}}" >
+    <i class="ion-minus-round"></i>&nbsp;Unfollow  <span class="counter">({{.followcnt}})</span>
+  </a>
+  {{else}}
+  <a href="/follow/{{.author.Username}}/@{{.author.Username}}">
+    <i class="ion-plus-round"></i>&nbsp;Follow <span class="counter">({{.followcnt}})</span>
+  </a>
+  {{end}}
+  <br> {{.author.Bio}}
+</section>
+<p>
 
-        
+</p>
+<hr>
+{{end}}
 
-      </div>
+{{if gt  (len .articles) 0}}
+  {{range .articles}}
+  <article>
+    <header> 
+      <img align="left" class="u-square micro" src="{{.Image}}" />
+      <p>
+        <a href="/@{{.Author}}/{{.ID}}">{{.CreatedAt| todate}}</a>
+      </p>
+    </header>
+    <p>
+        {{.HTML}}
+    </p>
+  </article>
+  <hr/>
 
-      <div class="col-md-3">
-        <div class="sidebar">
-          <p>Popular Tags</p>
+  {{end}}
+{{else}}
+<section>
+    <img  src="./m/img/dutch.gif">
+  </section>
+{{end}}
 
-          <div class="tag-list">
-            <a href="" class="tag-pill tag-default">programming</a>
-            <a href="" class="tag-pill tag-default">javascript</a>
-            <a href="" class="tag-pill tag-default">emberjs</a>
-            <a href="" class="tag-pill tag-default">angularjs</a>
-            <a href="" class="tag-pill tag-default">react</a>
-            <a href="" class="tag-pill tag-default">mean</a>
-            <a href="" class="tag-pill tag-default">node</a>
-            <a href="" class="tag-pill tag-default">rails</a>
-          </div>
-        </div>
-      </div>
-      <nav>
-      <ul class="pagination">
-        {{range .pages}}
-        <li class="page-item {{.Active}}">
-          <a class="page-link" href="{{.Href}}">{{.ID}}</a>
-        </li>
-        {{end}}
-      </ul>
-      </nav>
-    </div>
-  </div>
-
-</div>
 {{ end }}

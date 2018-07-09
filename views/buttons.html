@@ -1,0 +1,34 @@
+{{ define "buttons" }}
+
+{{if eq .article.Author .username}}
+<a href="/editor/{{.article.ID}}" class="btn btn-sm btn-outline-secondary">
+    <i class="ion-edit"></i>Edit Article
+</a>
+{{else}}
+  {{if .isfollow}}
+  <a href="/unfollow/{{.article.Author}}/@{{.article.Author}}/{{.article.ID}}" class="btn btn-sm btn-outline-secondary">
+    <i class="ion-minus-round"></i>Unfollow  <span class="counter">({{.followcnt}})</span>
+  </a>
+  {{else}}
+  <a href="/follow/{{.article.Author}}/@{{.article.Author}}/{{.article.ID}}" class="btn btn-sm btn-outline-secondary">
+    <i class="ion-plus-round"></i>Follow  <span class="counter">({{.followcnt}})</span>
+  </a>
+  {{end}}
+{{end}}
+&nbsp;&nbsp;
+{{if eq .article.Author .username}}
+<a href="/delete/a/{{.article.ID}}" class="btn btn-sm btn-outline-danger">
+  <i class="ion-trash-a"></i>Delete Article
+</a>
+{{else}}
+{{if .isfav}}
+<a href="/unfav/{{.article.ID}}/@{{.article.Author}}/{{.article.ID}}" class="btn btn-sm btn-outline-secondary">
+  <i class="ion-heart"></i>UnFavorite Article <span class="counter">({{.favcnt}})</span>
+</a>
+{{else}}
+<a href="/fav/{{.article.ID}}/@{{.article.Author}}/{{.article.ID}}" class="btn btn-sm btn-outline-primary">
+  <i class="ion-heart"></i>Favorite Article <span class="counter">({{.favcnt}})</span>
+</a>
+{{end}}
+{{end}}
+{{end}}
