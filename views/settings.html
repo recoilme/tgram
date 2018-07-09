@@ -6,15 +6,15 @@
         <form action="/settings" method="post">
           <section>
               
-                <input name="image" class="form-control" type="text" placeholder="URL of profile picture" value="{{.image}}">
+                <input name="image" type="text" placeholder="URL of profile picture" value="{{.image}}">
 
-                <textarea name="bio" class="form-control form-control-lg" rows="8" placeholder="Short bio about you">{{.bio}}</textarea>
+                <textarea name="bio" rows="8" placeholder="Short bio about you">{{.bio}}</textarea>
 
-                <input name="email" class="form-control form-control-lg" type="text" placeholder="Email" value="{{.email}}">
+                <input name="email"  type="text" placeholder="Email" value="{{.email}}">
 
-                <input name="password" class="form-control form-control-lg" type="password" placeholder="Password" value="">
+                <input name="password" type="password" placeholder="Password" value="">
 
-              <button type="submit" class="btn btn-lg btn-primary pull-xs-right">
+              <button type="submit" >
                 Update Settings
               </button>
           </section>
