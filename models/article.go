@@ -25,6 +25,7 @@ type Article struct {
 	CreatedAt time.Time
 	Lang      string
 	HTML      template.HTML
+	Comments  []Article
 }
 
 func Uint32toBin(id uint32) []byte {
@@ -158,4 +159,33 @@ func ArticlesAuthor(author, lang, limit, offset string) ([]Article, int, error) 
 	log.Println("models", err, models)
 	return models, int(cnt), err
 
+}
+
+func CommentNew(a *Article, user string, mainaid uint32) (id uint32, err error) {
+	a.CreatedAt = time.Now()
+	fAid := fmt.Sprintf(dbAid, a.Lang)
+
+	aid, err := sp.Counter(fAid, []byte("cid"))
+	if err != nil {
+		return 0, err
+	}
+	a.ID = uint32(aid)
+	//id32 := Uint32toBin(a.ID)
+
+	//fAids := fmt.Sprintf(dbAids, a.Lang)
+	//if err = sp.Set(fAids, id32, []byte(a.Author)); err != nil {
+	//	return 0, err
+	//}
+
+	// uid
+	fAUser := fmt.Sprintf(dbAUser, a.Lang, user)
+	var maina Article
+	err = sp.GetGob(fAUser, Uint32toBin(mainaid), &maina)
+	if err != nil {
+		return 0, err
+	}
+	maina.Comments = append(maina.Comments, *a)
+	//var comments []Article
+	// store
+	return a.ID, sp.SetGob(fAUser, Uint32toBin(mainaid), maina)
 }

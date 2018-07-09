@@ -318,16 +318,6 @@ func Editor(c *gin.Context) {
 		c.HTML(http.StatusOK, "article_edit.html", c.Keys)
 	case "POST":
 		var err error
-		/*
-			if c.Request.ContentLength > 10*1024*1024 {
-				renderErr(c, errors.New("Too long content >10Mb"))
-				return
-			}
-			body, err := ioutil.ReadAll(c.Request.Body)
-			if err != nil {
-				renderErr(c, err)
-				return
-			}*/
 		var a models.Article
 		err = c.ShouldBind(&a)
 		if err != nil {
@@ -382,7 +372,7 @@ func Article(c *gin.Context) {
 		c.Set("isfav", isFav)
 		favcnt := models.FollowCount(lang, "fav", c.Param("aid"))
 		c.Set("favcnt", favcnt)
-
+		log.Println("Art", a)
 		c.HTML(http.StatusOK, "article.html", c.Keys)
 		//c.JSON(http.StatusOK, a)
 	}
@@ -497,8 +487,34 @@ func CommentNew(c *gin.Context) {
 		lang := c.MustGet("lang").(string)
 		aid, _ := strconv.Atoi(c.Param("aid"))
 		username := c.Param("username")
-		c.Request.ParseForm()
 
-		log.Println(lang, aid, username, c.Request.PostForm)
+		var err error
+		var a models.Article
+		err = c.ShouldBind(&a)
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		a.Body = strings.Replace(a.Body, "\n", "\n\n", -1)
+		log.Println("bod", a.Body)
+		unsafe := blackfriday.Run([]byte(a.Body))
+		html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+		a.HTML = template.HTML(html)
+
+		a.Lang = lang
+		a.Author = c.MustGet("username").(string)
+		a.Image = c.MustGet("image").(string)
+		a.CreatedAt = time.Now()
+
+		//a.Body = string(body)
+		cid, err := models.CommentNew(&a, username, uint32(aid))
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		_ = cid
+		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, aid))
+		//c.JSON(http.StatusCreated, a) //gin.H{"article": serializer.Response()})
+		//c.Redirect(http.Sta
 	}
 }

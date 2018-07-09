@@ -13,21 +13,30 @@
 </article>
 <hr />
 <form  action="/comments/@{{.article.Author}}/{{.article.ID}}" method="post">
-    <textarea style="min-height: 100px" name="body" class="editable" placeholder="Write a comment..." rows="3"></textarea>
+    <textarea id="mde" style="min-height:50px" name="body" placeholder="Write a comment..." ></textarea>
 
-    <textarea style="min-height: 100px" name="markdown" class="markdown" placeholder="Write a comment..." rows="3"></textarea>
     <button type="submit" >
      Post Comment
     </button>
 </form>
+
 <script>
-  var markDownEl = document.querySelector(".markdown");
-  new MediumEditor(document.querySelector(".editable"), {
-      extensions: {
-          markdown: new MeMarkdown(function (md) {
-              markDownEl.value = md;
-          })
-      }
-  });
+    var simplemde = new SimpleMDE({ element: document.getElementById("mde") });
 </script>
+
+{{range .article.Comments}}
+    <hr/>
+    <article>
+        <header> 
+
+        </header>
+        <p>
+            {{.HTML}}
+        </p>
+        <footer>
+            <img align="left" class="u-square small" src="{{.Image}}" /> 
+            <p>{{.CreatedAt| todate}}</p>
+        </footer>
+      </article>
+{{end}}
 {{template "footer" .}}
