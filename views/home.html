@@ -3,15 +3,15 @@
 {{if eq (print "/@" .username) .path}}
 <section>
 
-  <img align="left" class="u-square medium" src="{{.image}}">
+  <img align="left"  style="margin-right:20px" class="u-square medium" src="{{.image}}">
   {{.username}} 
   {{if .isfollow}}
-  <a href="/unfollow/{{.author.Username}}/@{{.author.Username}}" >
-    <i class="ion-minus-round"></i>&nbsp;Unfollow {{.author.Username}} <span class="counter">({{.followcnt}})</span>
+    <a href="/unfollow/{{.author.Username}}/@{{.author.Username}}" >
+    <i class="ion-minus-round"></i>&nbsp;Unfollow  <span class="counter">({{.followcnt}})</span>
   </a>
   {{else}}
   <a href="/follow/{{.author.Username}}/@{{.author.Username}}">
-    <i class="ion-plus-round"></i>&nbsp;Follow {{.author.Username}} <span class="counter">({{.followcnt}})</span>
+    <i class="ion-plus-round"></i>&nbsp;Follow <span class="counter">({{.followcnt}})</span>
   </a>
   {{end}}
   <br> {{.author.Bio}}
@@ -24,8 +24,19 @@
 
 {{if gt  (len .articles) 0}}
   {{range .articles}}
-  {{.HTML}}
-  <hr>
+  <article>
+    <header> 
+      <img align="left" class="u-square micro" src="{{.Image}}" />
+      <p>
+        <a href="/@{{.Author}}/{{.ID}}">{{.CreatedAt| todate}}</a>
+      </p>
+    </header>
+    <p>
+        {{.HTML}}
+    </p>
+  </article>
+  <hr/>
+
   {{end}}
 {{else}}
 <section>

@@ -26,12 +26,10 @@
       </li>
       <li>
           {{if eq (print "/@" .username) .path}}
-          <img align="left" class="u-square small" src="{{.image}}">
-          {{.username}}
+          @{{.username}}
           {{else}}
             <a href="/@{{.username}}">
-              <img align="left" class="u-square small" src="{{.image}}">
-              {{.username}}
+              @{{.username}}
             </a>
           {{end}}
       </li>
