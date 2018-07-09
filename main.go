@@ -73,7 +73,8 @@ func InitRouter() *gin.Engine {
 	r.LoadHTMLGlob("views/*.html")
 
 	r.Use(routers.CheckAuth())
-	r.GET("/", routers.Index)
+	r.GET("/", routers.Home)
+	r.GET("/all", routers.All)
 
 	r.GET("/register", routers.Register)
 	r.POST("/register", routers.Register)

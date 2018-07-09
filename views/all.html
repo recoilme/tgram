@@ -1,0 +1,26 @@
+{{ template "header" . }}
+{{ template "menu" . }}
+
+{{if gt  (len .articles) 0}}
+  {{range .articles}}
+  <article>
+    <header> 
+        <a href="/@{{.Author}}"><img align="left" class="u-square micro" src="{{.Image}}"/></a>
+      <p>
+          <a href="/@{{.Author}}">@{{.Author}}</a>&nbsp;<a href="/@{{.Author}}/{{.ID}}">{{.CreatedAt| todate}}</a>
+      </p>
+    </header>
+    <p>
+        {{.HTML}}
+    </p>
+  </article>
+  <hr/>
+
+  {{end}}
+{{else}}
+<section>
+    <img  src="./m/img/dutch.gif">
+  </section>
+{{end}}
+
+{{ template "footer" . }}

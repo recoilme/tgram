@@ -34,7 +34,7 @@ func UserNew(user *User) (err error) {
 	if taken {
 		return errors.New("Username " + user.Username + " taken")
 	}
-	fmt.Println("reg pwd", user.Password)
+	//fmt.Println("reg pwd", user.Password)
 	bytePassword := []byte(user.Password)
 	// Make sure the second param `bcrypt generator cost` between [4, 32)
 	passwordHash, _ := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
@@ -137,4 +137,16 @@ func GetMasterSlave(master string, slave string) ([]byte, []byte) {
 	slavemaster = append(slavemaster, ':')
 	slavemaster = append(slavemaster, master32...)
 	return masterslave, slavemaster
+}
+
+func IFollow(lang, cat, u string) int {
+
+	master32 := []byte(u)
+	var masterstar = make([]byte, 0)
+	masterstar = append(masterstar, master32...)
+	masterstar = append(masterstar, '*')
+
+	keys, _ := sp.Keys(fmt.Sprintf(dbMasterSlave, lang, cat), masterstar, 0, 0, true)
+
+	return len(keys)
 }

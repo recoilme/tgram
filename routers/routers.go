@@ -122,10 +122,15 @@ func ToDate(t time.Time) string {
 	//return fmt.Sprintf("%02d.%02d.%02d %02d:%02d", day, month, year, t.Hour, t.Minute)
 }
 
-func Index(c *gin.Context) {
+func Home(c *gin.Context) {
+
+	c.HTML(http.StatusOK, "home.html", c.Keys)
+}
+
+func All(c *gin.Context) {
 	articles, _, _ := models.AllArticles(c.MustGet("lang").(string), "", "")
 	c.Set("articles", articles)
-	c.HTML(http.StatusOK, "index.html", c.Keys)
+	c.HTML(http.StatusOK, "all.html", c.Keys)
 }
 
 func renderErr(c *gin.Context, err error) {
@@ -165,6 +170,9 @@ func Register(c *gin.Context) {
 
 		// create user
 		u.Lang = c.MustGet("lang").(string)
+		if u.Image == "" {
+			u.Image = "/favicon.ico"
+		}
 		err = models.UserNew(&u)
 		if err != nil {
 			renderErr(c, err)
@@ -474,5 +482,5 @@ func Author(c *gin.Context) {
 	c.Set("isfav", isFav)
 	favcnt := models.FollowCount(lang, "fav", c.Param("aid"))
 	c.Set("favcnt", favcnt)
-	c.HTML(http.StatusOK, "index.html", c.Keys)
+	c.HTML(http.StatusOK, "author.html", c.Keys)
 }

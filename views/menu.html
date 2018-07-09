@@ -9,21 +9,14 @@
             <a href="/">Home</a>
           {{end}}
         </li>
-{{if .username}}
-      <li>
-        {{if eq "/editor/0" .path}}
-        New Post
-        {{else}}
-          <a href="/editor/0">New Post</a>
-        {{end}}
-      </li>
-      <li>
-          {{if eq "/settings" .path}}
-          Settings
+        <li>
+          {{if eq "/all" .path}}
+            all
           {{else}}
-            <a href="/settings">Settings</a>
+            <a href="/all">all</a>
           {{end}}
-      </li>
+        </li>
+{{if .username}}
       <li>
           {{if eq (print "/@" .username) .path}}
           @{{.username}}
@@ -36,16 +29,16 @@
 {{ else}}
       <li>
           {{if eq "/register" .path}}
-          Sign up
+          sign up
           {{else}}
-            <a href="/register">Sign up</a>
+            <a href="/register">sign up</a>
           {{end}}
       </li>
       <li>
           {{if eq "/login" .path}}
-          Sign in
+          sign in
           {{else}}
-            <a href="/login">Sign in</a>
+            <a href="/login">sign in</a>
           {{end}}
       </li>
 {{ end }}

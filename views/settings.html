@@ -1,24 +1,24 @@
 {{template "header" .}}
 {{template "menu" .}}
 
-        <h5>Your Settings, {{.username}}</h5>
-        
-        <form action="/settings" method="post">
-          <section>
-              
-                <input name="image" type="text" placeholder="URL of profile picture" value="{{.image}}">
+<h5>Your Settings, {{.username}}</h5>
 
-                <textarea name="bio" rows="8" placeholder="Short bio about you">{{.bio}}</textarea>
+<form action="/settings" method="post">
+  <section>
+      
+        <input name="image" type="text" placeholder="URL of profile picture" value="{{.image}}">
 
-                <input name="email"  type="text" placeholder="Email" value="{{.email}}">
+        <textarea name="bio" rows="8" placeholder="Short bio about you">{{.bio}}</textarea>
 
-                <input name="password" type="password" placeholder="Password" value="">
+        <input name="email"  type="text" placeholder="Email" value="{{.email}}">
 
-              <button type="submit" >
-                Update Settings
-              </button>
-          </section>
-        </form>
-        <hr/>
-        <a href="logout" class="btn btn-outline-danger">Or click here to logout.</a>
+        <input name="password" type="password" placeholder="Password" value="">
+
+      <button type="submit" >
+        Update Settings
+      </button>
+  </section>
+</form>
+<hr/>
+<a href="logout">Or click here to logout.</a>
 {{template "footer" .}}
