@@ -1,8 +1,8 @@
 # Tgram (medium clone on pure go)
 
-This codebase was created to demonstrate a fully fledged fullstack application built with **Golang/Gin/Slowpoke** including CRUD operations, authentication, routing, pagination, and more.
+This codebase was created to demonstrate a fully fledged fullstack application built with **Golang/Gin/Slowpoke** including CRUD operations, authentication, routing, pagination, and more like realworld.io app
 
-But now it self hosted project
+But now it self hosted project.
 
 This app use [slowpoke](https://github.com/recoilme/slowpoke) as database. Package slowpoke implements a low-level key/value store in pure Go.
 
@@ -35,8 +35,8 @@ make sure your ~/.*shrc have those varible:
 ➜  echo $PATH
 ...:/usr/local/go/bin:/Users/zitwang/test//bin:/usr/local/go//bin
 ```
-## Install Govendor & Fresh
-I used Govendor manage the package, and Fresh can help build without reload
+## Install 
+Ypu may use Govendor for manage the package, and Fresh can help build without reload
 
 https://github.com/kardianos/govendor
 
@@ -46,11 +46,8 @@ cd
 go get -u github.com/kardianos/govendor
 go get -u github.com/pilu/fresh
 
-and pull latest master for gin framework
+and pull manualy latest master for gin framework
 
-```
-## Start
-```
 ➜  govendor sync
 ➜  govendor add +external
 ➜  fresh
@@ -58,4 +55,9 @@ and pull latest master for gin framework
 or use old plain go get:
 
 ➜  go get ./...
+
+```
+## Start
+```
+➜  ./tgram
 ```
