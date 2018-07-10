@@ -1,15 +1,8 @@
 # Tgram (medium clone on pure go)
 
-Based on RealWorld Example
-
-
-> ### Tgram codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld) spec and API.
-
-
 This codebase was created to demonstrate a fully fledged fullstack application built with **Golang/Gin/Slowpoke** including CRUD operations, authentication, routing, pagination, and more.
 
-
-[Based on this backend implementation](https://github.com/recoilme/golang-gin-realworld-example-app) 
+But now it self hosted project
 
 This app use [slowpoke](https://github.com/recoilme/slowpoke) as database. Package slowpoke implements a low-level key/value store in pure Go.
 
