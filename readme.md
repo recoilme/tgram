@@ -54,20 +54,17 @@ https://github.com/pilu/fresh
 cd 
 go get -u github.com/kardianos/govendor
 go get -u github.com/pilu/fresh
-```
 
+and pull latest master for gin framework
+
+```
 ## Start
 ```
 ➜  govendor sync
 ➜  govendor add +external
 ➜  fresh
-```
 
+or use old plain go get:
 
-## Testing
+➜  go get ./...
 ```
-➜  go test -v ./... -cover
-```
-
-## Todo
-- More elegance config
