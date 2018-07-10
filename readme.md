@@ -19,15 +19,13 @@ This app use [slowpoke](https://github.com/recoilme/slowpoke) as database. Packa
 # How it works
 ```
 .
-├── hello.go
-├── common
-│   ├── utils.go        //small tools function
-└── users
-    ├── models.go       //data models define & DB operation
-    ├── serializers.go  //response computing & format
-    ├── routers.go      //business logic & router binding
-    ├── middlewares.go  //put the before & after logic of handle request
-    └── validators.go   //form/json checker
+├── main.go
+├── routers
+│   ├── routers.go      //routers
+└── models.go
+    ├── article.go      //data models for article
+    └── user.go         //data models for user
+
 ```
 
 # Getting started
