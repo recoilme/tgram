@@ -125,6 +125,7 @@ func Home(c *gin.Context) {
 
 func All(c *gin.Context) {
 	articles, _, _ := models.AllArticles(c.MustGet("lang").(string), "", "")
+	log.Println(len(articles))
 	c.Set("articles", articles)
 	c.HTML(http.StatusOK, "all.html", c.Keys)
 }
@@ -166,9 +167,6 @@ func Register(c *gin.Context) {
 
 		// create user
 		u.Lang = c.MustGet("lang").(string)
-		if u.Image == "" {
-			u.Image = "/favicon.ico"
-		}
 		err = models.UserNew(&u)
 		if err != nil {
 			renderErr(c, err)
@@ -299,13 +297,13 @@ func Login(c *gin.Context) {
 }
 
 func Editor(c *gin.Context) {
-
+	aid, _ := strconv.Atoi(c.Param("aid"))
+	c.Set("aid", aid)
 	switch c.Request.Method {
 	case "GET":
-		aid, _ := strconv.Atoi(c.Param("aid"))
+
 		if aid > 0 {
 			// check username
-			aid, _ := strconv.Atoi(c.Param("aid"))
 			username := c.MustGet("username").(string)
 			a, err := models.ArticleGet(c.MustGet("lang").(string), username, uint32(aid))
 			if err != nil {
@@ -317,34 +315,54 @@ func Editor(c *gin.Context) {
 		}
 		c.HTML(http.StatusOK, "article_edit.html", c.Keys)
 	case "POST":
+		log.Println("aid", aid)
 		var err error
-		var a models.Article
-		err = c.ShouldBind(&a)
+		var abind models.Article
+		err = c.ShouldBind(&abind)
 		if err != nil {
 			renderErr(c, err)
 			return
 		}
-		a.Body = strings.Replace(a.Body, "\n", "\n\n", -1)
-		log.Println("bod", a.Body)
-		unsafe := blackfriday.Run([]byte(a.Body))
-		html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
-		a.HTML = template.HTML(html)
+		body := strings.Replace(abind.Body, "\n", "\n\n", -1)
+		log.Println("bod", abind.Body)
+		unsafe := blackfriday.Run([]byte(body))
+		html := template.HTML(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
 
+		var a models.Article
+		if aid > 0 {
+			username := c.MustGet("username").(string)
+			a, err := models.ArticleGet(c.MustGet("lang").(string), username, uint32(aid))
+			if err != nil {
+				renderErr(c, err)
+				return
+			}
+			a.HTML = html
+			a.Body = body
+			err = models.ArticleUpd(a)
+			if err != nil {
+				renderErr(c, err)
+				return
+			}
+			log.Println("aid2", a)
+			log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
+			c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
+			return
+		}
 		a.Lang = c.MustGet("lang").(string)
 		a.Author = c.MustGet("username").(string)
 		a.Image = c.MustGet("image").(string)
 		a.CreatedAt = time.Now()
-		//a.Body = string(body)
-		aid, err := models.ArticleNew(&a)
+		a.HTML = html
+		a.Body = body
+		newaid, err := models.ArticleNew(&a)
 		if err != nil {
 			renderErr(c, err)
 			return
 		}
-		a.ID = aid
-		a.Body = ""
+		a.ID = newaid
+		log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
-		//c.JSON(http.StatusCreated, a) //gin.H{"article": serializer.Response()})
-		//c.Redirect(http.StatusFound, fmt.Sprint("@/%s/%d", a.Author, aid))
+		return
 	}
 }
 
@@ -513,7 +531,7 @@ func CommentNew(c *gin.Context) {
 			return
 		}
 		_ = cid
-		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, aid))
+		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", username, aid))
 		//c.JSON(http.StatusCreated, a) //gin.H{"article": serializer.Response()})
 		//c.Redirect(http.Sta
 	}

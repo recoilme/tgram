@@ -1,16 +1,28 @@
 {{ template "header" . }}
 {{ template "menu" . }}
 <section>
-<form  action="/editor" method="post">
+<form  action="{{.path}}" method="post">
 
-    <textarea id="mde" name="body" style="min-height: 300px">{{.body}}</textarea>
+    <textarea id="mde" name="body">{{.body}}</textarea>
   
     <button type="submit" >Publish</button>
 </form>
 </section>
 
 <script>
-    var simplemde = new SimpleMDE({ element: document.getElementById("mde") });
+var simplemde = new InscrybMDE({
+    autoDownloadFontAwesome: false,
+    autofocus: true,
+	autosave: {
+		enabled: true,
+		uniqueId: "{{.path}}",
+		delay: 1000,
+	},
+	element: document.getElementById("mde"),
+    minHeight: "400px",
+	spellChecker: false,
+
+});
 </script>
 
 {{ template "footer" . }}

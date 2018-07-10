@@ -95,7 +95,7 @@ func InitRouter() *gin.Engine {
 	r.GET("/delete/a/:aid", routers.ArticleDelete)
 
 	r.GET("/editor/:aid", routers.Editor)
-	r.POST("/editor", routers.Editor)
+	r.POST("/editor/:aid", routers.Editor)
 
 	r.GET("follow/:user/*action", routers.Follow)
 	r.GET("unfollow/:user/*action", routers.Unfollow)

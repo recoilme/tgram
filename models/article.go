@@ -61,6 +61,11 @@ func ArticleNew(a *Article) (id uint32, err error) {
 	return a.ID, sp.SetGob(fAUser, id32, a)
 }
 
+func ArticleUpd(a *Article) (err error) {
+	fAUser := fmt.Sprintf(dbAUser, a.Lang, a.Author)
+	return sp.SetGob(fAUser, Uint32toBin(a.ID), a)
+}
+
 func ArticleGet(lang, username string, aid uint32) (a *Article, err error) {
 	fAUser := fmt.Sprintf(dbAUser, lang, username)
 
@@ -170,13 +175,6 @@ func CommentNew(a *Article, user string, mainaid uint32) (id uint32, err error) 
 		return 0, err
 	}
 	a.ID = uint32(aid)
-	//id32 := Uint32toBin(a.ID)
-
-	//fAids := fmt.Sprintf(dbAids, a.Lang)
-	//if err = sp.Set(fAids, id32, []byte(a.Author)); err != nil {
-	//	return 0, err
-	//}
-
 	// uid
 	fAUser := fmt.Sprintf(dbAUser, a.Lang, user)
 	var maina Article
