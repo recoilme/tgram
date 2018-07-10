@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -120,12 +119,20 @@ func ToDate(t time.Time) string {
 }
 
 func Home(c *gin.Context) {
+
+	username := c.GetString("username")
+	var users []models.User
+	if username != "" {
+		users = models.IFollow(c.MustGet("lang").(string), "fol", username)
+	}
+	c.Set("users", users)
+
 	c.HTML(http.StatusOK, "home.html", c.Keys)
 }
 
 func All(c *gin.Context) {
 	articles, _, _ := models.AllArticles(c.MustGet("lang").(string), "", "")
-	log.Println(len(articles))
+	//log.Println(len(articles))
 	c.Set("articles", articles)
 	c.HTML(http.StatusOK, "all.html", c.Keys)
 }
@@ -315,7 +322,7 @@ func Editor(c *gin.Context) {
 		}
 		c.HTML(http.StatusOK, "article_edit.html", c.Keys)
 	case "POST":
-		log.Println("aid", aid)
+		//log.Println("aid", aid)
 		var err error
 		var abind models.Article
 		err = c.ShouldBind(&abind)
@@ -324,7 +331,7 @@ func Editor(c *gin.Context) {
 			return
 		}
 		body := strings.Replace(abind.Body, "\n", "\n\n", -1)
-		log.Println("bod", abind.Body)
+		//log.Println("bod", abind.Body)
 		unsafe := blackfriday.Run([]byte(body))
 		html := template.HTML(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
 
@@ -343,8 +350,8 @@ func Editor(c *gin.Context) {
 				renderErr(c, err)
 				return
 			}
-			log.Println("aid2", a)
-			log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
+			//log.Println("aid2", a)
+			//log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 			c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 			return
 		}
@@ -360,7 +367,7 @@ func Editor(c *gin.Context) {
 			return
 		}
 		a.ID = newaid
-		log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
+		//log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		return
 	}
@@ -390,7 +397,7 @@ func Article(c *gin.Context) {
 		c.Set("isfav", isFav)
 		favcnt := models.FollowCount(lang, "fav", c.Param("aid"))
 		c.Set("favcnt", favcnt)
-		log.Println("Art", a)
+		//log.Println("Art", a)
 		c.HTML(http.StatusOK, "article.html", c.Keys)
 		//c.JSON(http.StatusOK, a)
 	}
@@ -514,7 +521,7 @@ func CommentNew(c *gin.Context) {
 			return
 		}
 		a.Body = strings.Replace(a.Body, "\n", "\n\n", -1)
-		log.Println("bod", a.Body)
+		//log.Println("bod", a.Body)
 		unsafe := blackfriday.Run([]byte(a.Body))
 		html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
 		a.HTML = template.HTML(html)

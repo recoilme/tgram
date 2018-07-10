@@ -139,14 +139,31 @@ func GetMasterSlave(master string, slave string) ([]byte, []byte) {
 	return masterslave, slavemaster
 }
 
-func IFollow(lang, cat, u string) int {
+func IFollow(lang, cat, u string) (followings []User) {
 
 	master32 := []byte(u)
 	var masterstar = make([]byte, 0)
 	masterstar = append(masterstar, master32...)
 	masterstar = append(masterstar, '*')
 
-	keys, _ := sp.Keys(fmt.Sprintf(dbMasterSlave, lang, cat), masterstar, 0, 0, true)
+	keys, _ := sp.Keys(fmt.Sprintf(dbSlaveMaster, lang, cat), masterstar, 0, 0, true)
+	//log.Println("keys", keys)
+	lenU := len(u) + 1
+	f := fmt.Sprintf(dbUser, lang)
+	for _, k := range keys {
 
-	return len(keys)
+		b := k[lenU:]
+		var u User
+
+		e := sp.GetGob(f, b, &u)
+		if e != nil {
+			fmt.Println("GetFollowings", e)
+			continue
+		} else {
+			//log.Println("u:", u)
+			followings = append(followings, u)
+		}
+
+	}
+	return followings
 }

@@ -4,7 +4,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"html/template"
-	"log"
 	"strconv"
 	"time"
 
@@ -144,8 +143,13 @@ func ArticlesAuthor(author, lang, limit, offset string) ([]Article, int, error) 
 	}
 
 	fAUser := fmt.Sprintf(dbAUser, lang, author)
-	keys, err := sp.Keys(fAUser, nil, uint32(limit_int), uint32(offset_int), false)
-
+	keys, err := sp.Keys(fAUser, nil, uint32(limit_int), uint32(offset_int), true)
+	//fmt.Printf("before sort keys:%+v\n", keys)
+	// ascending sort
+	//sort.Slice(keys, func(i, j int) bool {
+	//return bytes.Compare(keys[i], keys[j]) <= 0
+	//})
+	//fmt.Printf("after sort keys:%+v\n", keys)
 	if err != nil {
 		return models, 0, err
 	}
@@ -161,7 +165,7 @@ func ArticlesAuthor(author, lang, limit, offset string) ([]Article, int, error) 
 	}
 	cnt, _ = sp.Count(fAUser)
 
-	log.Println("models", err, models)
+	//log.Println("models", err, models)
 	return models, int(cnt), err
 
 }
