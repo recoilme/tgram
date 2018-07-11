@@ -56,10 +56,24 @@ func main() {
 
 }
 
+func globalRecover(c *gin.Context) {
+	defer func(c *gin.Context) {
+
+		if err := recover(); err != nil {
+			if err := slowpoke.CloseAll(); err != nil {
+				log.Println("Database Shutdown err:", err)
+			}
+			log.Println("Server recovery with err:", err)
+			c.AbortWithStatus(500)
+		}
+	}(c)
+	c.Next()
+}
+
 func InitRouter() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
-	r := gin.New() // .Default()
-	r.Use(gin.Recovery())
+	r := gin.New()
+	r.Use(globalRecover)
 	//r.Use(gin.Logger())
 	//gin.DefaultWriter = ioutil.Discard
 
