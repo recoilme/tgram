@@ -65,3 +65,9 @@ or use old plain go get:
 ## Demo
 
 [tgr.am](http://tgr.am)
+
+## Thanks
+
+[awsm.css](https://github.com/igoradamenko/awsm.css)
+[realworld.io](https://realworld.io)
+[inscryb-markdown-editor](https://github.com/Inscryb/inscryb-markdown-editor)
