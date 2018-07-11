@@ -142,7 +142,7 @@ func AllArticles(lang, from_str string) (models []Article, page string, prev, ne
 
 }
 
-func ArticlesAuthor(lang, author, from_str string) (models []Article, page string, prev, next, last uint32, err error) {
+func ArticlesAuthor(lang, username, author, from_str string) (models []Article, page string, prev, next, last uint32, err error) {
 
 	from_int, _ := strconv.Atoi(from_str)
 	var limit_int, firstkey uint32
@@ -183,6 +183,26 @@ func ArticlesAuthor(lang, author, from_str string) (models []Article, page strin
 	prevkeys, _ := sp.Keys(fAUser, Uint32toBin(firstkey), uint32(1), uint32(5), false)
 	if len(prevkeys) > 0 {
 		prev = BintoUint32(prevkeys[0])
+	}
+
+	// update last seen if follow
+	if username != "" {
+		_, slavemaster := GetMasterSlave(author, username)
+		smf := fmt.Sprintf(dbSlaveMaster, lang, "fol")
+
+		has, err := sp.Has(smf, slavemaster)
+		if err == nil && has {
+			b, _ := sp.Get(smf, slavemaster)
+			//log.Println("smf", next)
+			if len(b) == 4 {
+				lastSeen := BintoUint32(b)
+				if next > lastSeen {
+					sp.Set(smf, slavemaster, Uint32toBin(next))
+				}
+			} else {
+				sp.Set(smf, slavemaster, Uint32toBin(next))
+			}
+		}
 	}
 	if next > last {
 		next = last

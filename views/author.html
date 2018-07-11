@@ -36,7 +36,7 @@
 <hr>
 
 
-{{if gt  (len .articles) 0}}
+
   {{range .articles}}
   <article>
     <header> 
@@ -72,12 +72,6 @@
   {{end}}
   &nbsp;&nbsp;
   <a href="/@{{.author.Username}}?p={{.last}}"><i class="fa fa-fast-forward" aria-hidden="true"></i></a>
-
-{{else}}
-<section>
-    <img  src="./m/img/dutch.gif">
-  </section>
-{{end}}
 
 
 {{ template "footer" . }}

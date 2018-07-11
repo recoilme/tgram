@@ -506,7 +506,7 @@ func Author(c *gin.Context) {
 		return
 	}
 
-	articles, page, prev, next, last, err := models.ArticlesAuthor(c.GetString("lang"), authorStr, c.Query("p"))
+	articles, page, prev, next, last, err := models.ArticlesAuthor(c.GetString("lang"), c.GetString("username"), authorStr, c.Query("p"))
 	if err != nil {
 		renderErr(c, err)
 		return

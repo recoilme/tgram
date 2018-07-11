@@ -22,6 +22,8 @@ type User struct {
 	Image        string `form:"image" json:"image" binding:"omitempty,url"`
 	Lang         string
 	PasswordHash string `json:"-"`
+	LastPost     uint32 `json:"-"`
+	Unseen       uint32 `json:"-"`
 }
 
 // You could input an UserModel which will be saved in database returning with error info
@@ -83,7 +85,7 @@ func Following(lang, cat, u, v string) (err error) {
 	if err != nil {
 		return err
 	}
-	err = sp.Set(fmt.Sprintf(dbSlaveMaster, lang, cat), slavemaster, nil)
+	err = sp.Set(fmt.Sprintf(dbSlaveMaster, lang, cat), slavemaster, Uint32toBin(0))
 	if err != nil {
 		return err
 	}
@@ -141,12 +143,14 @@ func GetMasterSlave(master string, slave string) ([]byte, []byte) {
 
 func IFollow(lang, cat, u string) (followings []User) {
 
+	//var err error
 	master32 := []byte(u)
 	var masterstar = make([]byte, 0)
 	masterstar = append(masterstar, master32...)
 	masterstar = append(masterstar, '*')
+	smf := fmt.Sprintf(dbSlaveMaster, lang, cat)
 
-	keys, _ := sp.Keys(fmt.Sprintf(dbSlaveMaster, lang, cat), masterstar, 0, 0, true)
+	keys, _ := sp.Keys(smf, masterstar, 0, 0, true)
 	//log.Println("keys", keys)
 	lenU := len(u) + 1
 	f := fmt.Sprintf(dbUser, lang)
@@ -161,6 +165,27 @@ func IFollow(lang, cat, u string) (followings []User) {
 			continue
 		} else {
 			//log.Println("u:", u)
+			var lastPost uint32
+			b, err := sp.Get(smf, k)
+			if err == nil {
+				if len(b) == 4 {
+					lastPost = BintoUint32(b)
+				}
+				u.LastPost = lastPost
+				fAUser := fmt.Sprintf(dbAUser, lang, u.Username)
+				var id32 = make([]byte, 4)
+				if lastPost == 0 {
+					id32 = nil
+				} else {
+					id32 = Uint32toBin(lastPost)
+				}
+				keys, err := sp.Keys(fAUser, id32, uint32(0), uint32(0), true)
+				//log.Println(fAUser, keys, lastPost)
+				if err == nil {
+					u.Unseen = uint32(len(keys))
+				}
+			}
+
 			followings = append(followings, u)
 		}
 

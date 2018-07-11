@@ -5,7 +5,11 @@
   <section>
     <a href="/@{{.Username}}"><img align="left" style="margin-right:20px" class="u-square medium" src="{{.Image}}"/></a>
     <p>
-      <a href="/@{{.Username}}">@{{.Username}}</a>&nbsp;Unread count:?
+      <a href="/@{{.Username}}">@{{.Username}}</a>&nbsp;
+      {{if gt .Unseen 0}}
+      <a href="/@{{.Username}}?p={{.LastPost}}">Unread count:{{.Unseen}}</a>
+      {{end}}
+      <br> {{.author.Bio}}
     </p>
     {{.Bio}} 
   </section>
