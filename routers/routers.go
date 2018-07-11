@@ -62,7 +62,7 @@ func CheckAuth() gin.HandlerFunc {
 		}
 
 		// store subdomain
-		c.Set("lang", lang)
+		c.Set("lang", host)
 
 		//fmt.Println("lang:", lang, "host:", host, "path", c.Request.URL.Path)
 
