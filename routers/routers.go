@@ -22,6 +22,7 @@ const NBSecretPassword = "A String Very Very Very Strong!!@##$!@#$"
 // general hook
 func CheckAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		c.Set("path", c.Request.URL.Path)
 		var lang = "ru"
 		var tokenStr, username, image string
 
@@ -34,7 +35,7 @@ func CheckAuth() gin.HandlerFunc {
 		}
 		if host == "tgr" {
 			// tgr.am
-			fmt.Println("host:tgr")
+			//fmt.Println("host:tgr")
 			t, _, err := language.ParseAcceptLanguage(c.Request.Header.Get("Accept-Language"))
 			if err == nil && len(t) > 0 {
 				if len(t[0].String()) >= 2 {
@@ -62,8 +63,8 @@ func CheckAuth() gin.HandlerFunc {
 
 		// store subdomain
 		c.Set("lang", lang)
-		c.Set("path", c.Request.URL.Path)
-		fmt.Println("lang:", lang, "host:", host, "path", c.Request.URL.Path)
+
+		//fmt.Println("lang:", lang, "host:", host, "path", c.Request.URL.Path)
 
 		// token from cookie
 		if tokenС, err := c.Cookie("token"); err == nil && tokenС != "" {
