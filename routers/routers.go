@@ -125,7 +125,7 @@ func Home(c *gin.Context) {
 	username := c.GetString("username")
 	var users []models.User
 	if username != "" {
-		users = models.IFollow(c.MustGet("lang").(string), "fol", username)
+		users = models.IFollow(c.GetString("lang"), "fol", username)
 	}
 	c.Set("users", users)
 
@@ -133,7 +133,7 @@ func Home(c *gin.Context) {
 }
 
 func All(c *gin.Context) {
-	articles, page, prev, next, last, err := models.AllArticles(c.MustGet("lang").(string), c.Query("p"))
+	articles, page, prev, next, last, err := models.AllArticles(c.GetString("lang"), c.Query("p"))
 	if err != nil {
 		renderErr(c, err)
 		return
@@ -185,7 +185,7 @@ func Register(c *gin.Context) {
 		}
 
 		// create user
-		u.Lang = c.MustGet("lang").(string)
+		u.Lang = c.GetString("lang")
 		err = models.UserNew(&u)
 		if err != nil {
 			renderErr(c, err)
@@ -216,7 +216,7 @@ func Settings(c *gin.Context) {
 
 	switch c.Request.Method {
 	case "GET":
-		user, err := models.UserGet(c.MustGet("lang").(string), c.MustGet("username").(string))
+		user, err := models.UserGet(c.GetString("lang"), c.GetString("username"))
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -228,13 +228,13 @@ func Settings(c *gin.Context) {
 	case "POST":
 		var u models.User
 		var err error
-		u.Username = c.MustGet("username").(string)
+		u.Username = c.GetString("username")
 		err = c.ShouldBind(&u)
 		if err != nil {
 			renderErr(c, err)
 			return
 		}
-		u.Lang = c.MustGet("lang").(string)
+		u.Lang = c.GetString("lang")
 		user, err := models.UserCheckGet(u.Lang, u.Username, u.Password)
 		if err != nil {
 			renderErr(c, err)
@@ -294,7 +294,7 @@ func Login(c *gin.Context) {
 			return
 		}
 
-		user, err := models.UserCheckGet(c.MustGet("lang").(string), u.Username, u.Password)
+		user, err := models.UserCheckGet(c.GetString("lang"), u.Username, u.Password)
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -323,8 +323,8 @@ func Editor(c *gin.Context) {
 
 		if aid > 0 {
 			// check username
-			username := c.MustGet("username").(string)
-			a, err := models.ArticleGet(c.MustGet("lang").(string), username, uint32(aid))
+			username := c.GetString("username")
+			a, err := models.ArticleGet(c.GetString("lang"), username, uint32(aid))
 			if err != nil {
 				renderErr(c, err)
 				return
@@ -351,8 +351,8 @@ func Editor(c *gin.Context) {
 		//log.Printf("html:'%s'\n", html)
 		var a models.Article
 		if aid > 0 {
-			username := c.MustGet("username").(string)
-			a, err := models.ArticleGet(c.MustGet("lang").(string), username, uint32(aid))
+			username := c.GetString("username")
+			a, err := models.ArticleGet(c.GetString("lang"), username, uint32(aid))
 			if err != nil {
 				renderErr(c, err)
 				return
@@ -369,9 +369,9 @@ func Editor(c *gin.Context) {
 			c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 			return
 		}
-		a.Lang = c.MustGet("lang").(string)
-		a.Author = c.MustGet("username").(string)
-		a.Image = c.MustGet("image").(string)
+		a.Lang = c.GetString("lang")
+		a.Author = c.GetString("username")
+		a.Image = c.GetString("image")
 		a.CreatedAt = time.Now()
 		a.HTML = html
 		a.Body = body
@@ -390,7 +390,7 @@ func Editor(c *gin.Context) {
 func Article(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
-		lang := c.MustGet("lang").(string)
+		lang := c.GetString("lang")
 		aid, _ := strconv.Atoi(c.Param("aid"))
 		username := c.Param("username")
 		a, err := models.ArticleGet(lang, username, uint32(aid))
@@ -402,13 +402,13 @@ func Article(c *gin.Context) {
 		c.Set("article", a)
 		//fmt.Printf("HTML:'%s'\n,", a.HTML)
 		c.Set("body", a.HTML)
-		isFolow := models.IsFollowing(lang, "fol", username, c.MustGet("username").(string))
+		isFolow := models.IsFollowing(lang, "fol", username, c.GetString("username"))
 		c.Set("isfollow", isFolow)
 		followcnt := models.FollowCount(lang, "fol", username)
 		c.Set("followcnt", followcnt)
 
 		// fav
-		isFav := models.IsFollowing(lang, "fav", c.Param("aid"), c.MustGet("username").(string))
+		isFav := models.IsFollowing(lang, "fav", c.Param("aid"), c.GetString("username"))
 		c.Set("isfav", isFav)
 		favcnt := models.FollowCount(lang, "fav", c.Param("aid"))
 		c.Set("favcnt", favcnt)
@@ -422,8 +422,8 @@ func ArticleDelete(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
 		aid, _ := strconv.Atoi(c.Param("aid"))
-		username := c.MustGet("username").(string)
-		err := models.ArticleDelete(c.MustGet("lang").(string), username, uint32(aid))
+		username := c.GetString("username")
+		err := models.ArticleDelete(c.GetString("lang"), username, uint32(aid))
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -437,7 +437,7 @@ func Follow(c *gin.Context) {
 	case "GET":
 		user := c.Param("user")
 		action := c.Param("action")
-		err := models.Following(c.MustGet("lang").(string), "fol", user, c.MustGet("username").(string))
+		err := models.Following(c.GetString("lang"), "fol", user, c.GetString("username"))
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -451,7 +451,7 @@ func Unfollow(c *gin.Context) {
 	case "GET":
 		user := c.Param("user")
 		action := c.Param("action")
-		err := models.Unfollowing(c.MustGet("lang").(string), "fol", user, c.MustGet("username").(string))
+		err := models.Unfollowing(c.GetString("lang"), "fol", user, c.GetString("username"))
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -465,9 +465,9 @@ func Fav(c *gin.Context) {
 	case "GET":
 		aid := c.Param("aid")
 		action := c.Param("action")
-		username := c.MustGet("username").(string)
+		username := c.GetString("username")
 
-		err := models.Following(c.MustGet("lang").(string), "fav", aid, username)
+		err := models.Following(c.GetString("lang"), "fav", aid, username)
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -480,7 +480,7 @@ func Unfav(c *gin.Context) {
 	case "GET":
 		aid := c.Param("aid")
 		action := c.Param("action")
-		err := models.Unfollowing(c.MustGet("lang").(string), "fav", aid, c.MustGet("username").(string))
+		err := models.Unfollowing(c.GetString("lang"), "fav", aid, c.GetString("username"))
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -491,7 +491,7 @@ func Unfav(c *gin.Context) {
 
 func GoToRegister() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if c.MustGet("username").(string) == "" {
+		if c.GetString("username") == "" {
 			c.Redirect(http.StatusFound, "/register")
 		}
 	}
@@ -499,14 +499,14 @@ func GoToRegister() gin.HandlerFunc {
 
 func Author(c *gin.Context) {
 	authorStr := c.Param("username")
-	lang := c.MustGet("lang").(string)
+	lang := c.GetString("lang")
 	author, err := models.UserGet(lang, authorStr)
 	if err != nil {
 		renderErr(c, err)
 		return
 	}
 
-	articles, page, prev, next, last, err := models.ArticlesAuthor(c.MustGet("lang").(string), authorStr, c.Query("p"))
+	articles, page, prev, next, last, err := models.ArticlesAuthor(c.GetString("lang"), authorStr, c.Query("p"))
 	if err != nil {
 		renderErr(c, err)
 		return
@@ -521,13 +521,13 @@ func Author(c *gin.Context) {
 	c.Set("p", from_int)
 
 	c.Set("author", author)
-	isFolow := models.IsFollowing(lang, "fol", authorStr, c.MustGet("username").(string))
+	isFolow := models.IsFollowing(lang, "fol", authorStr, c.GetString("username"))
 	c.Set("isfollow", isFolow)
 	followcnt := models.FollowCount(lang, "fol", authorStr)
 	c.Set("followcnt", followcnt)
 
 	// fav
-	isFav := models.IsFollowing(lang, "fav", c.Param("aid"), c.MustGet("username").(string))
+	isFav := models.IsFollowing(lang, "fav", c.Param("aid"), c.GetString("username"))
 	c.Set("isfav", isFav)
 	favcnt := models.FollowCount(lang, "fav", c.Param("aid"))
 	c.Set("favcnt", favcnt)
@@ -537,7 +537,7 @@ func Author(c *gin.Context) {
 func CommentNew(c *gin.Context) {
 	switch c.Request.Method {
 	case "POST":
-		lang := c.MustGet("lang").(string)
+		lang := c.GetString("lang")
 		aid, _ := strconv.Atoi(c.Param("aid"))
 		username := c.Param("username")
 
@@ -555,8 +555,8 @@ func CommentNew(c *gin.Context) {
 		a.HTML = template.HTML(html)
 
 		a.Lang = lang
-		a.Author = c.MustGet("username").(string)
-		a.Image = c.MustGet("image").(string)
+		a.Author = c.GetString("username")
+		a.Image = c.GetString("image")
 		a.CreatedAt = time.Now()
 
 		//a.Body = string(body)
