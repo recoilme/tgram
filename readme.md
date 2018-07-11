@@ -64,4 +64,4 @@ or use old plain go get:
 
 ## Demo
 
-![tgr.am](http://tgr.am)
+[tgr.am](http://tgr.am)
