@@ -34,7 +34,7 @@ func CheckAuth() gin.HandlerFunc {
 		}
 		if host == "tgr" {
 			// tgr.am
-
+			fmt.Println("host:tgr")
 			t, _, err := language.ParseAcceptLanguage(c.Request.Header.Get("Accept-Language"))
 			if err == nil && len(t) > 0 {
 				if len(t[0].String()) >= 2 {
@@ -59,10 +59,11 @@ func CheckAuth() gin.HandlerFunc {
 			c.Redirect(http.StatusFound, "http://"+lang+".tgr.am")
 			return
 		}
-		//fmt.Println("lang:", lang, "host:", host)
+
 		// store subdomain
 		c.Set("lang", lang)
 		c.Set("path", c.Request.URL.Path)
+		fmt.Println("lang:", lang, "host:", host, "path", c.Request.URL.Path)
 
 		// token from cookie
 		if tokenС, err := c.Cookie("token"); err == nil && tokenС != "" {
@@ -131,9 +132,19 @@ func Home(c *gin.Context) {
 }
 
 func All(c *gin.Context) {
-	articles, _, _ := models.AllArticles(c.MustGet("lang").(string), "", "")
+	articles, page, prev, next, last, err := models.AllArticles(c.MustGet("lang").(string), c.Query("p"))
+	if err != nil {
+		renderErr(c, err)
+		return
+	}
 	//log.Println(len(articles))
 	c.Set("articles", articles)
+	c.Set("page", page)
+	c.Set("prev", prev)
+	c.Set("next", next)
+	c.Set("last", last)
+	from_int, _ := strconv.Atoi(c.Query("p"))
+	c.Set("p", from_int)
 	c.HTML(http.StatusOK, "all.html", c.Keys)
 }
 
@@ -330,11 +341,13 @@ func Editor(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-		body := strings.Replace(abind.Body, "\n", "\n\n", -1)
+
+		body := strings.Replace(strings.TrimSpace(abind.Body), "\n", "\n\n", -1)
 		//log.Println("bod", abind.Body)
 		unsafe := blackfriday.Run([]byte(body))
+		//log.Println("unsafe", string(unsafe))
 		html := template.HTML(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
-
+		//log.Printf("html:'%s'\n", html)
 		var a models.Article
 		if aid > 0 {
 			username := c.MustGet("username").(string)
@@ -386,6 +399,7 @@ func Article(c *gin.Context) {
 		}
 
 		c.Set("article", a)
+		//fmt.Printf("HTML:'%s'\n,", a.HTML)
 		c.Set("body", a.HTML)
 		isFolow := models.IsFollowing(lang, "fol", username, c.MustGet("username").(string))
 		c.Set("isfollow", isFolow)
@@ -490,8 +504,21 @@ func Author(c *gin.Context) {
 		renderErr(c, err)
 		return
 	}
-	articles, _, _ := models.ArticlesAuthor(authorStr, lang, "", "")
+
+	articles, page, prev, next, last, err := models.ArticlesAuthor(c.MustGet("lang").(string), authorStr, c.Query("p"))
+	if err != nil {
+		renderErr(c, err)
+		return
+	}
+
 	c.Set("articles", articles)
+	c.Set("page", page)
+	c.Set("prev", prev)
+	c.Set("next", next)
+	c.Set("last", last)
+	from_int, _ := strconv.Atoi(c.Query("p"))
+	c.Set("p", from_int)
+
 	c.Set("author", author)
 	isFolow := models.IsFollowing(lang, "fol", authorStr, c.MustGet("username").(string))
 	c.Set("isfollow", isFolow)

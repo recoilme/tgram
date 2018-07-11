@@ -7,9 +7,9 @@
      {{.article.CreatedAt| todate}} <br/>{{ template "buttons" .}}
     </p>
   </header>
-  <p>
+  
       {{.body}}
-  </p>
+  
 </article>
 <hr />
 <form  action="/comments/@{{.article.Author}}/{{.article.ID}}" method="post">

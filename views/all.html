@@ -17,6 +17,27 @@
   <hr/>
 
   {{end}}
+
+  {{if eq .p 0}}
+    <i class="fa fa-fast-backward"></i>
+    &nbsp;&nbsp;
+    <i class="fa fa-backward"></i>
+  {{else}}
+    <a href="/all"><i class="fa fa-fast-backward" aria-hidden="true"></i></a>
+    &nbsp;&nbsp;
+    <a href="/all/?p={{.prev}}"><i class="fa fa-backward" aria-hidden="true"></i></a>
+  {{end}}
+
+  &nbsp;&nbsp;&nbsp;&nbsp;{{.page}}&nbsp;&nbsp;&nbsp;&nbsp;
+
+  {{if le .next 1}}
+    <i class="fa fa-forward"></i>
+  {{else }}
+  <a href="/all/?p={{.next}}"><i class="fa fa-forward"></i></a>
+  {{end}}
+  &nbsp;&nbsp;
+  <a href="/all/?p={{.last}}"><i class="fa fa-fast-forward" aria-hidden="true"></i></a>
+
 {{else}}
 <section>
     <img  src="./m/img/dutch.gif">

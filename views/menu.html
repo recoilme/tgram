@@ -4,16 +4,16 @@
       <ul>
         <li>
           {{if eq "/" .path}}
-            Home
+            <i class="fa fa-home fa-fw" aria-hidden="true"></i>
           {{else}}
-            <a href="/">Home</a>
+            <a href="/"><i class="fa fa-home fa-fw" aria-hidden="true"></i></a>
           {{end}}
         </li>
         <li>
           {{if eq "/all" .path}}
-            all
+          <i class="fa fa-globe" aria-hidden="true"></i>
           {{else}}
-            <a href="/all">all</a>
+            <a href="/all"><i class="fa fa-globe" aria-hidden="true"></i></a>
           {{end}}
         </li>
 {{if .username}}

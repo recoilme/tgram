@@ -87,26 +87,23 @@ func ArticleDelete(lang, username string, aid uint32) (err error) {
 	return nil
 }
 
-func AllArticles(lang, limit, offset string) ([]Article, int, error) {
-	var models []Article
-	var err error
-	var cnt uint64
-	var offset_int, limit_int int
+func AllArticles(lang, from_str string) (models []Article, page string, prev, next, last uint32, err error) {
 
-	offset_int, _ = strconv.Atoi(offset)
-
-	limit_int, _ = strconv.Atoi(limit)
-	if limit_int == 0 {
-		limit_int = 5
-	}
-
+	from_int, _ := strconv.Atoi(from_str)
+	var limit_int uint32
+	limit_int = 5
 	fAids := fmt.Sprintf(dbAids, lang)
-	//if err = sp.Set(fAids, id32, []byte(a.Author)); err != nil {
-	keys, err := sp.Keys(fAids, nil, uint32(limit_int), uint32(offset_int), false)
-	//log.Println("no params", len(keys), limit_int)
-	if err != nil {
-		return models, 0, err
+	var from []byte
+	if from_int > 0 {
+		from = Uint32toBin(uint32(from_int))
+	} else {
+		from = nil
 	}
+	keys, err := sp.Keys(fAids, from, limit_int, uint32(0), false)
+	if err != nil {
+		return models, page, prev, next, last, err
+	}
+	var firstkey uint32
 	for _, key := range keys {
 		var model Article
 
@@ -117,41 +114,50 @@ func AllArticles(lang, limit, offset string) ([]Article, int, error) {
 		fAUser := fmt.Sprintf(dbAUser, lang, string(uidb))
 		if err = sp.GetGob(fAUser, key, &model); err != nil {
 			fmt.Println("kerr", err)
-			break
+			break //todo continue?
 		}
-
+		if firstkey == 0 {
+			firstkey = BintoUint32(key)
+		}
+		next = BintoUint32(key)
 		models = append(models, model)
 	}
-	cnt, _ = sp.Count(fAids)
+	all, _ := sp.Count(fAids)
+	page = fmt.Sprintf("%d..%d/%d", firstkey, next, all)
 
-	//log.Println("models", err, models)
-	return models, int(cnt), err
+	// last article is prev to first article
+	lastkeys, _ := sp.Keys(fAids, nil, uint32(1), uint32(1), true)
+	if len(lastkeys) > 0 {
+		last = BintoUint32(lastkeys[0])
+	}
+	// prev article
+	prevkeys, _ := sp.Keys(fAids, Uint32toBin(firstkey), uint32(1), uint32(5), true)
+	if len(prevkeys) > 0 {
+		prev = BintoUint32(prevkeys[0])
+	}
+	if next < last {
+		next = last
+	}
+	return models, page, prev, next, last, err
 
 }
 
-func ArticlesAuthor(author, lang, limit, offset string) ([]Article, int, error) {
-	var models []Article
-	var err error
-	var cnt uint64
-	var offset_int, limit_int int
+func ArticlesAuthor(lang, author, from_str string) (models []Article, page string, prev, next, last uint32, err error) {
 
-	offset_int, _ = strconv.Atoi(offset)
-
-	limit_int, _ = strconv.Atoi(limit)
-	if limit_int == 0 {
-		limit_int = 5
-	}
+	from_int, _ := strconv.Atoi(from_str)
+	var limit_int, firstkey uint32
+	limit_int = 5
 
 	fAUser := fmt.Sprintf(dbAUser, lang, author)
-	keys, err := sp.Keys(fAUser, nil, uint32(limit_int), uint32(offset_int), true)
-	//fmt.Printf("before sort keys:%+v\n", keys)
-	// ascending sort
-	//sort.Slice(keys, func(i, j int) bool {
-	//return bytes.Compare(keys[i], keys[j]) <= 0
-	//})
-	//fmt.Printf("after sort keys:%+v\n", keys)
+	var from []byte
+	if from_int > 0 {
+		from = Uint32toBin(uint32(from_int))
+	} else {
+		from = nil
+	}
+	keys, err := sp.Keys(fAUser, from, limit_int, uint32(0), true)
 	if err != nil {
-		return models, 0, err
+		return models, page, prev, next, last, err
 	}
 	for _, key := range keys {
 		var model Article
@@ -160,14 +166,28 @@ func ArticlesAuthor(author, lang, limit, offset string) ([]Article, int, error) 
 			fmt.Println("kerr", err)
 			break
 		}
-
+		if firstkey == 0 {
+			firstkey = BintoUint32(key)
+		}
+		next = BintoUint32(key)
 		models = append(models, model)
 	}
-	cnt, _ = sp.Count(fAUser)
-
-	//log.Println("models", err, models)
-	return models, int(cnt), err
-
+	all, _ := sp.Count(fAUser)
+	page = fmt.Sprintf("%d..%d/%d", firstkey, next, all)
+	// last article is prev to last article
+	lastkeys, _ := sp.Keys(fAUser, nil, uint32(1), uint32(1), false)
+	if len(lastkeys) > 0 {
+		last = BintoUint32(lastkeys[0])
+	}
+	// prev article
+	prevkeys, _ := sp.Keys(fAUser, Uint32toBin(firstkey), uint32(1), uint32(5), false)
+	if len(prevkeys) > 0 {
+		prev = BintoUint32(prevkeys[0])
+	}
+	if next > last {
+		next = last
+	}
+	return models, page, prev, next, last, err
 }
 
 func CommentNew(a *Article, user string, mainaid uint32) (id uint32, err error) {
