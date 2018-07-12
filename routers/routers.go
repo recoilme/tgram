@@ -10,6 +10,7 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	humanize "github.com/dustin/go-humanize"
 	"github.com/gin-gonic/gin"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/recoilme/tgram/models"
@@ -117,7 +118,9 @@ func ToStr(value interface{}) string {
 }
 
 func ToDate(t time.Time) string {
-	return t.Format("02.01.2006 15:04")
+	//tm := time.Unix(int64(t), 0)
+	return fmt.Sprintf("%s", humanize.Time(t))
+	//return t.Format("02.01.2006 15:04")
 }
 
 func Home(c *gin.Context) {
@@ -402,7 +405,7 @@ func Article(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-
+		c.Set("link", "http://"+c.Request.Host+c.GetString("path"))
 		c.Set("article", a)
 		//fmt.Printf("HTML:'%s'\n,", a.HTML)
 		c.Set("body", a.HTML)

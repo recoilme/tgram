@@ -45,17 +45,17 @@
         <a href="/@{{.Author}}/{{.ID}}">{{.CreatedAt| todate}}</a>
       </p>
     </header>
-    <p>
+    <section>
       {{if .Title}}
         <h3>{{.Title}}</h3>
       {{end}}
       {{.HTML}}
-    </p>
+    </section>
   </article>
   <hr/>
 
   {{end}}
-
+  <nav>
   {{if eq .p 0}}
   <i class="fa fa-fast-backward"></i>
   &nbsp;&nbsp;
@@ -75,6 +75,6 @@
   {{end}}
   &nbsp;&nbsp;
   <a href="/@{{.author.Username}}?p={{.last}}"><i class="fa fa-fast-forward" aria-hidden="true"></i></a>
-
+  </nav>
 
 {{ template "footer" . }}

@@ -7,12 +7,47 @@
      {{.article.CreatedAt| todate}} <br/>{{ template "buttons" .}}
     </p>
   </header>
+  <section>
     {{if .article.Title}}
         <h3>{{.article.Title}}</h3>
     {{end}}
     {{.body}}
+  </section>
+  <footer>
+      <nav>
+        <a href="{{.link}}"><i class="fa fa-link"></i></a>
+        <ul class="post-shareButtons">
+            <li>
+                <a href="http://www.facebook.com/sharer.php?u={{.link}}" rel="nofollow" target="_blank">
+                    <i class="fa fa-facebook"></i> 
+                </a>
+            </li>
+            <li>
+                <a href="http://vk.com/share.php?url={{.link}}" rel="nofollow" target="_blank">
+                    <i class="fa fa-vk"></i> 
+                </a>
+            </li>
+            <li>
+                <a href="http://twitter.com/share?url={{.link}}" rel="nofollow" target="_blank">
+                    <i class="fa fa-twitter"></i> 
+                </a>
+            </li>
+            <li>
+                <a href="https://plus.google.com/share?url={{.link}}" rel="nofollow" target="_blank">
+                <i class="fa fa-google-plus"></i> 
+            </a>
+            </li>
+            <li>
+                <a href="mailto:?Body={{.link}}" rel="nofollow" target="_blank">
+                    <i class="fa fa-envelope-o"></i> 
+                </a>
+            </li>
+        </ul>
+      </nav>
+      <hr/>
+  </footer>
 </article>
-<hr />
+
 <form  action="/comments/@{{.article.Author}}/{{.article.ID}}" method="post">
     <textarea id="mde"  name="body" placeholder="Write a comment..." ></textarea>
 

@@ -508,9 +508,45 @@ img.small {
 img.medium {
   max-width: 80px;}
 
-body header nav {
-  font-size: 1.0rem;}
+
 
 article p {
   margin-top: 1em;
+}
+
+blockquote {
+	font-style: italic;
+}
+
+article h3 {
+
+}
+article section> p:nth-of-type(1) {
+	color: #444;
+  font-family: 'PT Serif Caption', serif;
+}
+
+article header p {
+  font-family: 'PT Serif Caption', serif;
+}
+
+.fa {
+  color:#aaa;
+
+}
+article footer a {
+  background: none;
+  text-decoration: none;
+}
+
+nav a {
+  background: none;
+  text-decoration: none;
+}
+.post-shareButtons {
+  float: right;
+}
+
+.navright {
+  float: right;
 }
