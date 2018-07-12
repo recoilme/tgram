@@ -331,6 +331,7 @@ func Editor(c *gin.Context) {
 			}
 			str := strings.Replace(a.Body, "\n\n", "\n", -1)
 			c.Set("body", str)
+			c.Set("title", a.Title)
 		}
 		c.HTML(http.StatusOK, "article_edit.html", c.Keys)
 	case "POST":
@@ -348,6 +349,7 @@ func Editor(c *gin.Context) {
 		unsafe := blackfriday.Run([]byte(body))
 		//log.Println("unsafe", string(unsafe))
 		html := template.HTML(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
+		title := abind.Title
 		//log.Printf("html:'%s'\n", html)
 		var a models.Article
 		if aid > 0 {
@@ -359,6 +361,7 @@ func Editor(c *gin.Context) {
 			}
 			a.HTML = html
 			a.Body = body
+			a.Title = title
 			err = models.ArticleUpd(a)
 			if err != nil {
 				renderErr(c, err)
@@ -375,6 +378,7 @@ func Editor(c *gin.Context) {
 		a.CreatedAt = time.Now()
 		a.HTML = html
 		a.Body = body
+		a.Title = title
 		newaid, err := models.ArticleNew(&a)
 		if err != nil {
 			renderErr(c, err)

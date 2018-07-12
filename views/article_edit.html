@@ -2,9 +2,8 @@
 {{ template "menu" . }}
 <section>
 <form  action="{{.path}}" method="post">
-
+	<input name="title"  type="text" placeholder="Title" value="{{.title}}">
     <textarea id="mde" name="body">{{.body}}</textarea>
-  
     <button type="submit" >Publish</button>
 </form>
 </section>

@@ -11,7 +11,10 @@
       </p>
     </header>
     <p>
-        {{.HTML}}
+      {{if .Title}}
+        <h3>{{.Title}}</h3>
+      {{end}}
+      {{.HTML}}
     </p>
   </article>
   <hr/>
