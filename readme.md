@@ -1,4 +1,4 @@
-# Tgram (medium clone on pure go)
+# Tgram
 
 This codebase was created to demonstrate a fully fledged fullstack application built with **Golang/Gin/Slowpoke** including CRUD operations, authentication, routing, pagination, and more like realworld.io app
 
@@ -57,6 +57,16 @@ or use old plain go get:
 ➜  go get ./...
 
 ```
+
+### Env
+
+Create file tgram.env with params, sample:
+```
+TGRAMPWD=SOM2324&E*&Ff!!EDjweljf
+TGRAMPORT=:8081
+```
+
+
 ## Start
 ```
 ➜  ./tgram

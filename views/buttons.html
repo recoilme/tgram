@@ -2,32 +2,33 @@
 
 {{if eq .article.Author .username}}
 <a href="/editor/{{.article.ID}}">
-    <i class="ion-edit"></i>Edit Article
+    edit
 </a>
 {{else}}
   {{if .isfollow}}
   <a href="/unfollow/{{.article.Author}}/@{{.article.Author}}/{{.article.ID}}">
-    <i class="ion-minus-round"></i>Unfollow  <span class="counter">({{.followcnt}})</span>
+    unfollow  <span class="counter">({{.followcnt}})</span>
   </a>
   {{else}}
   <a href="/follow/{{.article.Author}}/@{{.article.Author}}/{{.article.ID}}">
-    <i class="ion-plus-round"></i>Follow  <span class="counter">({{.followcnt}})</span>
+    follow  ({{.followcnt}})
   </a>
   {{end}}
 {{end}}&nbsp;
 {{if eq .article.Author .username}}
 <a href="/delete/a/{{.article.ID}}">
-  <i class="ion-trash-a"></i>Delete Article
+  delete
 </a>
 {{else}}
 {{if .isfav}}
 <a href="/unfav/{{.article.ID}}/@{{.article.Author}}/{{.article.ID}}">
-  <i class="ion-heart"></i>UnFavorite Article <span class="counter">({{.favcnt}})</span>
+  unfavorite  ({{.favcnt}})
 </a>
 {{else}}
 <a href="/fav/{{.article.ID}}/@{{.article.Author}}/{{.article.ID}}">
-  <i class="ion-heart"></i>Favorite Article <span class="counter">({{.favcnt}})</span>
+  favorite ({{.favcnt}})
 </a>
 {{end}}
 {{end}}
+
 {{end}}

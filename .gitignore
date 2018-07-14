@@ -22,3 +22,4 @@ bak.*
 *.idx
 db
 tgram
+.env

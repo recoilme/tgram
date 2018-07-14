@@ -15,17 +15,25 @@ import (
 
 	"github.com/recoilme/slowpoke"
 
+	"github.com/joho/godotenv"
 	"github.com/recoilme/tgram/routers"
 	//"github.com/thinkerou/favicon"
 )
 
-// Keep this two config private, it should not expose to open source
-
-const NBRandomPassword = "A String Very Very Very Niubilty!!@##$!@#4"
+// Keep this config private, it should not expose to open source
+var NBRandomPassword = "A String Very Very Very Niubilty!!@##$!@#4"
+var Port = ":8081"
 
 func main() {
+
+	err := godotenv.Load("tgram.env")
+	if err == nil {
+		NBRandomPassword = os.Getenv("TGRAMPWD")
+		Port = os.Getenv("TGRAMPORT")
+	}
+
 	srv := &http.Server{
-		Addr:    ":8081",
+		Addr:    Port,
 		Handler: InitRouter(),
 	}
 

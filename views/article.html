@@ -4,8 +4,12 @@
   <header> 
     <img align="left" class="u-square small" src="{{.article.Image}}" />
     <p>
-     {{.article.CreatedAt| todate}} <br/>{{ template "buttons" .}}
+        {{.article.CreatedAt| todate}} 
+        <span class="navright">
+        {{ template "buttons" .}}
+        </span>
     </p>
+    
   </header>
   <section>
     {{if .article.Title}}

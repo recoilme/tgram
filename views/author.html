@@ -5,10 +5,10 @@
     <ul>
         {{if eq (print "/@" .username) .path}}
         <li>
-          <a href="/editor/0">New Post</a>
+          <a href="/editor/0">new post&nbsp;</a>
         </li>
         <li>
-          <a href="/settings">Settings</a>
+          <a href="/settings">settings&nbsp;</a>
         </li>
         {{end}}
     </ul>
@@ -22,11 +22,11 @@
   {{if ne (print "/@" .username) .path}}
     {{if .isfollow}}
       <a href="/unfollow/{{.author.Username}}/@{{.author.Username}}" >
-      <i class="ion-minus-round"></i>&nbsp;Unfollow  <span class="counter">({{.followcnt}})</span>
+      &nbsp;unfollow ({{.followcnt}})
     </a>
     {{else}}
     <a href="/follow/{{.author.Username}}/@{{.author.Username}}">
-      <i class="ion-plus-round"></i>&nbsp;Follow <span class="counter">({{.followcnt}})</span>
+      &nbsp;Follow ({{.followcnt}})</span>
     </a>
     {{end}}
   {{end}}

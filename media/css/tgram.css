@@ -67,7 +67,7 @@ p{
   p + ul, p + ol{
     margin-top:-.75em; }
   p img, p picture{
-    float:right;
+
     margin-bottom:.5em;
     margin-left:.5em; }
     p img img, p picture img{
@@ -519,15 +519,21 @@ blockquote {
 }
 
 article h3 {
-
+  font-family: 'PT Sans Caption', serif;
+  font-size: 36px;
 }
 article section> p:nth-of-type(1) {
-	color: #444;
-  font-family: 'PT Serif Caption', serif;
+  font-size: 21px;
+
+  font-family: 'PT Sans Caption', serif;
 }
 
 article header p {
-  font-family: 'PT Serif Caption', serif;
+  font-family: 'PT Sans Caption', serif;
+}
+
+article header p span{
+  margin: 0;
 }
 
 .fa {

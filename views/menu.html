@@ -4,19 +4,20 @@
       <ul>
         <li>
           {{if eq "/" .path}}
-            <i class="fa fa-home fa-fw" aria-hidden="true"></i>
+          tgr.am
           {{else}}
-            <a href="/"><i class="fa fa-home fa-fw" aria-hidden="true"></i></a>
+            <a href="/">tgr.am</a>
+          {{end}}
+        </li>
+        
+        <li>
+          {{if eq "/all" .path}}
+          all
+          {{else}}
+            <a href="/all">all</a>
           {{end}}
         </li>
         <div class="navright">
-        <li>
-          {{if eq "/all" .path}}
-          <i class="fa fa-globe" aria-hidden="true"></i>
-          {{else}}
-            <a href="/all"><i class="fa fa-globe" aria-hidden="true"></i></a>
-          {{end}}
-        </li>
 {{if .username}}
       <li>
           {{if eq (print "/@" .username) .path}}
