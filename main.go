@@ -73,7 +73,7 @@ func globalRecover(c *gin.Context) {
 			}
 			log.Println("Server recovery with err:", err)
 			gin.RecoveryWithWriter(gin.DefaultErrorWriter)
-			c.AbortWithStatus(500)
+			//c.AbortWithStatus(500)
 		}
 	}(c)
 	c.Next()
@@ -83,7 +83,7 @@ func InitRouter() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.Use(globalRecover)
-	r.Use(gin.Recovery())
+	//r.Use(gin.Recovery())
 	//gin.DefaultWriter = ioutil.Discard
 
 	r.Use(favicon.New("./favicon.ico"))
