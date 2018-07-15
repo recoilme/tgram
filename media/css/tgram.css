@@ -191,6 +191,7 @@ article > footer{
   margin-top:1.5em;
   font-size:.85em; }
 
+  /*
 a{
   text-decoration:none;
   color:#0064c1;
@@ -209,7 +210,13 @@ a{
     color:#3000c1;
     -webkit-transition:color 0s, box-shadow 0s;
     transition:color 0s, box-shadow 0s; }
-
+*/
+a{
+  text-decoration:none;
+  color: #000;
+  -webkit-transition:color 300ms ease-out, box-shadow 300ms ease-out;
+  transition:color 300ms ease-out, box-shadow 300ms ease-out;
+}
 abbr{
   margin-right:-.075em;
   -webkit-hyphens:none;
@@ -347,7 +354,7 @@ noscript{
  * 2. Correct font properties not being inherited.
  * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
  */
- button,
+button,
 input,
 optgroup,
 select,
@@ -544,6 +551,7 @@ article footer a {
 nav a {
   background: none;
   text-decoration: none;
+  color: #000;
 }
 .post-shareButtons {
   float: right;
