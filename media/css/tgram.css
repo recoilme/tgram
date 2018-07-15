@@ -217,6 +217,12 @@ a{
   -webkit-transition:color 300ms ease-out, box-shadow 300ms ease-out;
   transition:color 300ms ease-out, box-shadow 300ms ease-out;
 }
+
+
+article section a {
+  text-decoration:underline;
+}
+
 abbr{
   margin-right:-.075em;
   -webkit-hyphens:none;
