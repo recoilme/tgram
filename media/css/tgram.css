@@ -39,6 +39,7 @@ body{
     color:#aaa; }
 
 nav{
+  font-family: 'PT Sans Caption', serif;
   margin:1em 0;}
   nav ul{
     list-style:none;
@@ -91,7 +92,7 @@ blockquote{
 
 aside{
   margin:.5em 0;
-  font-style:italic;
+  /*font-style:italic;*/
   color:#aaa; }
   @media (min-width: 65rem){
     aside{
@@ -213,6 +214,7 @@ a{
 */
 a{
   text-decoration:none;
+
   color: #000;
   -webkit-transition:color 300ms ease-out, box-shadow 300ms ease-out;
   transition:color 300ms ease-out, box-shadow 300ms ease-out;
@@ -220,7 +222,10 @@ a{
 
 
 article section a {
-  text-decoration:underline;
+  /*text-decoration:underline;*/
+  border-bottom-color: currentcolor;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
 }
 
 abbr{
@@ -557,12 +562,17 @@ article footer a {
 nav a {
   background: none;
   text-decoration: none;
-  color: #000;
+  
 }
 .post-shareButtons {
   float: right;
+  font-family: 'PT Sans Caption', serif;
 }
 
 .navright {
   float: right;
+}
+
+.navright li {
+  margin-right: 0;
 }
