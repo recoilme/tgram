@@ -40,6 +40,7 @@ body{
 
 nav{
   font-family: 'PT Sans Caption', serif;
+  color:#ccc;
   margin:1em 0;}
   nav ul{
     list-style:none;
@@ -49,7 +50,25 @@ nav{
       display:inline-block;
       margin-right:1em;
       margin-bottom:.25em; }
-      
+
+
+header nav {
+  font-family:"PT Serif", Georgia, serif;
+  color:#ccc;
+}
+nav a {
+  background: none;
+  text-decoration: none;
+}
+
+.navright {
+  float: right;
+}
+
+.navright li {
+  margin-right: 0;
+  margin-left: 1em;
+}
 
 ul, ol{
   margin-top:0;
@@ -559,20 +578,7 @@ article footer a {
   text-decoration: none;
 }
 
-nav a {
-  background: none;
-  text-decoration: none;
-  
-}
 .post-shareButtons {
   float: right;
   font-family: 'PT Sans Caption', serif;
-}
-
-.navright {
-  float: right;
-}
-
-.navright li {
-  margin-right: 0;
 }

@@ -11,7 +11,6 @@ import (
 
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
-	"github.com/thinkerou/favicon"
 
 	"github.com/recoilme/slowpoke"
 
@@ -86,7 +85,7 @@ func InitRouter() *gin.Engine {
 	//r.Use(gin.Recovery())
 	//gin.DefaultWriter = ioutil.Discard
 
-	r.Use(favicon.New("./favicon.ico"))
+	//r.Use(favicon.New("./favicon.ico"))
 	r.Use(static.Serve("/m", static.LocalFile("./media", false)))
 
 	r.SetFuncMap(template.FuncMap{
