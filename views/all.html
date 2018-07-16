@@ -15,10 +15,14 @@
         <h3>{{.Title}}</h3>
       {{end}}
       {{.HTML}}
+      <div class="comment">
+        <a href="/@{{.Author}}/{{.ID}}#share">comments ({{len .Comments}})</a>
+      </div>
+      <hr/>
     </section>
-  </article>
-  <hr/>
 
+    
+  </article>
   {{end}}
 
   {{if .page}}

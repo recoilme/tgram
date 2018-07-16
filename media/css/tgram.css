@@ -583,7 +583,7 @@ article footer a {
   text-decoration: none;
 }
 
-.post-shareButtons {
+.share {
   float: right;
   font-family: 'PT Sans Caption', serif;
   font-size: 0.9em;
