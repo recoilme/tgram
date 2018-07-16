@@ -70,6 +70,11 @@ nav a {
   margin-left: 1em;
 }
 
+.navaside {
+  margin: 0;
+  float: right;
+}
+
 ul, ol{
   margin-top:0;
   padding-top:0;

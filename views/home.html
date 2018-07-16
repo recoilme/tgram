@@ -3,16 +3,23 @@
 {{if gt  (len .users) 0}}
   {{range .users}}
   <section>
+      {{if gt .Unseen 0}}
+      <nav class="navaside">
+        <ul>
+          <li>
+            <a href="/@{{.Username}}?p={{.LastPost}}">unread ({{.Unseen}})</a>
+          </li>
+        </ul>
+      </nav>
+      {{end}}
     <a href="/@{{.Username}}"><img align="left" style="margin-right:20px" class="u-square medium" src="{{.Image}}"/></a>
     <p>
       <a href="/@{{.Username}}">@{{.Username}}</a>&nbsp;
-      {{if gt .Unseen 0}}
-      <a href="/@{{.Username}}?p={{.LastPost}}">Unread count:{{.Unseen}}</a>
-      {{end}}
       <br> {{.Bio}}
     </p>
+    <hr/>
   </section>
-  <hr/>
+ 
 
   {{end}}
 {{else}}
