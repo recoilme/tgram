@@ -58,9 +58,11 @@
     <section>
         <header> 
                 <img align="left" class="u-square micro" src="{{.Image}}" /> 
-                <p>{{.CreatedAt| todate}}</p>
+                <p><a href="/@{{.Author}}">@{{.Author}}</a>&nbsp;&nbsp;&nbsp;{{.CreatedAt| todate}}</p>
         </header>
+        <div class="comment">
         {{.HTML}}
+        </div>
         <hr/>
     </section>
 {{end}}

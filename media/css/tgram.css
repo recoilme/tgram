@@ -586,15 +586,18 @@ article footer a {
 .post-shareButtons {
   float: right;
   font-family: 'PT Sans Caption', serif;
+  font-size: 0.9em;
 }
 
 section header p{
-  font-family:"PT Sans", Helvetica, Arial, sans;
+  font-family: 'PT Sans Caption', serif;
   font-size:.7em;
   color:#aaa; }
   section header p + h1, section header p + h2{
     margin-top:-.25em; }
 
-section {
+.comment{
+  margin-top: 0.4em;
   font-family:"PT Sans", Helvetica, Arial, sans;
+  font-size: 0.9em;
 }

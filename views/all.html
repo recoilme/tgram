@@ -5,9 +5,9 @@
   {{range .articles}}
   <article>
     <header> 
-        <a href="/@{{.Author}}"><img align="left" class="u-square micro" src="{{.Image}}"/></a>
+      <a href="/@{{.Author}}"><img align="left" class="u-square micro" src="{{.Image}}"/></a>
       <p>
-          <a href="/@{{.Author}}">@{{.Author}}</a>&nbsp;&nbsp;&nbsp;<a href="/@{{.Author}}/{{.ID}}">{{.CreatedAt| todate}}</a>
+        <a href="/@{{.Author}}">@{{.Author}}</a>&nbsp;&nbsp;&nbsp;<a href="/@{{.Author}}/{{.ID}}">{{.CreatedAt| todate}}</a>
       </p>
     </header>
     <section>
