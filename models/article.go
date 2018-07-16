@@ -123,8 +123,8 @@ func AllArticles(lang, from_str string) (models []Article, page string, prev, ne
 		next = BintoUint32(key)
 		models = append(models, model)
 	}
-	all, _ := sp.Count(fAids)
-	page = fmt.Sprintf("%d..%d/%d", firstkey, next, all)
+	//all, _ := sp.Count(fAids)
+	page = fmt.Sprintf("%d..%d", firstkey, next)
 
 	// last article is prev to first article
 	lastkeys, _ := sp.Keys(fAids, nil, uint32(1), uint32(1), true)
@@ -173,8 +173,8 @@ func ArticlesAuthor(lang, username, author, from_str string) (models []Article, 
 		next = BintoUint32(key)
 		models = append(models, model)
 	}
-	all, _ := sp.Count(fAUser)
-	page = fmt.Sprintf("%d..%d/%d", firstkey, next, all)
+	//all, _ := sp.Count(fAUser)
+	page = fmt.Sprintf("%d..%d", firstkey, next) //, all)
 	// last article is prev to last article
 	lastkeys, _ := sp.Keys(fAUser, nil, uint32(1), uint32(1), false)
 	if len(lastkeys) > 0 {

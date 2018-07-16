@@ -85,3 +85,8 @@ TGRAMPORT=:8081
 
 
 [inscryb-markdown-editor](https://github.com/Inscryb/inscryb-markdown-editor)
+
+
+## Design
+
+[egorabaturov](https://egorabaturov.com)

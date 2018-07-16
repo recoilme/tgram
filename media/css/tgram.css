@@ -587,3 +587,14 @@ article footer a {
   float: right;
   font-family: 'PT Sans Caption', serif;
 }
+
+section header p{
+  font-family:"PT Sans", Helvetica, Arial, sans;
+  font-size:.7em;
+  color:#aaa; }
+  section header p + h1, section header p + h2{
+    margin-top:-.25em; }
+
+section {
+  font-family:"PT Sans", Helvetica, Arial, sans;
+}

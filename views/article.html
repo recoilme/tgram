@@ -48,10 +48,22 @@
             </li>
         </ul>
       </nav>
-      <hr/>
+      
   </footer>
+  <hr/>
 </article>
 
+{{range .article.Comments}}
+    
+    <section>
+        <header> 
+                <img align="left" class="u-square micro" src="{{.Image}}" /> 
+                <p>{{.CreatedAt| todate}}</p>
+        </header>
+        {{.HTML}}
+        <hr/>
+    </section>
+{{end}}
 <form  action="/comments/@{{.article.Author}}/{{.article.ID}}" method="post">
     <textarea id="mde"  name="body" placeholder="Write a comment..." ></textarea>
 
@@ -72,20 +84,4 @@ var simplemde = new InscrybMDE({
 	toolbarTips: false,
 });
 </script>
-
-{{range .article.Comments}}
-    <hr/>
-    <article>
-        <header> 
-
-        </header>
-        <p>
-            {{.HTML}}
-        </p>
-        <footer>
-            <img align="left" class="u-square small" src="{{.Image}}" /> 
-            <p>{{.CreatedAt| todate}}</p>
-        </footer>
-      </article>
-{{end}}
 {{template "footer" .}}
