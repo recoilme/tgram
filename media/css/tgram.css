@@ -476,6 +476,7 @@ input[type="radio"] {
   box-sizing: border-box;
   /* 1 */
   padding: 0;
+  width: auto;
   /* 2 */ }
 
 /**

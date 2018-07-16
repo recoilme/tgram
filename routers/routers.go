@@ -583,7 +583,7 @@ func CommentNew(c *gin.Context) {
 			return
 		}
 		_ = cid
-		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", username, aid))
+		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d#share", username, aid))
 		//c.JSON(http.StatusCreated, a) //gin.H{"article": serializer.Response()})
 		//c.Redirect(http.Sta
 	}
