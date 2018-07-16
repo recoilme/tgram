@@ -399,6 +399,7 @@ func Article(c *gin.Context) {
 	case "GET":
 		lang := c.GetString("lang")
 		aid, _ := strconv.Atoi(c.Param("aid"))
+		aid32 := models.Uint32toBin(uint32(aid))
 		username := c.Param("username")
 		a, err := models.ArticleGet(lang, username, uint32(aid))
 		if err != nil {
@@ -415,9 +416,9 @@ func Article(c *gin.Context) {
 		c.Set("followcnt", followcnt)
 
 		// fav
-		isFav := models.IsFollowing(lang, "fav", c.Param("aid"), c.GetString("username"))
+		isFav := models.IsFollowing(lang, "fav", string(aid32), c.GetString("username"))
 		c.Set("isfav", isFav)
-		favcnt := models.FollowCount(lang, "fav", c.Param("aid"))
+		favcnt := models.FollowCount(lang, "fav", string(aid32))
 		c.Set("favcnt", favcnt)
 		//log.Println("Art", a)
 		c.HTML(http.StatusOK, "article.html", c.Keys)
@@ -471,11 +472,14 @@ func Unfollow(c *gin.Context) {
 func Fav(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
-		aid := c.Param("aid")
+
+		aid, _ := strconv.Atoi(c.Param("aid"))
+		aid32 := models.Uint32toBin(uint32(aid))
+		//fmt.Println(aid32, string(aid32), []byte(string(aid32)))
 		action := c.Param("action")
 		username := c.GetString("username")
 
-		err := models.Following(c.GetString("lang"), "fav", aid, username)
+		err := models.Following(c.GetString("lang"), "fav", string(aid32), username)
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -483,12 +487,14 @@ func Fav(c *gin.Context) {
 		c.Redirect(http.StatusFound, action)
 	}
 }
+
 func Unfav(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
-		aid := c.Param("aid")
+		aid, _ := strconv.Atoi(c.Param("aid"))
+		aid32 := models.Uint32toBin(uint32(aid))
 		action := c.Param("action")
-		err := models.Unfollowing(c.GetString("lang"), "fav", aid, c.GetString("username"))
+		err := models.Unfollowing(c.GetString("lang"), "fav", string(aid32), c.GetString("username"))
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -536,9 +542,11 @@ func Author(c *gin.Context) {
 	c.Set("followcnt", followcnt)
 
 	// fav
-	isFav := models.IsFollowing(lang, "fav", c.Param("aid"), c.GetString("username"))
+	aid, _ := strconv.Atoi(c.Param("aid"))
+	aid32 := models.Uint32toBin(uint32(aid))
+	isFav := models.IsFollowing(lang, "fav", string(aid32), c.GetString("username"))
 	c.Set("isfav", isFav)
-	favcnt := models.FollowCount(lang, "fav", c.Param("aid"))
+	favcnt := models.FollowCount(lang, "fav", string(aid32))
 	c.Set("favcnt", favcnt)
 	c.HTML(http.StatusOK, "author.html", c.Keys)
 }
@@ -578,5 +586,25 @@ func CommentNew(c *gin.Context) {
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", username, aid))
 		//c.JSON(http.StatusCreated, a) //gin.H{"article": serializer.Response()})
 		//c.Redirect(http.Sta
+	}
+}
+
+func Favorites(c *gin.Context) {
+	switch c.Request.Method {
+	case "GET":
+		lang := c.GetString("lang")
+		user := c.Param("username")
+		articles := models.Favorites(lang, user)
+		c.Set("articles", articles)
+		var prev, next, last uint32
+		page := ""
+		c.Set("page", page)
+		c.Set("prev", prev)
+		c.Set("next", next)
+		c.Set("last", last)
+		//from_int, _ := strconv.Atoi(c.Query("p"))
+		from_int := 0
+		c.Set("p", from_int)
+		c.HTML(http.StatusOK, "all.html", c.Keys)
 	}
 }

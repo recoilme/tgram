@@ -107,6 +107,8 @@ func InitRouter() *gin.Engine {
 	r.GET("/@:username/:aid", routers.Article)
 	r.GET("/@:username", routers.Author)
 
+	r.GET("/favorites/@:username", routers.Favorites)
+
 	r.Use(routers.GoToRegister())
 
 	r.GET("/settings", routers.Settings)

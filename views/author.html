@@ -8,8 +8,26 @@
           <a href="/editor/0">new post&nbsp;</a>
         </li>
         <li>
+          <a href="/favorites/@{{.username}}">favorites&nbsp;</a>
+        </li>
+        <li>
           <a href="/settings">settings&nbsp;</a>
         </li>
+        {{else}}
+          {{if .isfollow}}
+          <li>
+            <a href="/unfollow/{{.author.Username}}/@{{.author.Username}}" >
+            &nbsp;unfollow ({{.followcnt}})</a>
+          </li>
+          {{else}}
+            <li>
+              <a href="/follow/{{.author.Username}}/@{{.author.Username}}">
+              &nbsp;follow ({{.followcnt}})</span></a>
+            </li>
+          {{end}}
+          <li>
+            <a href="/favorites/@{{.author.Username}}">&nbsp;favorites</a>
+          </li>
         {{end}}
     </ul>
   </nav>
@@ -19,17 +37,7 @@
 
   <img align="left"  style="margin-right:20px" class="u-square medium" src="{{.author.Image}}">
   {{.author.Username}} 
-  {{if ne (print "/@" .username) .path}}
-    {{if .isfollow}}
-      <a href="/unfollow/{{.author.Username}}/@{{.author.Username}}" >
-      &nbsp;unfollow ({{.followcnt}})
-    </a>
-    {{else}}
-    <a href="/follow/{{.author.Username}}/@{{.author.Username}}">
-      &nbsp;follow ({{.followcnt}})</span>
-    </a>
-    {{end}}
-  {{end}}
+  
   <br> {{.author.Bio}}
 </section>
 

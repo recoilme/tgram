@@ -232,3 +232,35 @@ func CommentNew(a *Article, user string, mainaid uint32) (id uint32, err error) 
 	// store
 	return a.ID, sp.SetGob(fAUser, Uint32toBin(mainaid), maina)
 }
+
+func Favorites(lang, u string) (articles []Article) {
+	cat := "fav"
+	//var err error
+	master32 := []byte(u)
+	var masterstar = make([]byte, 0)
+	masterstar = append(masterstar, master32...)
+	masterstar = append(masterstar, '*')
+	smf := fmt.Sprintf(dbSlaveMaster, lang, cat)
+
+	keys, _ := sp.Keys(smf, masterstar, 0, 0, false)
+	//log.Println("keys", keys)
+	lenU := len(u) + 1
+
+	fAids := fmt.Sprintf(dbAids, lang)
+	for _, k := range keys {
+		aid32 := k[lenU:]
+		//log.Println((aid32))
+		auser32, err := sp.Get(fAids, aid32)
+		//log.Println(string(auser32), err)
+		if err == nil {
+			var a Article
+			fAUser := fmt.Sprintf(dbAUser, lang, string(auser32))
+			if err := sp.GetGob(fAUser, aid32, &a); err == nil {
+				articles = append(articles, a)
+				//log.Println(a)
+			}
+		}
+	}
+
+	return articles
+}
