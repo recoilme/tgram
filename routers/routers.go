@@ -443,8 +443,9 @@ func Follow(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
 		user := c.Param("user")
+		username := c.GetString("username")
 		action := c.Param("action")
-		err := models.Following(c.GetString("lang"), "fol", user, c.GetString("username"))
+		err := models.Following(c.GetString("lang"), "fol", user, username)
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -500,6 +501,7 @@ func GoToRegister() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.GetString("username") == "" {
 			c.Redirect(http.StatusFound, "/register")
+			c.Abort()
 		}
 	}
 }
