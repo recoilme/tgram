@@ -36,23 +36,13 @@ make sure your ~/.*shrc have those varible:
 ...:/usr/local/go/bin:/Users/zitwang/test//bin:/usr/local/go//bin
 ```
 ## Install 
-Ypu may use Govendor for manage the package, and Fresh can help build without reload
-
-https://github.com/kardianos/govendor
+Fresh can help build without reload
 
 https://github.com/pilu/fresh
 ```
 cd 
-go get -u github.com/kardianos/govendor
 go get -u github.com/pilu/fresh
 
-and pull manualy latest master for gin framework
-
-➜  govendor sync
-➜  govendor add +external
-➜  fresh
-
-or use old plain go get:
 
 ➜  go get ./...
 
@@ -60,10 +50,11 @@ or use old plain go get:
 
 ### Env
 
-Create file tgram.env with params, sample:
+You may create file tgram.env with params, sample:
 ```
 TGRAMPWD=SOM2324&E*&Ff!!EDjweljf
 TGRAMPORT=:8081
+RECAPTCHA=somekey
 ```
 
 

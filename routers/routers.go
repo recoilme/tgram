@@ -14,6 +14,7 @@ import (
 	humanize "github.com/dustin/go-humanize"
 	"github.com/gin-gonic/gin"
 	"github.com/microcosm-cc/bluemonday"
+	"github.com/patrickmn/go-cache"
 	"github.com/recoilme/tgram/models"
 	"golang.org/x/text/language"
 	"gopkg.in/russross/blackfriday.v2"
@@ -23,11 +24,17 @@ import (
 var (
 	NBSecretPassword = "A String Very Very Very Niubilty!!@##$!@#4"
 	ReCaptcha        = ""
+	cc               *cache.Cache
 )
+
+func init() {
+	cc = cache.New(24*time.Hour, 10*time.Minute)
+}
 
 // general hook
 func CheckAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+
 		c.Set("path", c.Request.URL.Path)
 		var lang = "ru"
 		var tokenStr, username, image string
@@ -185,6 +192,7 @@ func Register(c *gin.Context) {
 	case "GET":
 		c.HTML(http.StatusOK, "register.html", c.Keys)
 	case "POST":
+		ip := c.ClientIP()
 		//log.Println("ReCaptcha", ReCaptcha)
 		if ReCaptcha != "" {
 			//validate if set
@@ -192,7 +200,7 @@ func Register(c *gin.Context) {
 			//log.Println("g-recaptcha-response", c.Request.PostFormValue("g-recaptcha-response"))
 			recaptchaResponse, responseFound := c.Request.Form["g-recaptcha-response"]
 			if responseFound {
-				result, err := recaptcha.Confirm(c.ClientIP(), recaptchaResponse[0])
+				result, err := recaptcha.Confirm(ip, recaptchaResponse[0])
 				//log.Println("recaptchaResponse", result, err)
 				if err != nil {
 					renderErr(c, err)
@@ -203,6 +211,21 @@ func Register(c *gin.Context) {
 					return
 				}
 			}
+
+			// rate limit by ip
+			if x, found := cc.Get(ip); found {
+				// if found
+				t := time.Now()
+				elapsed := t.Sub(time.Unix(x.(int64), 0))
+				//log.Println("elapsed", elapsed)
+
+				if elapsed < 10*time.Minute {
+					e := fmt.Sprintf("Rate limit on registraton from that ip, please wait: %d Seconds", int((10*time.Minute - elapsed).Seconds())) //)
+					renderErr(c, errors.New(e))
+					return
+				}
+			}
+
 		}
 		var u models.User
 		err = c.ShouldBind(&u)
@@ -224,6 +247,8 @@ func Register(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
+		// add to cache on success
+		cc.Set(ip, time.Now().Unix(), cache.DefaultExpiration)
 
 		c.SetCookie("token", tokenString, 3600, "/", "", false, true)
 		switch c.Request.Header.Get("Accept") {
@@ -371,6 +396,19 @@ func Editor(c *gin.Context) {
 			return
 		}
 
+		// rate limit by username
+		if x, found := cc.Get(c.GetString("username")); found {
+			// if found
+			t := time.Now()
+			elapsed := t.Sub(time.Unix(x.(int64), 0))
+
+			if elapsed < 1*time.Hour {
+				e := fmt.Sprintf("Rate limit for new users on new post, please wait: %d Seconds", int((1*time.Hour - elapsed).Seconds()))
+				renderErr(c, errors.New(e))
+				return
+			}
+		}
+
 		body := strings.Replace(strings.TrimSpace(abind.Body), "\n", "\n\n", -1)
 		//log.Println("bod", abind.Body)
 		unsafe := blackfriday.Run([]byte(body))
@@ -412,6 +450,8 @@ func Editor(c *gin.Context) {
 			return
 		}
 		a.ID = newaid
+		// add to cache on success
+		cc.Set(a.Author, time.Now().Unix(), cache.DefaultExpiration)
 		//log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		return
@@ -589,6 +629,20 @@ func CommentNew(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
+
+		// rate limit by username
+		if x, found := cc.Get(c.GetString("username")); found {
+			// if found
+			t := time.Now()
+			elapsed := t.Sub(time.Unix(x.(int64), 0))
+
+			if elapsed < 10*time.Minute {
+				e := fmt.Sprintf("Rate limit for new users on new comment, please wait: %d Seconds", int((10*time.Minute - elapsed).Seconds()))
+				renderErr(c, errors.New(e))
+				return
+			}
+		}
+
 		a.Body = strings.Replace(a.Body, "\n", "\n\n", -1)
 		//log.Println("bod", a.Body)
 		unsafe := blackfriday.Run([]byte(a.Body))
@@ -607,6 +661,8 @@ func CommentNew(c *gin.Context) {
 			return
 		}
 		_ = cid
+		// add to cache on success
+		cc.Set(c.GetString("username"), time.Now().Unix(), cache.DefaultExpiration)
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d#share", username, aid))
 		//c.JSON(http.StatusCreated, a) //gin.H{"article": serializer.Response()})
 		//c.Redirect(http.Sta
