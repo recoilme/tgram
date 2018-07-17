@@ -396,19 +396,6 @@ func Editor(c *gin.Context) {
 			return
 		}
 
-		// rate limit by username
-		if x, found := cc.Get("_p" + c.GetString("username")); found {
-			// if found
-			t := time.Now()
-			elapsed := t.Sub(time.Unix(x.(int64), 0))
-
-			if elapsed < 1*time.Hour {
-				e := fmt.Sprintf("Rate limit for new users on new post, please wait: %d Seconds", int((1*time.Hour - elapsed).Seconds()))
-				renderErr(c, errors.New(e))
-				return
-			}
-		}
-
 		body := strings.Replace(strings.TrimSpace(abind.Body), "\n", "\n\n", -1)
 		//log.Println("bod", abind.Body)
 		unsafe := blackfriday.Run([]byte(body))
@@ -437,6 +424,20 @@ func Editor(c *gin.Context) {
 			c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 			return
 		}
+
+		// rate limit by username
+		if x, found := cc.Get("_p" + c.GetString("username")); found {
+			// if found
+			t := time.Now()
+			elapsed := t.Sub(time.Unix(x.(int64), 0))
+
+			if elapsed < 1*time.Hour {
+				e := fmt.Sprintf("Rate limit for new users on new post, please wait: %d Seconds", int((1*time.Hour - elapsed).Seconds()))
+				renderErr(c, errors.New(e))
+				return
+			}
+		}
+
 		a.Lang = c.GetString("lang")
 		a.Author = c.GetString("username")
 		a.Image = c.GetString("image")
