@@ -242,7 +242,7 @@ func Favorites(lang, u string) (articles []Article) {
 	masterstar = append(masterstar, '*')
 	smf := fmt.Sprintf(dbSlaveMaster, lang, cat)
 
-	keys, _ := sp.Keys(smf, masterstar, 0, 0, false)
+	keys, _ := sp.Keys(smf, masterstar, uint32(100), 0, false)
 	//log.Println("keys", keys)
 	lenU := len(u) + 1
 

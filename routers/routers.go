@@ -453,6 +453,7 @@ func Editor(c *gin.Context) {
 		a.ID = newaid
 		// add to cache on success
 		cc.Set("_p"+a.Author, time.Now().Unix(), cache.DefaultExpiration)
+
 		//log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		return
@@ -486,6 +487,27 @@ func Article(c *gin.Context) {
 		favcnt := models.FollowCount(lang, "fav", string(aid32))
 		c.Set("favcnt", favcnt)
 		//log.Println("Art", a)
+
+		// view counter
+		aid_ip := fmt.Sprintf("%d%s", a.ID, c.ClientIP())
+		straid := fmt.Sprintf("%d", a.ID)
+		var view int
+		if _, found := cc.Get(aid_ip); !found {
+			// new unique view for last 24 h - increment
+			cc.Set(aid_ip, 0, cache.DefaultExpiration) //store on 24 h
+			v, notfounderr := cc.IncrementInt(straid, 1)
+			if notfounderr != nil {
+				cc.Add(straid, int(1), cache.NoExpiration)
+				view = 1
+			} else {
+				view = v
+			}
+		} else {
+			if x, f := cc.Get(straid); f {
+				view = x.(int)
+			}
+		}
+		c.Set("view", view)
 		c.HTML(http.StatusOK, "article.html", c.Keys)
 		//c.JSON(http.StatusOK, a)
 	}
