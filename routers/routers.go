@@ -397,7 +397,7 @@ func Editor(c *gin.Context) {
 		}
 
 		// rate limit by username
-		if x, found := cc.Get(c.GetString("username")); found {
+		if x, found := cc.Get("_p" + c.GetString("username")); found {
 			// if found
 			t := time.Now()
 			elapsed := t.Sub(time.Unix(x.(int64), 0))
@@ -451,7 +451,7 @@ func Editor(c *gin.Context) {
 		}
 		a.ID = newaid
 		// add to cache on success
-		cc.Set(a.Author, time.Now().Unix(), cache.DefaultExpiration)
+		cc.Set("_p"+a.Author, time.Now().Unix(), cache.DefaultExpiration)
 		//log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		return
@@ -500,6 +500,8 @@ func ArticleDelete(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
+		// remove rate limit on delete
+		cc.Delete("_p" + username)
 		c.Redirect(http.StatusFound, "/")
 	}
 }
@@ -631,7 +633,7 @@ func CommentNew(c *gin.Context) {
 		}
 
 		// rate limit by username
-		if x, found := cc.Get(c.GetString("username")); found {
+		if x, found := cc.Get("_c" + c.GetString("username")); found {
 			// if found
 			t := time.Now()
 			elapsed := t.Sub(time.Unix(x.(int64), 0))
@@ -662,7 +664,7 @@ func CommentNew(c *gin.Context) {
 		}
 		_ = cid
 		// add to cache on success
-		cc.Set(c.GetString("username"), time.Now().Unix(), cache.DefaultExpiration)
+		cc.Set("_c"+c.GetString("username"), time.Now().Unix(), cache.DefaultExpiration)
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d#share", username, aid))
 		//c.JSON(http.StatusCreated, a) //gin.H{"article": serializer.Response()})
 		//c.Redirect(http.Sta
