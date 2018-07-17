@@ -367,6 +367,21 @@ func Login(c *gin.Context) {
 	}
 }
 
+func ratelimit(c *gin.Context, key string) {
+	// rate limit by username
+	if x, found := cc.Get(key); found {
+		// if found
+		t := time.Now()
+		elapsed := t.Sub(time.Unix(x.(int64), 0))
+
+		if elapsed < 1*time.Hour {
+			e := fmt.Sprintf("Rate limit for new users on new post, please wait: %d Seconds", int((1*time.Hour - elapsed).Seconds()))
+			renderErr(c, errors.New(e))
+			return
+		}
+	}
+}
+
 func Editor(c *gin.Context) {
 	aid, _ := strconv.Atoi(c.Param("aid"))
 	c.Set("aid", aid)
@@ -384,6 +399,8 @@ func Editor(c *gin.Context) {
 			str := strings.Replace(a.Body, "\n\n", "\n", -1)
 			c.Set("body", str)
 			c.Set("title", a.Title)
+		} else {
+			ratelimit(c, "_p"+c.GetString("username"))
 		}
 		c.HTML(http.StatusOK, "article_edit.html", c.Keys)
 	case "POST":
@@ -425,18 +442,7 @@ func Editor(c *gin.Context) {
 			return
 		}
 
-		// rate limit by username
-		if x, found := cc.Get("_p" + c.GetString("username")); found {
-			// if found
-			t := time.Now()
-			elapsed := t.Sub(time.Unix(x.(int64), 0))
-
-			if elapsed < 1*time.Hour {
-				e := fmt.Sprintf("Rate limit for new users on new post, please wait: %d Seconds", int((1*time.Hour - elapsed).Seconds()))
-				renderErr(c, errors.New(e))
-				return
-			}
-		}
+		ratelimit(c, "_p"+c.GetString("username"))
 
 		a.Lang = c.GetString("lang")
 		a.Author = c.GetString("username")
