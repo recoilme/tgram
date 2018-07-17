@@ -14,20 +14,20 @@ import (
 
 	"github.com/recoilme/slowpoke"
 
+	"github.com/dpapathanasiou/go-recaptcha"
 	"github.com/joho/godotenv"
 	"github.com/recoilme/tgram/routers"
-	//"github.com/thinkerou/favicon"
 )
 
-// Keep this config private, it should not expose to open source
-var NBRandomPassword = "A String Very Very Very Niubilty!!@##$!@#4"
 var Port = ":8081"
 
 func main() {
 
 	err := godotenv.Load("tgram.env")
 	if err == nil {
-		NBRandomPassword = os.Getenv("TGRAMPWD")
+		routers.NBSecretPassword = os.Getenv("TGRAMPWD")
+		routers.ReCaptcha = os.Getenv("RECAPTCHA")
+		recaptcha.Init(os.Getenv("RECAPTCHA"))
 		Port = os.Getenv("TGRAMPORT")
 	}
 

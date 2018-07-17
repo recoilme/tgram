@@ -10,6 +10,7 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	recaptcha "github.com/dpapathanasiou/go-recaptcha"
 	humanize "github.com/dustin/go-humanize"
 	"github.com/gin-gonic/gin"
 	"github.com/microcosm-cc/bluemonday"
@@ -18,7 +19,11 @@ import (
 	"gopkg.in/russross/blackfriday.v2"
 )
 
-const NBSecretPassword = "A String Very Very Very Strong!!@##$!@#$"
+//const NBSecretPassword = "A String Very Very Very Strong!!@##$!@#$"
+var (
+	NBSecretPassword = "A String Very Very Very Niubilty!!@##$!@#4"
+	ReCaptcha        = ""
+)
 
 // general hook
 func CheckAuth() gin.HandlerFunc {
@@ -180,6 +185,25 @@ func Register(c *gin.Context) {
 	case "GET":
 		c.HTML(http.StatusOK, "register.html", c.Keys)
 	case "POST":
+		//log.Println("ReCaptcha", ReCaptcha)
+		if ReCaptcha != "" {
+			//validate if set
+			c.Request.ParseForm()
+			//log.Println("g-recaptcha-response", c.Request.PostFormValue("g-recaptcha-response"))
+			recaptchaResponse, responseFound := c.Request.Form["g-recaptcha-response"]
+			if responseFound {
+				result, err := recaptcha.Confirm(c.ClientIP(), recaptchaResponse[0])
+				//log.Println("recaptchaResponse", result, err)
+				if err != nil {
+					renderErr(c, err)
+					return
+				}
+				if !result {
+					renderErr(c, errors.New("Error validating captcha"))
+					return
+				}
+			}
+		}
 		var u models.User
 		err = c.ShouldBind(&u)
 		if err != nil {
