@@ -731,6 +731,7 @@ func ArticleBad(c *gin.Context) {
 			renderErr(c, errors.New("You are not recoilme"))
 			return
 		}
+		// check for not me
 		if author == "recoilme" {
 			renderErr(c, errors.New("You are recoilme!"))
 			return
@@ -746,7 +747,7 @@ func ArticleBad(c *gin.Context) {
 		u, errauthor := models.UserGet(c.GetString("lang"), author)
 		if errauthor == nil {
 			if u.IP != "" {
-				cc.Set(c.ClientIP(), time.Now().Unix(), cache.DefaultExpiration)
+				cc.Set(u.IP, time.Now().Unix(), cache.DefaultExpiration)
 			}
 			cc.Set(author, time.Now().Unix(), cache.DefaultExpiration)
 		}
