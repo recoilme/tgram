@@ -1,6 +1,6 @@
 # Tgram
 
-[tgr.am] (http://tgr.am) - Zen service for writers and readers with minimalistic design, user-friendly interface and high speed of work.
+[tgr.am](http://tgr.am) - Zen service for writers and readers with minimalistic design, user-friendly interface and high speed of work.
 
 
 Main features:
@@ -10,7 +10,7 @@ Main features:
  - subscribe to authors
 
 
-The service is available for [Russian-speaking] (http://ru.tgr.am/), and [English-speaking] (http://en.tgr.am/) users. You can test the service on a special [test site] (http://tst.tgr.am/).
+The service is available for [Russian-speaking](http://ru.tgr.am/), and [English-speaking](http://en.tgr.am/) users. You can test the service on a special [test site] (http://tst.tgr.am/).
 
 
 Authors - please respect the readers. Do not publish spam, advertising, illegal and / or copyrighted content. Posts with similar content will be deleted, and their authors - blocked.
@@ -54,11 +54,8 @@ https://github.com/pilu/fresh
 ```
 cd 
 go get -u github.com/pilu/fresh
-
-
-➜  go get ./...
-
 ```
+
 
 ### Env
 
@@ -72,12 +69,10 @@ RECAPTCHA=somekey
 
 ## Start
 ```
+➜  go get ./...
+➜  go build
 ➜  ./tgram
 ```
-
-## Demo
-
-[tgr.am](http://tgr.am)
 
 ## Thanks
 
