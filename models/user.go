@@ -24,6 +24,7 @@ type User struct {
 	PasswordHash string `json:"-"`
 	LastPost     uint32 `json:"-"`
 	Unseen       uint32 `json:"-"`
+	IP           string `json:"-"`
 }
 
 // You could input an UserModel which will be saved in database returning with error info

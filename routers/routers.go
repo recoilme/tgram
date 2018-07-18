@@ -223,6 +223,7 @@ func Register(c *gin.Context) {
 
 		// create user
 		u.Lang = c.GetString("lang")
+		u.IP = ip
 		err = models.UserNew(&u)
 		if err != nil {
 			renderErr(c, err)
@@ -436,7 +437,14 @@ func Editor(c *gin.Context) {
 			renderErr(c, errors.New(e))
 			return
 		}
-
+		if _, bannedAuthor := cc.Get(c.GetString("username")); bannedAuthor {
+			renderErr(c, errors.New("You are banned on 24 h for spam, advertising, illegal and / or copyrighted content. Sorry about that("))
+			return
+		}
+		if _, bannedIP := cc.Get(c.ClientIP()); bannedIP {
+			renderErr(c, errors.New("This ip was banned on 24 h for spam, advertising, illegal and / or copyrighted content. Sorry about that("))
+			return
+		}
 		a.Lang = c.GetString("lang")
 		a.Author = c.GetString("username")
 		a.Image = c.GetString("image")
@@ -723,6 +731,10 @@ func ArticleBad(c *gin.Context) {
 			renderErr(c, errors.New("You are not recoilme"))
 			return
 		}
+		if author == "recoilme" {
+			renderErr(c, errors.New("You are recoilme!"))
+			return
+		}
 		err := models.ArticleDelete(c.GetString("lang"), author, uint32(aid))
 		if err != nil {
 			renderErr(c, err)
@@ -730,6 +742,14 @@ func ArticleBad(c *gin.Context) {
 		}
 		// remove rate limit on delete
 		cc.Delete(c.GetString("lang") + ":p:" + username)
+		// add author ip to ban
+		u, errauthor := models.UserGet(c.GetString("lang"), author)
+		if errauthor == nil {
+			if u.IP != "" {
+				cc.Set(c.ClientIP(), time.Now().Unix(), cache.DefaultExpiration)
+			}
+			cc.Set(author, time.Now().Unix(), cache.DefaultExpiration)
+		}
 		c.Redirect(http.StatusFound, "/@"+author)
 	}
 }
