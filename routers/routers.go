@@ -27,6 +27,13 @@ var (
 	cc               *cache.Cache
 )
 
+const (
+	CookieTime  = 2592000
+	RateIP      = 10 * time.Minute
+	RatePost    = 10 * time.Minute
+	RateComment = 1 * time.Minute
+)
+
 func init() {
 	cc = cache.New(24*time.Hour, 10*time.Minute)
 }
@@ -211,19 +218,11 @@ func Register(c *gin.Context) {
 					return
 				}
 			}
-
-			// rate limit by ip
-			if x, found := cc.Get(ip); found {
-				// if found
-				t := time.Now()
-				elapsed := t.Sub(time.Unix(x.(int64), 0))
-				//log.Println("elapsed", elapsed)
-
-				if elapsed < 10*time.Minute {
-					e := fmt.Sprintf("Rate limit on registraton from that ip, please wait: %d Seconds", int((10*time.Minute - elapsed).Seconds())) //)
-					renderErr(c, errors.New(e))
-					return
-				}
+			wait := ratelimit(ip, RateIP)
+			if wait > 0 {
+				e := fmt.Sprintf("Rate limit on registraton from that ip, please wait: %d Seconds", wait)
+				renderErr(c, errors.New(e))
+				return
 			}
 
 		}
@@ -250,7 +249,7 @@ func Register(c *gin.Context) {
 		// add to cache on success
 		cc.Set(ip, time.Now().Unix(), cache.DefaultExpiration)
 
-		c.SetCookie("token", tokenString, 3600, "/", "", false, true)
+		c.SetCookie("token", tokenString, CookieTime, "/", "", false, true)
 		switch c.Request.Header.Get("Accept") {
 		case "application/json":
 			c.JSON(http.StatusCreated, u)
@@ -308,7 +307,7 @@ func Settings(c *gin.Context) {
 				return
 			}
 			if c.Request.Header.Get("Accept") != "application/json" {
-				c.SetCookie("token", tokenString, 3600, "/", "", false, true)
+				c.SetCookie("token", tokenString, CookieTime, "/", "", false, true)
 			}
 
 		}
@@ -356,7 +355,7 @@ func Login(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-		c.SetCookie("token", tokenString, 3600, "/", "", false, true)
+		c.SetCookie("token", tokenString, CookieTime, "/", "", false, true)
 		switch c.Request.Header.Get("Accept") {
 		case "application/json":
 			c.JSON(http.StatusOK, user)
@@ -367,24 +366,24 @@ func Login(c *gin.Context) {
 	}
 }
 
-func ratelimit(c *gin.Context, key string) {
-	// rate limit by username
+func ratelimit(key string, dur time.Duration) (wait int) {
+
 	if x, found := cc.Get(key); found {
 		// if found
 		t := time.Now()
 		elapsed := t.Sub(time.Unix(x.(int64), 0))
 
-		if elapsed < 1*time.Hour {
-			e := fmt.Sprintf("Rate limit for new users on new post, please wait: %d Seconds", int((1*time.Hour - elapsed).Seconds()))
-			renderErr(c, errors.New(e))
-			return
+		if elapsed < dur {
+			wait = int((dur - elapsed).Seconds())
 		}
 	}
+	return wait
 }
 
 func Editor(c *gin.Context) {
 	aid, _ := strconv.Atoi(c.Param("aid"))
 	c.Set("aid", aid)
+	postRate := c.GetString("lang") + ":p:" + c.GetString("username")
 	switch c.Request.Method {
 	case "GET":
 
@@ -400,7 +399,12 @@ func Editor(c *gin.Context) {
 			c.Set("body", str)
 			c.Set("title", a.Title)
 		} else {
-			ratelimit(c, "_p"+c.GetString("username"))
+			wait := ratelimit(postRate, RatePost)
+			if wait > 0 {
+				e := fmt.Sprintf("Rate limit for new users on new post, please wait: %d Seconds", wait)
+				renderErr(c, errors.New(e))
+				return
+			}
 		}
 		c.HTML(http.StatusOK, "article_edit.html", c.Keys)
 	case "POST":
@@ -441,8 +445,12 @@ func Editor(c *gin.Context) {
 			c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 			return
 		}
-
-		ratelimit(c, "_p"+c.GetString("username"))
+		wait := ratelimit(postRate, RatePost)
+		if wait > 0 {
+			e := fmt.Sprintf("Rate limit for new users on new post, please wait: %d Seconds", wait)
+			renderErr(c, errors.New(e))
+			return
+		}
 
 		a.Lang = c.GetString("lang")
 		a.Author = c.GetString("username")
@@ -530,7 +538,7 @@ func ArticleDelete(c *gin.Context) {
 			return
 		}
 		// remove rate limit on delete
-		cc.Delete("_p" + username)
+		cc.Delete(c.GetString("lang") + ":p:" + username)
 		c.Redirect(http.StatusFound, "/")
 	}
 }
@@ -660,18 +668,12 @@ func CommentNew(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-
-		// rate limit by username
-		if x, found := cc.Get("_c" + c.GetString("username")); found {
-			// if found
-			t := time.Now()
-			elapsed := t.Sub(time.Unix(x.(int64), 0))
-
-			if elapsed < 10*time.Minute {
-				e := fmt.Sprintf("Rate limit for new users on new comment, please wait: %d Seconds", int((10*time.Minute - elapsed).Seconds()))
-				renderErr(c, errors.New(e))
-				return
-			}
+		rateComKey := lang + ":c:" + c.GetString("username")
+		wait := ratelimit(rateComKey, RateComment)
+		if wait > 0 {
+			e := fmt.Sprintf("Rate limit for new users on new comment, please wait: %d Seconds", wait)
+			renderErr(c, errors.New(e))
+			return
 		}
 
 		a.Body = strings.Replace(a.Body, "\n", "\n\n", -1)
@@ -693,7 +695,7 @@ func CommentNew(c *gin.Context) {
 		}
 		_ = cid
 		// add to cache on success
-		cc.Set("_c"+c.GetString("username"), time.Now().Unix(), cache.DefaultExpiration)
+		cc.Set(rateComKey, time.Now().Unix(), cache.DefaultExpiration)
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d#share", username, aid))
 		//c.JSON(http.StatusCreated, a) //gin.H{"article": serializer.Response()})
 		//c.Redirect(http.Sta
