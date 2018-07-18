@@ -44,18 +44,14 @@ make sure your ~/.*shrc have those varible:
 ➜  echo $PATH
 ...:/usr/local/go/bin:/Users/zitwang/test//bin:/usr/local/go//bin
 ```
-## Install 
+## Fresh 
 Fresh can help build without reload
-
-https://github.com/pilu/fresh
 ```
-cd 
 go get -u github.com/pilu/fresh
 ```
 
 
 ### Env
-
 You may create file tgram.env with params, sample:
 ```
 TGRAMPWD=SOM2324&E*&Ff!!EDjweljf
