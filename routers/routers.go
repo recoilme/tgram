@@ -119,16 +119,6 @@ func CheckAuth() gin.HandlerFunc {
 		}
 		c.Set("username", username)
 		c.Set("image", image)
-		/*
-			var user models.User //users.UserModel
-			_, exists := c.Get("user")
-			if !exists {
-				if uid > 0 {
-					// get from db
-				}
-			}
-			c.Set("user", user)
-		*/
 	}
 }
 
@@ -137,9 +127,7 @@ func ToStr(value interface{}) string {
 }
 
 func ToDate(t time.Time) string {
-	//tm := time.Unix(int64(t), 0)
 	return fmt.Sprintf("%s", humanize.Time(t))
-	//return t.Format("02.01.2006 15:04")
 }
 
 func Home(c *gin.Context) {
@@ -318,7 +306,6 @@ func Settings(c *gin.Context) {
 		default:
 			c.Redirect(http.StatusFound, "/")
 		}
-
 	}
 }
 
@@ -328,7 +315,6 @@ func Logout(c *gin.Context) {
 		c.SetCookie("token", "", 0, "/", "", false, true)
 		c.Redirect(http.StatusFound, "/")
 	case "POST":
-
 	}
 }
 
@@ -367,7 +353,6 @@ func Login(c *gin.Context) {
 }
 
 func ratelimit(key string, dur time.Duration) (wait int) {
-
 	if x, found := cc.Get(key); found {
 		// if found
 		t := time.Now()
@@ -723,5 +708,28 @@ func Favorites(c *gin.Context) {
 		from_int := 0
 		c.Set("p", from_int)
 		c.HTML(http.StatusOK, "all.html", c.Keys)
+	}
+}
+
+func ArticleBad(c *gin.Context) {
+	switch c.Request.Method {
+	case "GET":
+		aid, _ := strconv.Atoi(c.Param("aid"))
+		author := c.Param("author")
+		username := c.GetString("username")
+
+		//check for me
+		if username != "recoilme" {
+			renderErr(c, errors.New("You are not recoilme"))
+			return
+		}
+		err := models.ArticleDelete(c.GetString("lang"), author, uint32(aid))
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		// remove rate limit on delete
+		cc.Delete(c.GetString("lang") + ":p:" + username)
+		c.Redirect(http.StatusFound, "/@"+author)
 	}
 }

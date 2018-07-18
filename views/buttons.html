@@ -1,5 +1,9 @@
 {{ define "buttons" }}
-
+{{if eq .username "recoilme" }}
+<a href="/bad/@{{.article.Author}}/{{.article.ID}}">
+  bad
+</a>
+{{end}}
 {{if eq .article.Author .username}}
 <a href="/editor/{{.article.ID}}">
     edit
@@ -15,7 +19,7 @@
   </a>
   {{end}}
 {{end}}&nbsp;
-{{if eq .article.Author .username}}
+{{if eq .article.Author .username }}
 <a href="/delete/a/{{.article.ID}}">
   delete
 </a>
