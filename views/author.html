@@ -31,13 +31,11 @@
         {{end}}
     </ul>
   </nav>
-
 </aside>
 <section>
-
   <img align="left"  style="margin-right:20px" class="u-square medium" src="{{.author.Image}}">
   {{.author.Username}} 
-  <br> {{.author.Bio}}
+  <br>{{.author.Bio}}
 </section>
 <hr>
   {{range .articles}}
@@ -69,9 +67,7 @@
     <a href="/@{{.author.Username}}">&laquo;</a>
     &nbsp;&nbsp;
     <a href="/@{{.author.Username}}?p={{.prev}}">&lsaquo;</a>
-
   {{end}}
-
     &nbsp;&nbsp;&nbsp;&nbsp;{{.page}}&nbsp;&nbsp;&nbsp;&nbsp;
   {{if le .next 1}}
     &rsaquo;
