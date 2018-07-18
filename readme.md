@@ -10,10 +10,7 @@ Main features:
  - subscribe to authors
 
 
-The service is available for [Russian-speaking](http://ru.tgr.am/), and [English-speaking](http://en.tgr.am/) users. You can test the service on a special [test site] (http://tst.tgr.am/).
-
-
-Authors - please respect the readers. Do not publish spam, advertising, illegal and / or copyrighted content. Posts with similar content will be deleted, and their authors - blocked.
+The service is available for [Russian-speaking](http://ru.tgr.am/), and [English-speaking](http://en.tgr.am/) users. You can test the service on a special [test site](http://tst.tgr.am/).
 
 
 This app use [slowpoke](https://github.com/recoilme/slowpoke) as database. Package slowpoke implements a low-level key/value store in pure Go.
