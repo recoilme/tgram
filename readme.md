@@ -51,7 +51,7 @@ go get -u github.com/pilu/fresh
 ```
 
 
-### Env
+## Env
 You may create file tgram.env with params, sample:
 ```
 TGRAMPWD=SOM2324&E*&Ff!!EDjweljf
@@ -81,3 +81,7 @@ RECAPTCHA=somekey
 ## Design
 
 [egorabaturov](https://egorabaturov.com)
+
+## Dev branch
+
+- master

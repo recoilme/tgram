@@ -14,6 +14,7 @@ const (
 	dbAid   = "db/%s/aid"
 	dbAids  = "db/%s/aids"
 	dbAUser = "db/%s/a/%s"
+	dbView  = "db/%s/view"
 )
 
 type Article struct {
@@ -263,4 +264,17 @@ func Favorites(lang, u string) (articles []Article) {
 	}
 
 	return articles
+}
+
+func ViewSet(lang string, aid uint32, v int) {
+	go sp.Set(fmt.Sprintf(dbView, lang), Uint32toBin(aid), Uint32toBin(uint32(v)))
+}
+
+func ViewGet(lang string, aid uint32) (v int) {
+	v = 1
+	b, err := sp.Get(fmt.Sprintf(dbView, lang), Uint32toBin(aid))
+	if err == nil {
+		v = int(BintoUint32(b))
+	}
+	return v
 }

@@ -466,7 +466,7 @@ func Editor(c *gin.Context) {
 		}
 		a.ID = newaid
 		// add to cache on success
-		cc.Set("_p"+a.Author, time.Now().Unix(), cache.DefaultExpiration)
+		cc.Set(postRate, time.Now().Unix(), cache.DefaultExpiration)
 
 		//log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
@@ -503,21 +503,25 @@ func Article(c *gin.Context) {
 		//log.Println("Art", a)
 
 		// view counter
-		aid_ip := fmt.Sprintf("%d%s", a.ID, c.ClientIP())
-		straid := fmt.Sprintf("%d", a.ID)
+		unic := fmt.Sprintf("%s%d%s", lang, a.ID, c.ClientIP())
+		unicCnt := fmt.Sprintf("%s%d", lang, a.ID)
 		var view int
-		if _, found := cc.Get(aid_ip); !found {
+		if _, found := cc.Get(unic); !found {
 			// new unique view for last 24 h - increment
-			cc.Set(aid_ip, 0, cache.DefaultExpiration) //store on 24 h
-			v, notfounderr := cc.IncrementInt(straid, 1)
+			cc.Set(unic, 0, cache.DefaultExpiration) //store on 24 h
+			v, notfounderr := cc.IncrementInt(unicCnt, 1)
 			if notfounderr != nil {
-				cc.Add(straid, int(1), cache.NoExpiration)
+				stored := models.ViewGet(lang, a.ID)
+				cc.Add(unicCnt, stored, cache.NoExpiration)
 				view = 1
 			} else {
 				view = v
+				if v%5 == 0 {
+					models.ViewSet(lang, a.ID, v)
+				}
 			}
 		} else {
-			if x, f := cc.Get(straid); f {
+			if x, f := cc.Get(unicCnt); f {
 				view = x.(int)
 			}
 		}
