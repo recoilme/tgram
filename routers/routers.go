@@ -382,7 +382,7 @@ func Editor(c *gin.Context) {
 				renderErr(c, err)
 				return
 			}
-			str := strings.Replace(a.Body, "\n\n", "\n", -1)
+			str := strings.Replace(a.Body, "\n\n", "\r\n", -1)
 			c.Set("body", str)
 			c.Set("title", a.Title)
 		} else {
@@ -404,11 +404,11 @@ func Editor(c *gin.Context) {
 			return
 		}
 
-		body := strings.Replace(strings.TrimSpace(abind.Body), "\n", "\n\n", -1)
-		//log.Println("bod", abind.Body)
+		body := strings.Replace(strings.TrimSpace(abind.Body), "\r\n", "\n\n", -1)
+
 		unsafe := blackfriday.Run([]byte(body))
-		//log.Println("unsafe", string(unsafe))
 		html := template.HTML(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
+
 		title := abind.Title
 		//log.Printf("html:'%s'\n", html)
 		var a models.Article
@@ -675,7 +675,7 @@ func CommentNew(c *gin.Context) {
 			return
 		}
 
-		a.Body = strings.Replace(a.Body, "\n", "\n\n", -1)
+		a.Body = strings.Replace(a.Body, "\r\n", "\n\n", -1)
 		//log.Println("bod", a.Body)
 		unsafe := blackfriday.Run([]byte(a.Body))
 		html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
