@@ -20,6 +20,7 @@ body{
   body main,
   body footer,
   body article{
+    word-wrap: break-word;
     position:relative;
     max-width:40rem;
     margin:0 auto; }
@@ -560,6 +561,7 @@ article p {
 blockquote {
 	font-style: italic;
 }
+
 
 article h3 {
   font-family: 'PT Sans Caption', serif;

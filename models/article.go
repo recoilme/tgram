@@ -20,7 +20,7 @@ const (
 type Article struct {
 	ID        uint32
 	Title     string `form:"title" json:"title" binding:"max=255"`
-	Body      string `form:"body" json:"body" binding:"exists,min=50,max=16384"`
+	Body      string `form:"body" json:"body" binding:"exists,min=10,max=16384"`
 	Author    string
 	Image     string
 	CreatedAt time.Time
