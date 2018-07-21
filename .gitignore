@@ -23,3 +23,6 @@ bak.*
 db
 tgram
 tgram.env
+
+img
+models/img

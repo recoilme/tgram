@@ -403,9 +403,14 @@ func Editor(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
+		username := c.GetString("username")
+		lang := c.GetString("lang")
 
-		body := strings.Replace(strings.TrimSpace(abind.Body), "\r\n", "\n\n", -1)
-
+		body, err := models.ImgProcess(strings.Replace(strings.TrimSpace(abind.Body), "\r\n", "\n\n", -1), lang, username)
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
 		unsafe := blackfriday.Run([]byte(body))
 		html := template.HTML(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
 
@@ -413,8 +418,8 @@ func Editor(c *gin.Context) {
 		//log.Printf("html:'%s'\n", html)
 		var a models.Article
 		if aid > 0 {
-			username := c.GetString("username")
-			a, err := models.ArticleGet(c.GetString("lang"), username, uint32(aid))
+
+			a, err := models.ArticleGet(lang, username, uint32(aid))
 			if err != nil {
 				renderErr(c, err)
 				return
@@ -438,7 +443,7 @@ func Editor(c *gin.Context) {
 			renderErr(c, errors.New(e))
 			return
 		}
-		if _, bannedAuthor := cc.Get("ban:uid:" + c.GetString("username")); bannedAuthor {
+		if _, bannedAuthor := cc.Get("ban:uid:" + username); bannedAuthor {
 			renderErr(c, errors.New("You are banned on 24 h for spam, advertising, illegal and / or copyrighted content. Sorry about that("))
 			return
 		}
@@ -447,8 +452,8 @@ func Editor(c *gin.Context) {
 				renderErr(c, errors.New("This ip was banned on 24 h for spam, advertising, illegal and / or copyrighted content. Sorry about that("))
 				return
 			}*/
-		a.Lang = c.GetString("lang")
-		a.Author = c.GetString("username")
+		a.Lang = lang
+		a.Author = username
 		a.Image = c.GetString("image")
 		a.CreatedAt = time.Now()
 		a.HTML = html
