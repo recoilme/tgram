@@ -1,7 +1,6 @@
 package models
 
 import (
-	"bufio"
 	"bytes"
 	"fmt"
 	"image"
@@ -56,39 +55,26 @@ func ImgProcess(s, lang, username string) (res string, err error) {
 
 func store(href, lang, username string, b []byte) {
 	//image processing
-	image, _, err := image.Decode(bytes.NewReader(b))
-	if err == nil {
-		small := resize.Thumbnail(800, 800, image, resize.MitchellNetravali)
-		var smallb bytes.Buffer
-		err = png.Encode(bufio.NewWriter(&smallb), small)
-		if err == nil {
-			//fmt.Println("write orig", href)
-			gray := halfgone.ImageToGray(small)
-			ad := halfgone.AtkinsonDitherer{}.Apply(gray)
-			var grayb bytes.Buffer
-			err = png.Encode(bufio.NewWriter(&grayb), ad)
-			if err == nil {
-				//store
-				imgid, err := sp.Counter(fmt.Sprintf(dbImgID, lang, username), []byte("id"))
-				if err == nil {
-					f := fmt.Sprintf(dbImg, lang, username, imgid)
-					defer sp.Close(f)
-					err = sp.Set(f, Uint32toBin(uint32(imgid)), grayb.Bytes())
-					if err == nil {
-						fmt.Println("store orig", href)
-						fo := fmt.Sprintf(dbImgOrig, lang, username, imgid)
-						err = sp.Set(fo, Uint32toBin(uint32(imgid)), smallb.Bytes())
-						defer sp.Close(fo)
-						if err == nil {
-							//return
-						}
-					}
-					//return 0, err
+	if img, _, err := image.Decode(bytes.NewReader(b)); err == nil {
+		small := resize.Thumbnail(800, 800, img, resize.MitchellNetravali)
+		smallb := new(bytes.Buffer)
+		if err := png.Encode(smallb, small); err == nil {
+			ad := halfgone.AtkinsonDitherer{}.Apply(halfgone.ImageToGray(small))
+			//store
+			if imgid, err := sp.Counter(fmt.Sprintf(dbImgID, lang, username), []byte("id")); err == nil {
+				f := fmt.Sprintf(dbImg, lang, username, imgid)
+				defer sp.Close(f)
+				grayb := new(bytes.Buffer)
+				err = png.Encode(grayb, ad)
+				if err := sp.Set(f, Uint32toBin(uint32(imgid)), grayb.Bytes()); err == nil {
+					fo := fmt.Sprintf(dbImgOrig, lang, username, imgid)
+					sp.Set(fo, Uint32toBin(uint32(imgid)), smallb.Bytes())
+					defer sp.Close(fo)
 				}
+
 			}
+
 		}
-	} else {
-		//fmt.Println("Decode", err)
 	}
 
 }
