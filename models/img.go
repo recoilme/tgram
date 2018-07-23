@@ -85,36 +85,33 @@ func store(href, lang, username string, b []byte) (file, orig string) {
 	//image processing
 	if img, _, err := image.Decode(bytes.NewReader(b)); err == nil {
 		thumb := resize.Thumbnail(800, 800, img, resize.MitchellNetravali)
-		thumbb := new(bytes.Buffer)
-		if err := png.Encode(thumbb, thumb); err == nil {
-			atk := halfgone.AtkinsonDitherer{}.Apply(halfgone.ImageToGray(thumb))
-			//store
-			if imgid, err := sp.Counter(fmt.Sprintf(dbImgID, lang, username), []byte("id")); err == nil {
-				path := fmt.Sprintf(fileImg, lang, username, imgid, ".png")
-				if _, err := utils.СheckAndCreate(path); err == nil {
-					// save Atkinson
-					f, err := os.Create(path)
-					defer f.Close()
-					if err == nil {
-						if err := png.Encode(f, atk); err == nil {
-							file = "i" + path[3:]
-						}
+		//thumbb := new(bytes.Buffer)
+		//if err := png.Encode(thumbb, thumb); err == nil {
+		atk := halfgone.AtkinsonDitherer{}.Apply(halfgone.ImageToGray(thumb))
+		//store
+		if imgid, err := sp.Counter(fmt.Sprintf(dbImgID, lang, username), []byte("id")); err == nil {
+			path := fmt.Sprintf(fileImg, lang, username, imgid, ".png")
+			if _, err := utils.СheckAndCreate(path); err == nil {
+				// save Atkinson
+				f, err := os.Create(path)
+				defer f.Close()
+				if err == nil {
+					if err := png.Encode(f, atk); err == nil {
+						file = "i" + path[3:]
 					}
-					// save orig
-					pathOrig := fmt.Sprintf(fileImg, lang, username, imgid, "_.png")
-					fo, err := os.Create(pathOrig)
-					defer fo.Close()
-					if err == nil {
-						if err := png.Encode(fo, thumb); err == nil {
-							orig = "i" + pathOrig[3:]
-						}
-					}
-
 				}
-
+				// save orig
+				pathOrig := fmt.Sprintf(fileImg, lang, username, imgid, "_.png")
+				fo, err := os.Create(pathOrig)
+				defer fo.Close()
+				if err == nil {
+					if err := png.Encode(fo, thumb); err == nil {
+						orig = "i" + pathOrig[3:]
+					}
+				}
 			}
-
 		}
+		//}
 	}
 	return file, orig
 }
@@ -135,17 +132,9 @@ func isImg(s string) ([]byte, string) {
 			b := utils.HTTPGetBody(href)
 			if b != nil {
 				return b, href
-
-			} else {
-				//log.Println("b is nil")
 			}
 		}
-		//fmt.Println(href)
-		//href = "http://ya.ru"
-		//s = s[:first] + href + s[last:]
-		//fmt.Println(s)
 	}
-
 	return nil, ""
 }
 
