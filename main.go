@@ -87,6 +87,7 @@ func InitRouter() *gin.Engine {
 
 	//r.Use(favicon.New("./favicon.ico"))
 	r.Use(static.Serve("/m", static.LocalFile("./media", false)))
+	r.Use(static.Serve("/i", static.LocalFile("./img", false)))
 
 	r.SetFuncMap(template.FuncMap{
 		"tostr":  routers.ToStr,

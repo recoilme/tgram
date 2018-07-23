@@ -405,8 +405,8 @@ func Editor(c *gin.Context) {
 		}
 		username := c.GetString("username")
 		lang := c.GetString("lang")
-
-		body, err := models.ImgProcess(strings.Replace(strings.TrimSpace(abind.Body), "\r\n", "\n\n", -1), lang, username)
+		host := "http://" + c.Request.Host + "/"
+		body, err := models.ImgProcess(strings.Replace(strings.TrimSpace(abind.Body), "\r\n", "\n\n", -1), lang, username, host)
 		if err != nil {
 			renderErr(c, err)
 			return

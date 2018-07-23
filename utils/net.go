@@ -6,6 +6,8 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -118,4 +120,20 @@ func HTTPGetBody(url string) []byte {
 	}
 
 	return nil
+}
+
+// checkAndCreate may create dirs
+func СheckAndCreate(path string) (bool, error) {
+	// detect if file exists
+	var _, err = os.Stat(path)
+	if err == nil {
+		return true, err
+	}
+	// create dirs if file not exists
+	if os.IsNotExist(err) {
+		if filepath.Dir(path) != "." {
+			return false, os.MkdirAll(filepath.Dir(path), 0777)
+		}
+	}
+	return false, err
 }

@@ -33,7 +33,7 @@ func TestPngCreate(t *testing.T) {
 	if e != nil {
 		fmt.Println("e", e)
 	} else {
-		fmt.Println(smallb.Bytes())
+		//fmt.Println(smallb.Bytes())
 	}
 	fo := "img/image.png"
 	sp.Set(fo, []byte("1"), smallb.Bytes())
@@ -66,7 +66,7 @@ func TestImgProcess(t *testing.T) {
 	![descr descr](http://tggram.com/media/daokedao/photos/file_826207.jpg)
 	![descr descr](http://tst.tgr.am/m/img/logo_big.png)
 	`
-	s, err := models.ImgProcess(s, "ru", "recoilme")
+	s, err := models.ImgProcess(s, "ru", "recoilme", "http://sub.localhost:8081/")
 	if err != nil {
 		t.Error(err)
 	} else {
