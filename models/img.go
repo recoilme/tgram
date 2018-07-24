@@ -53,7 +53,7 @@ func ImgProcess(s, lang, username, host string) (res string, err error) {
 		}
 		b, href := isImg(element)
 		if b != nil {
-			file, orig := store(href, lang, username, b)
+			file, orig, _ := Store(href, lang, username, b)
 			if file == "" || orig == "" {
 				continue
 			}
@@ -81,7 +81,8 @@ func ImgProcess(s, lang, username, host string) (res string, err error) {
 	return res, err
 }
 
-func store(href, lang, username string, b []byte) (file, orig string) {
+// Store store file by lang/username
+func Store(href, lang, username string, b []byte) (file, orig string, origSize int) {
 	//image processing
 	if img, _, err := image.Decode(bytes.NewReader(b)); err == nil {
 		thumb := resize.Thumbnail(800, 800, img, resize.MitchellNetravali)
@@ -107,13 +108,13 @@ func store(href, lang, username string, b []byte) (file, orig string) {
 				if err == nil {
 					if err := png.Encode(fo, thumb); err == nil {
 						orig = "i" + pathOrig[3:]
+						origSize = len(b)
 					}
 				}
 			}
 		}
-		//}
 	}
-	return file, orig
+	return file, orig, origSize
 }
 
 func isImg(s string) ([]byte, string) {

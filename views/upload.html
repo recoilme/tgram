@@ -1,0 +1,18 @@
+{{ template "header" . }}
+{{ template "menu" . }}
+<section>
+  <h5>upload image</h5>
+  <p>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="file">
+      <input type="submit" value="upload">
+    </form>
+  </p>		
+
+</section>
+{{ if .newelement}}
+<section>
+    <textarea>{{.newelement}}</textarea>
+</section>
+{{end}}
+{{ template "footer" . }}

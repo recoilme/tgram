@@ -3,9 +3,18 @@
 <section>
 <form  action="{{.path}}" method="post">
 	<input name="title"  type="text" placeholder="Title" value="{{.title}}">
-    <textarea id="mde" name="body">{{.body}}</textarea>
+	<textarea id="mde" name="body">{{.body}}</textarea>
+	
     <button type="submit" >Publish</button>
 </form>
+</section>
+<section>
+	<details>
+		<summary>upload image</summary>
+		<p>
+			<a href="/upload" target="_blank" >upload from file</a>
+		</p>		
+	</details>
 </section>
 
 <script>

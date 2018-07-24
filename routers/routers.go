@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"strconv"
 	"strings"
@@ -759,5 +761,59 @@ func ArticleBad(c *gin.Context) {
 		cc.Set("ban:uid:"+author, time.Now().Unix(), cache.DefaultExpiration)
 		//}
 		c.Redirect(http.StatusFound, "/@"+author)
+	}
+}
+
+func Upload(c *gin.Context) {
+	switch c.Request.Method {
+	case "GET":
+		c.HTML(http.StatusOK, "upload.html", c.Keys)
+	case "POST":
+		var fileHeader *multipart.FileHeader
+		var err error
+		var src multipart.File
+		var newElement = ""
+		minSize := 102400
+		if fileHeader, err = c.FormFile("file"); err != nil {
+			renderErr(c, err)
+			return
+		}
+		//log.Println("Size:", fileHeader.Size)
+		if fileHeader.Size > int64(minSize*100) {
+			renderErr(c, errors.New("File too big"))
+			return
+		}
+
+		if src, err = fileHeader.Open(); err == nil {
+			defer src.Close()
+			//log.Println("src:", src)
+			b, err := ioutil.ReadAll(src)
+			//log.Println("b:", len(b))
+			if err != nil {
+				renderErr(c, err)
+				return
+			}
+			file, orig, origSize := models.Store("", c.GetString("lang"), c.GetString("username"), b)
+			if file == "" || orig == "" {
+				renderErr(c, errors.New("Some error"))
+				return
+			}
+			host := "http://" + c.Request.Host + "/"
+
+			if origSize > minSize {
+				newElement = "[![](" + host + file + " )](" + host + orig + ")"
+			} else {
+				newElement = "![](" + host + orig + ")"
+			}
+
+			c.Set("newelement", newElement)
+			c.HTML(http.StatusOK, "upload.html", c.Keys)
+
+		} else {
+			//log.Println("open error", err)
+			renderErr(c, err)
+			return
+		}
+
 	}
 }
