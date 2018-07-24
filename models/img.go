@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"image"
-	"io"
 	"os"
 	"regexp"
 	"strings"
@@ -32,6 +31,7 @@ const (
 
 	// max size
 	maxSize = 10240000
+	minSize = 102400
 )
 
 // ImgProcess extract img links from markdown, download, and replace with local copy
@@ -127,7 +127,7 @@ func isImg(s string) ([]byte, string) {
 		href = s[first:last]
 		len := utils.HTTPImgLen(href)
 		//log.Println("href", href, "len", len)
-		if len > 0 && len < maxSize {
+		if len > minSize && len < maxSize {
 			//try download
 			b := utils.HTTPGetBody(href)
 			if b != nil {
@@ -136,13 +136,4 @@ func isImg(s string) ([]byte, string) {
 		}
 	}
 	return nil, ""
-}
-
-// convertToPNG converts from any recognized format to PNG.
-func convertToPNG(w io.Writer, r io.Reader) error {
-	img, _, err := image.Decode(r)
-	if err != nil {
-		return err
-	}
-	return png.Encode(w, img)
 }
