@@ -1,6 +1,6 @@
-# Tgram
+# Typegram
 
-[tgr.am](http://tgr.am) - Zen service for writers and readers with minimalistic design, user-friendly interface and high speed of work.
+[typegram](http://tgr.am) - Zen service for writers and readers with minimalistic design, user-friendly interface and high speed of work.
 
 
 Main features:
