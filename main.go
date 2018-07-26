@@ -19,6 +19,7 @@ import (
 	"github.com/recoilme/tgram/routers"
 )
 
+// Port - typegram port
 var Port = ":8081"
 
 func main() {
@@ -78,6 +79,7 @@ func globalRecover(c *gin.Context) {
 	c.Next()
 }
 
+// InitRouter - init router
 func InitRouter() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
@@ -137,6 +139,7 @@ func InitRouter() *gin.Engine {
 	return r
 }
 
+// CORSMiddleware - open for request from javascript
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")

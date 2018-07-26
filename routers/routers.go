@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"strconv"
@@ -22,7 +23,6 @@ import (
 	"gopkg.in/russross/blackfriday.v2"
 )
 
-//const NBSecretPassword = "A String Very Very Very Strong!!@##$!@#$"
 var (
 	NBSecretPassword = "A String Very Very Very Niubilty!!@##$!@#4"
 	ReCaptcha        = ""
@@ -40,7 +40,7 @@ func init() {
 	cc = cache.New(24*time.Hour, 10*time.Minute)
 }
 
-// general hook
+// CheckAuth - general hook
 func CheckAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
@@ -194,7 +194,7 @@ func Register(c *gin.Context) {
 		if ReCaptcha != "" {
 			//validate if set
 			c.Request.ParseForm()
-			//log.Println("g-recaptcha-response", c.Request.PostFormValue("g-recaptcha-response"))
+			log.Println("g-recaptcha-response", c.Request.PostFormValue("g-recaptcha-response"))
 			recaptchaResponse, responseFound := c.Request.Form["g-recaptcha-response"]
 			if responseFound {
 				result, err := recaptcha.Confirm(ip, recaptchaResponse[0])

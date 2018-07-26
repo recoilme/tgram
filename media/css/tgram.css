@@ -217,7 +217,7 @@ article > footer{
   margin-top:1.5em;
   font-size:.85em; }
 
-  /*
+/*
 a{
   text-decoration:none;
   color:#0064c1;
@@ -569,7 +569,6 @@ article h3 {
 }
 article section> p:nth-of-type(1) {
   font-size: 21px;
-
   font-family: 'PT Sans Caption', serif;
 }
 
