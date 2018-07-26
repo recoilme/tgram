@@ -39,7 +39,7 @@ func init() {
 	cc = cache.New(24*time.Hour, 10*time.Minute)
 }
 
-// CheckAuth - general hook
+// CheckAuth - general hook sets all param like lang, user
 func CheckAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
@@ -123,14 +123,17 @@ func CheckAuth() gin.HandlerFunc {
 	}
 }
 
+// ToStr convert object to string
 func ToStr(value interface{}) string {
 	return fmt.Sprintf("%s", value)
 }
 
+// ToDate convert time 2 date
 func ToDate(t time.Time) string {
 	return fmt.Sprintf("%s", humanize.Time(t))
 }
 
+// Home - main page
 func Home(c *gin.Context) {
 
 	username := c.GetString("username")
@@ -143,6 +146,7 @@ func Home(c *gin.Context) {
 	c.HTML(http.StatusOK, "home.html", c.Keys)
 }
 
+// All all page
 func All(c *gin.Context) {
 	articles, page, prev, next, last, err := models.AllArticles(c.GetString("lang"), c.Query("p"))
 	if err != nil {
@@ -182,6 +186,7 @@ func genToken(username, image string) (string, error) {
 	return token.SignedString([]byte(NBSecretPassword))
 }
 
+// Register page
 func Register(c *gin.Context) {
 	var err error
 	switch c.Request.Method {
@@ -256,6 +261,7 @@ func Register(c *gin.Context) {
 	}
 }
 
+// Settings page
 func Settings(c *gin.Context) {
 
 	switch c.Request.Method {
@@ -314,6 +320,7 @@ func Settings(c *gin.Context) {
 	}
 }
 
+// Logout remove cookie
 func Logout(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
@@ -323,6 +330,7 @@ func Logout(c *gin.Context) {
 	}
 }
 
+// Login page
 func Login(c *gin.Context) {
 	var err error
 	switch c.Request.Method {
@@ -370,6 +378,7 @@ func ratelimit(key string, dur time.Duration) (wait int) {
 	return wait
 }
 
+// Editor page
 func Editor(c *gin.Context) {
 	aid, _ := strconv.Atoi(c.Param("aid"))
 	c.Set("aid", aid)
@@ -477,6 +486,7 @@ func Editor(c *gin.Context) {
 	}
 }
 
+// Article page
 func Article(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
@@ -534,6 +544,7 @@ func Article(c *gin.Context) {
 	}
 }
 
+// ArticleDelete delete page by id of current user
 func ArticleDelete(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
@@ -550,6 +561,7 @@ func ArticleDelete(c *gin.Context) {
 	}
 }
 
+// Follow subscribe on user
 func Follow(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
@@ -565,6 +577,7 @@ func Follow(c *gin.Context) {
 	}
 }
 
+// Unfollow unsubscribe
 func Unfollow(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
@@ -579,6 +592,7 @@ func Unfollow(c *gin.Context) {
 	}
 }
 
+// Fav add to favorites
 func Fav(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
@@ -598,6 +612,7 @@ func Fav(c *gin.Context) {
 	}
 }
 
+// Unfav remove from favorites
 func Unfav(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
@@ -613,6 +628,7 @@ func Unfav(c *gin.Context) {
 	}
 }
 
+// GoToRegister redirect to registration
 func GoToRegister() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.GetString("username") == "" {
@@ -622,6 +638,7 @@ func GoToRegister() gin.HandlerFunc {
 	}
 }
 
+// Author page
 func Author(c *gin.Context) {
 	authorStr := c.Param("username")
 	lang := c.GetString("lang")
@@ -661,6 +678,7 @@ func Author(c *gin.Context) {
 	c.HTML(http.StatusOK, "author.html", c.Keys)
 }
 
+// CommentNew create comment
 func CommentNew(c *gin.Context) {
 	switch c.Request.Method {
 	case "POST":
@@ -709,6 +727,7 @@ func CommentNew(c *gin.Context) {
 	}
 }
 
+// Favorites return last 100 fav
 func Favorites(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
@@ -729,6 +748,7 @@ func Favorites(c *gin.Context) {
 	}
 }
 
+// ArticleBad - delete article and ban author
 func ArticleBad(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
@@ -765,6 +785,7 @@ func ArticleBad(c *gin.Context) {
 	}
 }
 
+// Upload image
 func Upload(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
@@ -799,6 +820,7 @@ func Upload(c *gin.Context) {
 				renderErr(c, errors.New("Some error"))
 				return
 			}
+			//TODO https
 			host := "http://" + c.Request.Host + "/"
 
 			if origSize > minSize {

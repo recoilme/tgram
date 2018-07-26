@@ -14,6 +14,7 @@ const (
 	dbSlaveMaster = "db/%s/%ssm"
 )
 
+// User model
 type User struct {
 	Username     string `form:"username" json:"username" binding:"exists,alphanum,min=1,max=20"`
 	Email        string `form:"email" json:"email" binding:"omitempty,email"`
@@ -27,8 +28,7 @@ type User struct {
 	IP           string `json:"-"`
 }
 
-// You could input an UserModel which will be saved in database returning with error info
-// 	if err := SaveOne(&userModel); err != nil { ... }
+// UserNew - create
 func UserNew(user *User) (err error) {
 	f := fmt.Sprintf(dbUser, user.Lang)
 	uname := []byte(user.Username)
@@ -48,6 +48,7 @@ func UserNew(user *User) (err error) {
 	return sp.SetGob(f, uname, user)
 }
 
+// UserCheckGet check
 func UserCheckGet(lang, username, password string) (u *User, err error) {
 	f := fmt.Sprintf(dbUser, lang)
 	uname := []byte(username)
@@ -63,12 +64,14 @@ func UserCheckGet(lang, username, password string) (u *User, err error) {
 	return u, nil
 }
 
+// UserSave - save
 func UserSave(user *User) (err error) {
 	f := fmt.Sprintf(dbUser, user.Lang)
 	uname := []byte(user.Username)
 	return sp.SetGob(f, uname, user)
 }
 
+// UserGet return user
 func UserGet(lang, username string) (u *User, err error) {
 	f := fmt.Sprintf(dbUser, lang)
 	uname := []byte(username)
@@ -80,6 +83,7 @@ func UserGet(lang, username string) (u *User, err error) {
 	return u, nil
 }
 
+// Following set follow
 func Following(lang, cat, u, v string) (err error) {
 	masterslave, slavemaster := GetMasterSlave(u, v)
 	err = sp.Set(fmt.Sprintf(dbMasterSlave, lang, cat), masterslave, nil)
@@ -90,16 +94,17 @@ func Following(lang, cat, u, v string) (err error) {
 	if err != nil {
 		return err
 	}
-
 	return err
 }
 
+// IsFollowing return IsFollowing
 func IsFollowing(lang, cat, u, v string) bool {
 	_, slavemaster := GetMasterSlave(u, v)
 	has, _ := sp.Has(fmt.Sprintf(dbSlaveMaster, lang, cat), slavemaster)
 	return has
 }
 
+// FollowCount count
 func FollowCount(lang, cat, u string) int {
 
 	master32 := []byte(u)
@@ -112,6 +117,7 @@ func FollowCount(lang, cat, u string) int {
 	return len(keys)
 }
 
+// Unfollowing remove follow
 func Unfollowing(lang, cat, u, v string) (err error) {
 	masterslave, slavemaster := GetMasterSlave(u, v)
 	_, err = sp.Delete(fmt.Sprintf(dbMasterSlave, lang, cat), masterslave)
@@ -126,6 +132,7 @@ func Unfollowing(lang, cat, u, v string) (err error) {
 	return err
 }
 
+// GetMasterSlave convert to bin
 func GetMasterSlave(master string, slave string) ([]byte, []byte) {
 	master32 := []byte(master)
 	slave32 := []byte(slave)
@@ -142,6 +149,7 @@ func GetMasterSlave(master string, slave string) ([]byte, []byte) {
 	return masterslave, slavemaster
 }
 
+// IFollow return users which i follow
 func IFollow(lang, cat, u string) (followings []User) {
 
 	//var err error

@@ -17,6 +17,7 @@ const (
 	dbView  = "db/%s/view"
 )
 
+// Article model
 type Article struct {
 	ID        uint32
 	Title     string `form:"title" json:"title" binding:"max=255"`
@@ -29,17 +30,19 @@ type Article struct {
 	Comments  []Article
 }
 
+// Uint32toBin convert to binary
 func Uint32toBin(id uint32) []byte {
 	id32 := make([]byte, 4)
 	binary.BigEndian.PutUint32(id32, id)
 	return id32
 }
 
+// BintoUint32 convert to uint32
 func BintoUint32(b []byte) uint32 {
-
 	return binary.BigEndian.Uint32(b)
 }
 
+// ArticleNew create article
 func ArticleNew(a *Article) (id uint32, err error) {
 	a.CreatedAt = time.Now()
 	fAid := fmt.Sprintf(dbAid, a.Lang)
@@ -62,11 +65,13 @@ func ArticleNew(a *Article) (id uint32, err error) {
 	return a.ID, sp.SetGob(fAUser, id32, a)
 }
 
+// ArticleUpd update article
 func ArticleUpd(a *Article) (err error) {
 	fAUser := fmt.Sprintf(dbAUser, a.Lang, a.Author)
 	return sp.SetGob(fAUser, Uint32toBin(a.ID), a)
 }
 
+// ArticleGet get article
 func ArticleGet(lang, username string, aid uint32) (a *Article, err error) {
 	fAUser := fmt.Sprintf(dbAUser, lang, username)
 
@@ -77,6 +82,7 @@ func ArticleGet(lang, username string, aid uint32) (a *Article, err error) {
 	return a, nil
 }
 
+// ArticleDelete delete article
 func ArticleDelete(lang, username string, aid uint32) (err error) {
 	fAUser := fmt.Sprintf(dbAUser, lang, username)
 
@@ -89,6 +95,7 @@ func ArticleDelete(lang, username string, aid uint32) (err error) {
 	return nil
 }
 
+// AllArticles return page from list of articles
 func AllArticles(lang, from_str string) (models []Article, page string, prev, next, last uint32, err error) {
 
 	from_int, _ := strconv.Atoi(from_str)
@@ -144,6 +151,7 @@ func AllArticles(lang, from_str string) (models []Article, page string, prev, ne
 
 }
 
+// ArticlesAuthor return articles by author
 func ArticlesAuthor(lang, username, author, from_str string) (models []Article, page string, prev, next, last uint32, err error) {
 
 	from_int, _ := strconv.Atoi(from_str)
@@ -212,6 +220,7 @@ func ArticlesAuthor(lang, username, author, from_str string) (models []Article, 
 	return models, page, prev, next, last, err
 }
 
+// CommentNew create comment
 func CommentNew(a *Article, user string, mainaid uint32) (id uint32, err error) {
 	a.CreatedAt = time.Now()
 	fAid := fmt.Sprintf(dbAid, a.Lang)
@@ -234,6 +243,7 @@ func CommentNew(a *Article, user string, mainaid uint32) (id uint32, err error) 
 	return a.ID, sp.SetGob(fAUser, Uint32toBin(mainaid), maina)
 }
 
+// Favorites return 100 last Favorites
 func Favorites(lang, u string) (articles []Article) {
 	cat := "fav"
 	//var err error
@@ -266,10 +276,12 @@ func Favorites(lang, u string) (articles []Article) {
 	return articles
 }
 
+// ViewSet counter view by aid
 func ViewSet(lang string, aid uint32, v int) {
 	go sp.Set(fmt.Sprintf(dbView, lang), Uint32toBin(aid), Uint32toBin(uint32(v)))
 }
 
+// ViewGet return stored counter
 func ViewGet(lang string, aid uint32) (v int) {
 	v = 1
 	b, err := sp.Get(fmt.Sprintf(dbView, lang), Uint32toBin(aid))

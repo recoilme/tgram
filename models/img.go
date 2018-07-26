@@ -4,17 +4,15 @@ import (
 	"bytes"
 	"fmt"
 	"image"
+	_ "image/gif"
+	_ "image/jpeg"
+	"image/png"
 	"os"
 	"regexp"
 	"strings"
 
-	_ "image/gif"
-	_ "image/jpeg"
-	"image/png"
-
-	_ "golang.org/x/image/webp"
-
 	_ "golang.org/x/image/bmp"
+	_ "golang.org/x/image/webp"
 
 	"github.com/MaxHalford/halfgone"
 	"github.com/nfnt/resize"
