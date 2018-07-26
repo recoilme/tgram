@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
-	"log"
 	"mime/multipart"
 	"net/http"
 	"strconv"
@@ -194,7 +193,8 @@ func Register(c *gin.Context) {
 		if ReCaptcha != "" {
 			//validate if set
 			c.Request.ParseForm()
-			log.Println("g-recaptcha-response", c.Request.PostFormValue("g-recaptcha-response"))
+			_ = c.Request.PostFormValue("g-recaptcha-response")
+			//log.Println("g-recaptcha-response", c.Request.PostFormValue("g-recaptcha-response"))
 			recaptchaResponse, responseFound := c.Request.Form["g-recaptcha-response"]
 			if responseFound {
 				result, err := recaptcha.Confirm(ip, recaptchaResponse[0])
