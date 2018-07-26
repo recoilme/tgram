@@ -190,10 +190,11 @@ func Register(c *gin.Context) {
 	case "POST":
 		ip := c.ClientIP()
 		//log.Println("ReCaptcha", ReCaptcha)
+		ReCaptcha = "" // disable
 		if ReCaptcha != "" {
 			//validate if set
 			c.Request.ParseForm()
-			_ = c.Request.PostFormValue("g-recaptcha-response")
+			//_ = c.Request.PostFormValue("g-recaptcha-response")
 			//log.Println("g-recaptcha-response", c.Request.PostFormValue("g-recaptcha-response"))
 			recaptchaResponse, responseFound := c.Request.Form["g-recaptcha-response"]
 			if responseFound {
