@@ -93,8 +93,9 @@ func InitRouter() *gin.Engine {
 	r.Use(static.Serve("/", static.LocalFile("./media/txt", false)))
 
 	r.SetFuncMap(template.FuncMap{
-		"tostr":  routers.ToStr,
-		"todate": routers.ToDate,
+		"tostr":   routers.ToStr,
+		"todate":  routers.ToDate,
+		"getlead": routers.GetLead,
 	})
 	r.LoadHTMLGlob("views/*.html")
 

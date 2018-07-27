@@ -133,6 +133,22 @@ func ToDate(t time.Time) string {
 	return fmt.Sprintf("%s", humanize.Time(t))
 }
 
+// GetLead return first paragraph
+func GetLead(s string) string {
+	var delim = strings.IndexByte(s, '\n')
+	if delim > 300 || delim < 0 {
+		var len = len([]rune(s))
+		if len > 300 {
+			len = 300
+		}
+		delim = strings.LastIndexByte(s[:len], ' ')
+		if delim < 0 {
+			delim = len
+		}
+	}
+	return s[:delim]
+}
+
 // Home - main page
 func Home(c *gin.Context) {
 
@@ -423,6 +439,7 @@ func Editor(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
+
 		unsafe := blackfriday.Run([]byte(body))
 		html := template.HTML(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
 
@@ -501,7 +518,12 @@ func Article(c *gin.Context) {
 		}
 		c.Set("link", "http://"+c.Request.Host+c.GetString("path"))
 		c.Set("article", a)
-		//fmt.Printf("HTML:'%s'\n,", a.HTML)
+		c.Set("title", a.Title)
+		delim := strings.IndexByte(a.Body, '\n')
+		if delim > 10 && delim < 300 {
+			c.Set("description", a.Body[:delim])
+		}
+		//log.Printf("HTML:'%s'\n,", a.Body)
 		c.Set("body", a.HTML)
 		isFolow := models.IsFollowing(lang, "fol", username, c.GetString("username"))
 		c.Set("isfollow", isFolow)

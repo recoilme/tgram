@@ -3,12 +3,24 @@
 <html>
   <head>
     <meta charset="utf-8">
+    {{if .title}}
+    <title>{{.title}}</title>
+    {{else}}
     <title>typegram</title>
+    {{end}}
+    {{if .description}}
+    <meta name="description" content="{{.description}}"/>
+    {{else}}
     <meta name="description" content="zen platform for writers"/>
+    {{end}}
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="language" content="{{.lang}}">
-
+    {{if .firstimg}}
+    <meta property="og:image" content="{{.firstimg}}" />
+    {{else}}
     <meta property="og:image" content="/m/img/logo_big.png" />
+    {{end}}
     <meta name="og:site_name" content="typegram"/>
     
     <link rel="icon" href="/m/img/favicon.ico"/>

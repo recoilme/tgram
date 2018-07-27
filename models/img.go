@@ -46,12 +46,15 @@ func ImgProcess(s, lang, username, host string) (res string, err error) {
 
 	submatchall := r.FindAllString(s, -1)
 	for _, element := range submatchall {
+		//log.Println("elemment", element, host)
 		if strings.Contains(element, host) {
 			continue
 		}
 		b, href := isImg(element)
+
 		if b != nil {
 			file, orig, _ := Store(href, lang, username, b)
+			//log.Println("e", file, orig)
 			if file == "" || orig == "" {
 				continue
 			}
