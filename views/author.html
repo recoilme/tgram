@@ -51,7 +51,7 @@
     </header>
     <section>
       {{if .Title}}
-        <h3>{{.Title}}</h3>
+        <h3><a href="/@{{.Author}}/{{.ID}}">{{.Title}}</a></h3>
       {{end}}
       {{.Body | getlead}}
       <div class="comment">

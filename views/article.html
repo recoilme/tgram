@@ -13,7 +13,7 @@
   </header>
   <section>
     {{if .article.Title}}
-        <h3>{{.article.Title}}</h3>
+        <h3><a href="/@{{.article.Author}}/{{.article.ID}}">{{.article.Title}}</a></h3>
     {{end}}
     {{.body}}
   </section>

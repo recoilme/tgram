@@ -567,6 +567,10 @@ article h3 {
   font-family: 'PT Sans Caption', serif;
   font-size: 36px;
 }
+article h3 a {
+  border-bottom-style: none;
+}
+
 article section> p:nth-of-type(1) {
   font-size: 21px;
   font-family: 'PT Sans Caption', serif;
