@@ -2,7 +2,8 @@
 {{ template "menu" . }}
 <section>
 <form  action="{{.path}}" method="post">
-	<input name="title"  type="text" placeholder="Title" value="{{.title}}">
+	<input name="title"  type="text" placeholder="Title, max:255" value="{{.title}}">
+	<input name="ogimage" type="text" placeholder="Main image (link, may be empty)" value="{{.ogimage}}">
 	<textarea id="mde" name="body">{{.body}}</textarea>
 	
     <button type="submit" >Publish</button>
@@ -30,7 +31,6 @@ var simplemde = new InscrybMDE({
 	element: document.getElementById("mde"),
     minHeight: "400px",
 	spellChecker: false,
-
 });
 </script>
 

@@ -53,7 +53,7 @@
       {{if .Title}}
         <h3>{{.Title}}</h3>
       {{end}}
-      {{.HTML}}
+      {{.Body | getlead}}
       <div class="comment">
         <a href="/@{{.Author}}/{{.ID}}#share">comments ({{len .Comments}})</a>
       </div>

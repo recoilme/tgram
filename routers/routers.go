@@ -135,7 +135,8 @@ func ToDate(t time.Time) string {
 
 // GetLead return first paragraph
 func GetLead(s string) string {
-	var delim = strings.IndexByte(s, '\n')
+	var delim = strings.IndexRune(s, '\n')
+	//log.Println(s, delim)
 	if delim > 300 || delim < 0 {
 		var len = len([]rune(s))
 		if len > 300 {
@@ -146,7 +147,8 @@ func GetLead(s string) string {
 			delim = len
 		}
 	}
-	return s[:delim]
+	//log.Println(s, delim)
+	return s[:delim] + ".."
 }
 
 // Home - main page
@@ -413,6 +415,7 @@ func Editor(c *gin.Context) {
 			str := strings.Replace(a.Body, "\n\n", "\r\n", -1)
 			c.Set("body", str)
 			c.Set("title", a.Title)
+			c.Set("ogimage", a.OgImage)
 		} else {
 			wait := ratelimit(postRate, RatePost)
 			if wait > 0 {
@@ -434,6 +437,7 @@ func Editor(c *gin.Context) {
 		username := c.GetString("username")
 		lang := c.GetString("lang")
 		host := "http://" + c.Request.Host + "/"
+
 		body, err := models.ImgProcess(strings.Replace(strings.TrimSpace(abind.Body), "\r\n", "\n\n", -1), lang, username, host)
 		if err != nil {
 			renderErr(c, err)
@@ -444,7 +448,8 @@ func Editor(c *gin.Context) {
 		html := template.HTML(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
 
 		title := abind.Title
-		//log.Printf("html:'%s'\n", html)
+		ogimage := abind.OgImage
+		//log.Printf("ogimage:'%s'\n", ogimage)
 		var a models.Article
 		if aid > 0 {
 
@@ -456,6 +461,7 @@ func Editor(c *gin.Context) {
 			a.HTML = html
 			a.Body = body
 			a.Title = title
+			a.OgImage = ogimage
 			err = models.ArticleUpd(a)
 			if err != nil {
 				renderErr(c, err)
@@ -484,6 +490,7 @@ func Editor(c *gin.Context) {
 		a.Lang = lang
 		a.Author = username
 		a.Image = c.GetString("image")
+		a.OgImage = ogimage
 		a.CreatedAt = time.Now()
 		a.HTML = html
 		a.Body = body
@@ -561,6 +568,7 @@ func Article(c *gin.Context) {
 			}
 		}
 		c.Set("view", view)
+		c.Set("ogimage", a.OgImage)
 		c.HTML(http.StatusOK, "article.html", c.Keys)
 		//c.JSON(http.StatusOK, a)
 	}

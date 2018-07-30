@@ -24,7 +24,7 @@ type Article struct {
 	Body      string `form:"body" json:"body" binding:"exists,min=10,max=16384"`
 	Author    string
 	Image     string
-	OgImage   string
+	OgImage   string `form:"ogimage" json:"ogimage" binding:"omitempty,url"`
 	CreatedAt time.Time
 	Lang      string
 	HTML      template.HTML
