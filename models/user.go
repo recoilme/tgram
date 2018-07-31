@@ -3,6 +3,8 @@ package models
 import (
 	"errors"
 	"fmt"
+	"regexp"
+	"strings"
 
 	sp "github.com/recoilme/slowpoke"
 	"golang.org/x/crypto/bcrypt"
@@ -200,4 +202,41 @@ func IFollow(lang, cat, u string) (followings []User) {
 
 	}
 	return followings
+}
+
+// Mention - replace first '@username ' on markdown link and return array of '@username '
+func Mention(s, lang string) (res string, users []string) {
+	res = s
+
+	var arrayTo = []string{}
+	r, e := regexp.Compile(`^@[a-z0-9]*\s`)
+	if e != nil {
+		return res, users
+	}
+
+	submatchall := r.FindAllString(s, 1)
+	for _, element := range submatchall {
+		//element = strings.TrimSpace(element)
+		//'@recoilme '
+		//fmt.Println("'" + element + "'")
+		if len(element) < 3 { //'@ '
+			continue
+		}
+
+		f := fmt.Sprintf(dbUser, lang)
+		uname := []byte(element[1:(len(element) - 1)])
+		//fmt.Println("'" + string(uname) + "'")
+		// check username
+		taken, _ := sp.Has(f, uname)
+		if !taken {
+			continue
+		}
+		users = append(users, element)
+		newElement := "[" + element[:(len(element)-1)] + "](/" + element[:(len(element)-1)] + ") "
+		arrayTo = append(arrayTo, newElement)
+	}
+	if len(users) > 0 {
+		res = strings.NewReplacer(Zip(users, arrayTo)...).Replace(s)
+	}
+	return res, users
 }

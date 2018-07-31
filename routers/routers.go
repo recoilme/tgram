@@ -730,8 +730,15 @@ func CommentNew(c *gin.Context) {
 			renderErr(c, errors.New(e))
 			return
 		}
+		//Replace http://sub.localhost:8081/@recoilme with @recoilme
+		/*host := "http://" + c.Request.Host + "/@"
+		a.Body = strings.Replace(a.Body, host, "@", -1)
+		hosts := "https://" + c.Request.Host + "/@"
+		a.Body = strings.Replace(a.Body, hosts, "@", -1)*/
 
-		a.Body = strings.Replace(a.Body, "\r\n", "\n\n", -1)
+		parsed, parsedUsers := models.Mention(strings.Replace(a.Body, "\r\n", "\n\n", -1), lang)
+		_ = parsedUsers
+		a.Body = parsed
 		//log.Println("bod", a.Body)
 		unsafe := blackfriday.Run([]byte(a.Body))
 		html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)

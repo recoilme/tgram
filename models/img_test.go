@@ -6,6 +6,9 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"log"
+	"regexp"
+	"strings"
 	"testing"
 
 	sp "github.com/recoilme/slowpoke"
@@ -73,4 +76,30 @@ func TestImgProcess(t *testing.T) {
 		//fmt.Printf("s:'%s'", s)
 	}
 
+}
+
+func TestFindUser(t *testing.T) {
+	r, e := regexp.Compile(`@[a-z0-9]*`)
+	if e != nil {
+		return
+	}
+	s := "@ee2  asdsd\n@wqw @ \n@re3 @4re @32 @6ffg& git commit -m '@abc'"
+	var arrayFrom = []string{}
+	var arrayTo = []string{}
+	submatchall := r.FindAllString(s, -1)
+	for _, element := range submatchall {
+		if len(element) < 2 {
+			continue
+		}
+		fmt.Println(element)
+		arrayFrom = append(arrayFrom, element)
+		newElement := "[" + element +
+			"](/" + element + ")"
+		arrayTo = append(arrayTo, newElement)
+	}
+	if len(arrayFrom) > 0 {
+
+		ss := strings.NewReplacer(models.Zip(arrayFrom, arrayTo)...).Replace(s)
+		log.Println(ss)
+	}
 }

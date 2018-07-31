@@ -67,19 +67,21 @@ func ImgProcess(s, lang, username, host string) (res string, err error) {
 		}
 	}
 	if len(arrayFrom) > 0 {
-		zip := func(a1, a2 []string) []string {
-			r := make([]string, 2*len(a1))
-			for i, e := range a1 {
-				r[i*2] = e
-				r[i*2+1] = a2[i]
-			}
-			return r
-		}
-		s = strings.NewReplacer(zip(arrayFrom, arrayTo)...).Replace(s)
+
+		s = strings.NewReplacer(Zip(arrayFrom, arrayTo)...).Replace(s)
 	}
 
 	res = s
 	return res, err
+}
+
+func Zip(a1, a2 []string) []string {
+	r := make([]string, 2*len(a1))
+	for i, e := range a1 {
+		r[i*2] = e
+		r[i*2+1] = a2[i]
+	}
+	return r
 }
 
 // Store store file by lang/username

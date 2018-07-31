@@ -64,7 +64,7 @@
     <section id="comment{{.ID}}">
         <header> 
                 <img align="left" class="u-square micro" src="{{.Image}}" /> 
-                <p><a href="/@{{.Author}}">@{{.Author}}</a>&nbsp;&nbsp;&nbsp;<a href="/@{{$author}}/{{$id}}#comment{{.ID}}">{{.CreatedAt| todate}}</a></p>
+                <p><a href="/@{{.Author}}">@{{.Author}}</a>&nbsp;&nbsp;&nbsp;<a href="/@{{$author}}/{{$id}}#comment{{.ID}}">#</a>{{.CreatedAt| todate}}</p>
         </header>
         <div class="comment">
         {{.HTML}}
@@ -84,7 +84,7 @@
 var simplemde = new InscrybMDE({
     autoDownloadFontAwesome: false,
 	element: document.getElementById("mde"),
-	placeholder: "text, min:10 max:16384",
+	placeholder: "text, 10:16384",
 	spellChecker: false,
 	status: false,
 	toolbar: false,
