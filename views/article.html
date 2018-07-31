@@ -20,7 +20,7 @@
   <footer>
       <nav>
         {{.view}}&nbsp;
-        <ul id="share" class="share">
+        <ul id="comments" class="share">
             <li>
                 <a href="{{.link}}" rel="nofollow" target="_blank">
                     link 
@@ -57,12 +57,14 @@
   </footer>
   <hr/>
 </article>
+{{$author := .article.Author}}
+{{$id := .article.ID}}
 {{range .article.Comments}}
     
-    <section>
+    <section id="comment{{.ID}}">
         <header> 
                 <img align="left" class="u-square micro" src="{{.Image}}" /> 
-                <p><a href="/@{{.Author}}">@{{.Author}}</a>&nbsp;&nbsp;&nbsp;{{.CreatedAt| todate}}</p>
+                <p><a href="/@{{.Author}}">@{{.Author}}</a>&nbsp;&nbsp;&nbsp;<a href="/@{{$author}}/{{$id}}#comment{{.ID}}">{{.CreatedAt| todate}}</a></p>
         </header>
         <div class="comment">
         {{.HTML}}
@@ -74,7 +76,7 @@
     <textarea id="mde"  name="body" placeholder="Write a comment..." ></textarea>
 
     <button type="submit" >
-     Comment
+     сomment
     </button>
 </form>
 
@@ -82,7 +84,7 @@
 var simplemde = new InscrybMDE({
     autoDownloadFontAwesome: false,
 	element: document.getElementById("mde"),
-	placeholder: "Write a comment...",
+	placeholder: "text, min:10 max:16384",
 	spellChecker: false,
 	status: false,
 	toolbar: false,

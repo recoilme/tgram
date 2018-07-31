@@ -748,10 +748,10 @@ func CommentNew(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-		_ = cid
+
 		// add to cache on success
 		cc.Set(rateComKey, time.Now().Unix(), cache.DefaultExpiration)
-		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d#share", username, aid))
+		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d#comment%d", username, aid, cid))
 		//c.JSON(http.StatusCreated, a) //gin.H{"article": serializer.Response()})
 		//c.Redirect(http.Sta
 	}
