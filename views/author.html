@@ -17,12 +17,12 @@
           {{if .isfollow}}
           <li>
             <a href="/unfollow/{{.author.Username}}/@{{.author.Username}}" >
-            &nbsp;unfollow ({{.followcnt}})</a>
+            &nbsp;unfollow: {{.followcnt}}</a>
           </li>
           {{else}}
             <li>
               <a href="/follow/{{.author.Username}}/@{{.author.Username}}">
-              &nbsp;follow ({{.followcnt}})</span></a>
+              &nbsp;follow: {{.followcnt}}</span></a>
             </li>
           {{end}}
           <li>
@@ -55,7 +55,7 @@
       {{end}}
       {{.Body | getlead}}
       <div class="comment">
-        <a href="/@{{.Author}}/{{.ID}}#share">comments ({{len .Comments}})</a>
+        <a href="/@{{.Author}}/{{.ID}}#share">comments: {{len .Comments}}</a>
       </div>
       <hr/>
     </section>

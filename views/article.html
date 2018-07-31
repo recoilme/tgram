@@ -4,7 +4,7 @@
   <header> 
     <img align="left" class="u-square small" src="{{.article.Image}}" />
     <p>
-        {{.article.CreatedAt| todate}} 
+        <a href="/@{{.article.Author}}">@{{.article.Author}}</a>&nbsp;&nbsp;&nbsp;{{.article.CreatedAt| todate}} 
         <span class="navright">
         {{ template "buttons" .}}
         </span>

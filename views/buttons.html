@@ -5,17 +5,18 @@
 </a>
 {{end}}
 {{if eq .article.Author .username}}
+favorited: {{.favcnt}}&nbsp;&nbsp;followers: {{.followcnt}}&nbsp;&nbsp;
 <a href="/editor/{{.article.ID}}">
     edit
 </a>
 {{else}}
   {{if .isfollow}}
   <a href="/unfollow/{{.article.Author}}/@{{.article.Author}}/{{.article.ID}}">
-    unfollow  <span class="counter">({{.followcnt}})</span>
+    unfollow: {{.followcnt}}
   </a>
   {{else}}
   <a href="/follow/{{.article.Author}}/@{{.article.Author}}/{{.article.ID}}">
-    follow  ({{.followcnt}})
+    follow: {{.followcnt}}
   </a>
   {{end}}
 {{end}}&nbsp;
@@ -26,11 +27,11 @@
 {{else}}
 {{if .isfav}}
 <a href="/unfav/{{.article.ID}}/@{{.article.Author}}/{{.article.ID}}">
-  unfavorite  ({{.favcnt}})
+  unfavorite: {{.favcnt}}
 </a>
 {{else}}
 <a href="/fav/{{.article.ID}}/@{{.article.Author}}/{{.article.ID}}">
-  favorite ({{.favcnt}})
+  favorite: {{.favcnt}}
 </a>
 {{end}}
 {{end}}
