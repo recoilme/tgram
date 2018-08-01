@@ -2,7 +2,7 @@
 {{ template "menu" . }}
 <section>
 <form  action="{{.path}}" method="post">
-	<input name="title"  type="text" placeholder="title, 0:255" value="{{.title}}">
+	<input name="title"  type="text" placeholder="title, text, 0:255" value="{{.title}}">
 	<input name="ogimage" type="text" placeholder="image, link, 0:255" value="{{.ogimage}}">
 	<textarea id="mde" name="body">{{.body}}</textarea>
 	
@@ -28,7 +28,7 @@ var simplemde = new InscrybMDE({
 		delay: 1000,
 	},
 	promptURLs: true,
-	placeholder: "text, 10:16384",
+	placeholder: "text, markdown, 10:16384",
 	element: document.getElementById("mde"),
     minHeight: "400px",
 	spellChecker: false,
