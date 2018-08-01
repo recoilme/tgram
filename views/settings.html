@@ -1,18 +1,19 @@
 {{template "header" .}}
 {{template "menu" .}}
 
-<h5>Your Settings, {{.username}}</h5>
+<h5>Your settings, {{.username}}</h5>
 
 <form action="/settings" method="post">
   <section>
       
-        <input name="image" type="text" placeholder="URL of profile picture" value="{{.image}}">
-        <textarea name="bio" rows="5" placeholder="Short bio about you">{{.bio}}</textarea>
-        <input name="email"  type="text" placeholder="Email" value="{{.email}}">
-        <input name="password" type="password" autocomplete="new-password" required placeholder="Password" value="">
+        <input name="image" type="text" placeholder="url of profile picture, link" value="{{.image}}">
+        <textarea name="bio" rows="5" placeholder="description, text, 0..1024">{{.bio}}</textarea>
+        <input name="email"  type="text" placeholder="email, omitempty" value="{{.email}}">
+        <input name="newpassword" type="password" autocomplete="new-password" placeholder="new password, 6..255" value="">
+        <input name="password" type="password" autocomplete="new-password" required placeholder="password" value="">
 
       <button type="submit" >
-        Update Settings
+        Update
       </button>
   </section>
 </form>

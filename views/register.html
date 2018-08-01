@@ -7,12 +7,12 @@
     </p>
     <form action="/register" method="post">
     <section>
-      <input required name="username" type="text" placeholder="Username (max 20)" value="{{.Username}}">
-      <input required name="password" type="password" placeholder="Password (min 4)" value="{{.Password}}">
+      <input required name="username" type="text" placeholder="username, alphanum, 1..20" value="{{.Username}}">
+      <input required name="password" type="password" placeholder="password, 6..255" value="{{.Password}}">
       
     </section>
     <section>
-        <input type="checkbox" name="good" value="good"> I'm the good internet person<br>
+        <input type="checkbox" name="good" value="good"> I'm a good internet person<br>
     </section>
     <section>
       <div class="g-recaptcha" data-sitekey="6Lc_fGQUAAAAAM_u49e8rjA4cgeLQCHI_LWoARGB"></div>

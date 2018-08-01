@@ -18,6 +18,7 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/patrickmn/go-cache"
 	"github.com/recoilme/tgram/models"
+	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/text/language"
 	"gopkg.in/russross/blackfriday.v2"
 )
@@ -320,9 +321,28 @@ func Settings(c *gin.Context) {
 			return
 		}
 		//fmt.Printf("user:%+v\n", u)
-		u.Password = ""
-		u.PasswordHash = user.PasswordHash
-		err = models.UserSave(&u)
+		if u.NewPassword != "" {
+			bytePassword := []byte(u.NewPassword)
+			// Make sure the second param `bcrypt generator cost` between [4, 32)
+			passwordHash, _ := bcrypt.GenerateFromPassword(bytePassword, bcrypt.DefaultCost)
+			u.Password = ""
+			u.NewPassword = ""
+			u.PasswordHash = string(passwordHash)
+			err = models.UserSave(&u)
+			if err != nil {
+				renderErr(c, err)
+				return
+			}
+			//logout
+			c.SetCookie("token", "", 0, "/", "", false, true)
+			c.Redirect(http.StatusFound, "/")
+			return
+		} else {
+			u.Password = ""
+			u.PasswordHash = user.PasswordHash
+			err = models.UserSave(&u)
+		}
+
 		if err != nil {
 			renderErr(c, err)
 			return
