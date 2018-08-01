@@ -73,6 +73,17 @@ func CheckAuth() gin.HandlerFunc {
 					}
 				}
 			}
+			var found bool
+			acceptedLang := []string{"de", "en", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh"}
+			for _, v := range acceptedLang {
+				if v == lang {
+					found = true
+					break
+				}
+			}
+			if !found {
+				lang = "en"
+			}
 			// redirect on subdomain
 			c.Redirect(http.StatusFound, "http://"+lang+".tgr.am")
 			return
