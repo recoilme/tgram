@@ -74,7 +74,7 @@ func CheckAuth() gin.HandlerFunc {
 				}
 			}
 			var found bool
-			acceptedLang := []string{"de", "en", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh"}
+			acceptedLang := []string{"de", "en", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh", "tst"}
 			for _, v := range acceptedLang {
 				if v == lang {
 					found = true
