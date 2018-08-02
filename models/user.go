@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 
 	sp "github.com/recoilme/slowpoke"
 	"golang.org/x/crypto/bcrypt"
@@ -14,6 +15,7 @@ const (
 	dbUser        = "db/%s/user"
 	dbMasterSlave = "db/%s/%sms"
 	dbSlaveMaster = "db/%s/%ssm"
+	dbMention     = "db/%s/m/%s"
 )
 
 // User model
@@ -197,7 +199,6 @@ func IFollow(lang, cat, u string) (followings []User) {
 					u.Unseen = uint32(len(keys))
 				}
 			}
-
 			followings = append(followings, u)
 		}
 
@@ -205,39 +206,64 @@ func IFollow(lang, cat, u string) (followings []User) {
 	return followings
 }
 
-// Mention - replace first '@username ' on markdown link and return array of '@username '
-func Mention(s, lang string) (res string, users []string) {
+// Mention - replace first '@username ' on markdown link and return array of username
+func Mention(s, lang, path string) (res string, users []string) {
 	res = s
+	if len(s) < 2 {
+		return res, users
+	}
+	if s[:1] == "@" {
+		//start from @
+		probel := strings.IndexRune(s, ' ')
+		if probel > 1 {
+			firstuname := s[:probel]
+			//log.Println("uname", firstuname)
+			f := fmt.Sprintf(dbUser, lang)
+			// check username
+			taken, _ := sp.Has(f, []byte(firstuname[1:]))
+			if taken {
+				tmp := "[" + firstuname + "](/" + firstuname + "])"
+				// replace res with md
+				res = tmp + s[probel:]
+			}
+		}
+	}
 
-	var arrayTo = []string{}
-	r, e := regexp.Compile(`^@[a-z0-9]*\s`)
+	r, e := regexp.Compile(`@[a-z0-9]*`)
 	if e != nil {
 		return res, users
 	}
 
-	submatchall := r.FindAllString(s, 1)
+	submatchall := r.FindAllString(s, -1)
 	for _, element := range submatchall {
-		//element = strings.TrimSpace(element)
-		//'@recoilme '
-		//fmt.Println("'" + element + "'")
-		if len(element) < 3 { //'@ '
+		if len(element) < 2 { //'@ '
 			continue
 		}
 
 		f := fmt.Sprintf(dbUser, lang)
-		uname := []byte(element[1:(len(element) - 1)])
+		uname := element[1:]
 		//fmt.Println("'" + string(uname) + "'")
 		// check username
-		taken, _ := sp.Has(f, uname)
+		taken, _ := sp.Has(f, []byte(uname))
 		if !taken {
 			continue
 		}
-		users = append(users, element)
-		newElement := "[" + element[:(len(element)-1)] + "](/" + element[:(len(element)-1)] + ") "
-		arrayTo = append(arrayTo, newElement)
+		var skip bool
+		for _, u := range users {
+			if u == uname {
+				skip = true
+				break
+			}
+		}
+		if !skip {
+			users = append(users, uname)
+		}
 	}
-	if len(users) > 0 {
-		res = strings.NewReplacer(Zip(users, arrayTo)...).Replace(s)
+
+	for _, u := range users {
+		f := fmt.Sprintf(dbMention, lang, u)
+		now := uint32(time.Now().Unix())
+		sp.Set(f, []byte(path), Uint32toBin(now))
 	}
 	return res, users
 }
