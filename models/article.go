@@ -21,7 +21,7 @@ const (
 type Article struct {
 	ID        uint32
 	Title     string `form:"title" json:"title" binding:"max=255"`
-	Body      string `form:"body" json:"body" binding:"exists,min=10,max=16384"`
+	Body      string `form:"body" json:"body" binding:"exists,min=10,max=65536"`
 	Author    string
 	Image     string
 	OgImage   string `form:"ogimage" json:"ogimage" binding:"omitempty,url"`
