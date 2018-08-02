@@ -1,6 +1,27 @@
 {{ template "header" . }}
 {{ template "menu" . }}
-{{if gt  (len .users) 0}}
+
+{{if .personal}}
+  {{if gt  (len .mentions) 0}}
+  <h5>mentions</h5>
+  <p></p>
+  {{end}}
+  {{range .mentions}}
+  <article>
+    <header> 
+      <p>
+          <a href="/@{{.ByUsername}}">@{{.ByUsername}}</a>&nbsp;&nbsp;&nbsp;{{.Then | todate}} 
+      </p>
+
+    </header>
+    <section>
+      <a href="{{.Path}}"> {{.Text}}..</a>&nbsp;
+    </section>
+  </article>
+  {{end}}
+  {{if gt  (len .users) 0}}
+  <h5>articles</h5>
+  {{end}}
   {{range .users}}
   <section>
       {{if gt .Unseen 0}}

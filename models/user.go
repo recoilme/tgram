@@ -1,9 +1,13 @@
 package models
 
 import (
+	"bytes"
+	"encoding/gob"
 	"errors"
 	"fmt"
+	"log"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 
@@ -31,6 +35,15 @@ type User struct {
 	LastPost     uint32 `json:"-"`
 	Unseen       uint32 `json:"-"`
 	IP           string `json:"-"`
+}
+
+type Mention struct {
+	Then       time.Time
+	Path       string
+	ByUsername string
+	Aid        uint32
+	Cid        uint32
+	Text       string
 }
 
 // UserNew - create
@@ -206,11 +219,10 @@ func IFollow(lang, cat, u string) (followings []User) {
 	return followings
 }
 
-// Mention - replace first '@username ' on markdown link and return array of username
-func Mention(s, lang, path string) (res string, users []string) {
-	res = s
+// ReplyParse - replace first '@username ' on markdown link and return array of username
+func ReplyParse(s, lang string) string {
 	if len(s) < 2 {
-		return res, users
+		return s
 	}
 	if s[:1] == "@" {
 		//start from @
@@ -224,14 +236,18 @@ func Mention(s, lang, path string) (res string, users []string) {
 			if taken {
 				tmp := "[" + firstuname + "](/" + firstuname + "])"
 				// replace res with md
-				res = tmp + s[probel:]
+				s = tmp + s[probel:]
 			}
 		}
 	}
+	return s
+}
 
+func MentionNew(s, lang, text, byuser, url, fullurl string, aid, cid uint32) {
+	var users = []string{}
 	r, e := regexp.Compile(`@[a-z0-9]*`)
 	if e != nil {
-		return res, users
+		return
 	}
 
 	submatchall := r.FindAllString(s, -1)
@@ -262,8 +278,49 @@ func Mention(s, lang, path string) (res string, users []string) {
 
 	for _, u := range users {
 		f := fmt.Sprintf(dbMention, lang, u)
-		now := uint32(time.Now().Unix())
-		sp.Set(f, []byte(path), Uint32toBin(now))
+		mention := Mention{Aid: aid, Cid: cid, Then: time.Now(),
+			ByUsername: byuser, Text: text, Path: fullurl}
+		//log.Println(mention)
+		e := sp.SetGob(f, url, mention)
+		if e != nil {
+			log.Println(e)
+		}
 	}
-	return res, users
+	return
+}
+
+func Mentions(lang, username string) (mentions []Mention) {
+	f := fmt.Sprintf(dbMention, lang, username)
+	keys, err := sp.Keys(f, nil, uint32(10), uint32(0), false)
+	if err != nil {
+		//log.Println(err)
+		return mentions
+	}
+	for _, k := range keys {
+		//log.Println(k, string(k))
+		var mention Mention
+		err := sp.GetGob(f, k, &mention)
+		if err == nil {
+			log.Println(mention)
+			mentions = append(mentions, mention)
+		} else {
+			log.Println(err)
+		}
+	}
+	if len(mentions) > 0 {
+		sort.Slice(mentions, func(i, j int) bool {
+			return mentions[i].Then.Unix() > mentions[j].Then.Unix()
+		})
+	}
+
+	return mentions
+}
+
+func MentionDel(lang, username, path string) {
+	f := fmt.Sprintf(dbMention, lang, username)
+	bufKey := bytes.Buffer{}
+	err := gob.NewEncoder(&bufKey).Encode(path)
+	if err == nil {
+		sp.Delete(f, bufKey.Bytes())
+	}
 }

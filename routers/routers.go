@@ -47,7 +47,7 @@ func CheckAuth() gin.HandlerFunc {
 		c.Set("path", c.Request.URL.Path)
 		var lang = "en"
 		var found bool
-		acceptedLang := []string{"de", "en", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh", "tst"}
+		acceptedLang := []string{"de", "en", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh", "tst", "sub"}
 		var tokenStr, username, image string
 
 		hosts := strings.Split(c.Request.Host, ".")
@@ -158,8 +158,10 @@ func ToDate(t time.Time) string {
 
 // GetLead return first paragraph
 func GetLead(s string) string {
+	if len(s) < 300 {
+		return s + ".."
+	}
 	var delim = strings.IndexRune(s, '\n')
-	//log.Println(s, delim)
 	if delim > 300 || delim < 0 {
 		var len = len([]rune(s))
 		if len > 300 {
@@ -179,11 +181,16 @@ func Home(c *gin.Context) {
 
 	username := c.GetString("username")
 	var users []models.User
+	var mentions []models.Mention
 	if username != "" {
 		users = models.IFollow(c.GetString("lang"), "fol", username)
+		mentions = models.Mentions(c.GetString("lang"), username)
 	}
 	c.Set("users", users)
-
+	c.Set("mentions", mentions)
+	if len(users) > 0 || len(mentions) > 0 {
+		c.Set("personal", true)
+	}
 	c.HTML(http.StatusOK, "home.html", c.Keys)
 }
 
@@ -565,7 +572,12 @@ func Article(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-		c.Set("link", "http://"+c.Request.Host+c.GetString("path"))
+		path := c.GetString("path")
+		if username != "" {
+			url := "/@" + username + "/" + c.Param("aid")
+			models.MentionDel(lang, username, url)
+		}
+		c.Set("link", "http://"+c.Request.Host+path)
 		c.Set("article", a)
 		c.Set("title", a.Title)
 		delim := strings.IndexByte(a.Body, '\n')
@@ -773,7 +785,7 @@ func CommentNew(c *gin.Context) {
 			return
 		}
 
-		parsed, _ := models.Mention(strings.Replace(a.Body, "\r\n", "\n\n", -1), lang, c.Request.URL.Path)
+		parsed := models.ReplyParse(strings.Replace(a.Body, "\r\n", "\n\n", -1), lang)
 		a.Body = parsed
 		//log.Println("bod", a.Body)
 		unsafe := blackfriday.Run([]byte(a.Body))
@@ -791,6 +803,10 @@ func CommentNew(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
+		ment := GetLead(a.Body)
+		url := "/@" + username + "/" + c.Param("aid")
+		fullurl := url + "#comment" + strconv.Itoa(int(cid))
+		models.MentionNew(a.Body, lang, ment, a.Author, url, fullurl, uint32(aid), cid)
 
 		// add to cache on success
 		cc.Set(rateComKey, time.Now().Unix(), cache.DefaultExpiration)
