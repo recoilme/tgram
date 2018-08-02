@@ -45,7 +45,9 @@ func CheckAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		c.Set("path", c.Request.URL.Path)
-		var lang = "ru"
+		var lang = "en"
+		var found bool
+		acceptedLang := []string{"de", "en", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh", "tst"}
 		var tokenStr, username, image string
 
 		hosts := strings.Split(c.Request.Host, ".")
@@ -74,8 +76,6 @@ func CheckAuth() gin.HandlerFunc {
 					}
 				}
 			}
-			var found bool
-			acceptedLang := []string{"de", "en", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh", "tst"}
 			for _, v := range acceptedLang {
 				if v == lang {
 					found = true
@@ -90,6 +90,17 @@ func CheckAuth() gin.HandlerFunc {
 			return
 		}
 		if len(host) < 2 || len(host) > 3 {
+			c.Redirect(http.StatusFound, "http://"+lang+".tgr.am")
+			return
+		}
+
+		for _, v := range acceptedLang {
+			if v == lang {
+				found = true
+				break
+			}
+		}
+		if !found {
 			c.Redirect(http.StatusFound, "http://"+lang+".tgr.am")
 			return
 		}
