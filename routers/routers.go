@@ -95,7 +95,7 @@ func CheckAuth() gin.HandlerFunc {
 		}
 
 		for _, v := range acceptedLang {
-			if v == lang {
+			if v == host {
 				found = true
 				break
 			}
