@@ -301,7 +301,7 @@ func Mentions(lang, username string) (mentions []Mention) {
 		var mention Mention
 		err := sp.GetGob(f, k, &mention)
 		if err == nil {
-			log.Println(mention)
+			//log.Println(mention)
 			mentions = append(mentions, mention)
 		} else {
 			log.Println(err)
