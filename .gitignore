@@ -1,10 +1,13 @@
+node_modules/
+.cache
+
 # IDEs and editors
 /.idea
 .project
 .classpath
 *.launch
 .settings/
-
+.vscode
 
 #System Files
 .DS_Store
