@@ -234,7 +234,7 @@ func ReplyParse(s, lang string) string {
 			// check username
 			taken, _ := sp.Has(f, []byte(firstuname[1:]))
 			if taken {
-				tmp := "[" + firstuname + "](/" + firstuname + "])"
+				tmp := "[" + firstuname + "](/" + firstuname + ")"
 				// replace res with md
 				s = tmp + s[probel:]
 			}
@@ -243,6 +243,7 @@ func ReplyParse(s, lang string) string {
 	return s
 }
 
+// MentionNew parce mentions
 func MentionNew(s, lang, text, byuser, url, fullurl string, aid, cid uint32) {
 	var users = []string{}
 	r, e := regexp.Compile(`@[a-z0-9]*`)
@@ -289,6 +290,7 @@ func MentionNew(s, lang, text, byuser, url, fullurl string, aid, cid uint32) {
 	return
 }
 
+// Mentions return arr of mentions
 func Mentions(lang, username string) (mentions []Mention) {
 	f := fmt.Sprintf(dbMention, lang, username)
 	keys, err := sp.Keys(f, nil, uint32(10), uint32(0), false)
@@ -316,6 +318,7 @@ func Mentions(lang, username string) (mentions []Mention) {
 	return mentions
 }
 
+// MentionDel remove mention
 func MentionDel(lang, username, path string) {
 	f := fmt.Sprintf(dbMention, lang, username)
 	bufKey := bytes.Buffer{}
