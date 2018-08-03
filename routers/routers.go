@@ -575,7 +575,7 @@ func Article(c *gin.Context) {
 		path := c.GetString("path")
 		if username != "" {
 			url := "/@" + username + "/" + c.Param("aid")
-			models.MentionDel(lang, username, url)
+			models.MentionDel(lang, c.GetString("username"), url)
 		}
 		c.Set("link", "http://"+c.Request.Host+path)
 		c.Set("article", a)
@@ -913,7 +913,7 @@ func Upload(c *gin.Context) {
 			host := "http://" + c.Request.Host + "/"
 
 			if origSize > minSize {
-				newElement = "[![](" + host + file + " )](" + host + orig + ")"
+				newElement = "[![](" + host + file + ")](" + host + orig + ")"
 			} else {
 				newElement = "![](" + host + orig + ")"
 			}

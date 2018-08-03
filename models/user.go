@@ -318,12 +318,15 @@ func Mentions(lang, username string) (mentions []Mention) {
 	return mentions
 }
 
-// MentionDel remove mention
+// MentionDel remove mention for username by path
 func MentionDel(lang, username, path string) {
+	//log.Println("MentionDel:", lang, username, "."+path+".")
 	f := fmt.Sprintf(dbMention, lang, username)
 	bufKey := bytes.Buffer{}
 	err := gob.NewEncoder(&bufKey).Encode(path)
 	if err == nil {
+		//ex, e := sp.Has(f, bufKey.Bytes())
+		//log.Println(ex, e, f, bufKey.Bytes())
 		sp.Delete(f, bufKey.Bytes())
 	}
 }
