@@ -929,3 +929,13 @@ func Upload(c *gin.Context) {
 
 	}
 }
+
+func Policy(c *gin.Context) {
+
+	c.HTML(http.StatusOK, "policy.html", c.Keys)
+}
+
+func Terms(c *gin.Context) {
+
+	c.HTML(http.StatusOK, "terms.html", c.Keys)
+}

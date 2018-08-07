@@ -137,6 +137,9 @@ func InitRouter() *gin.Engine {
 
 	r.GET("/upload", routers.Upload)
 	r.POST("/upload", routers.Upload)
+
+	r.GET("/policy", routers.Policy)
+	r.GET("/terms", routers.Terms)
 	return r
 }
 
