@@ -114,6 +114,9 @@ func InitRouter() *gin.Engine {
 
 	r.GET("/favorites/@:username", routers.Favorites)
 
+	r.GET("/policy", routers.Policy)
+	r.GET("/terms", routers.Terms)
+
 	r.Use(routers.GoToRegister())
 
 	r.GET("/settings", routers.Settings)
@@ -138,8 +141,6 @@ func InitRouter() *gin.Engine {
 	r.GET("/upload", routers.Upload)
 	r.POST("/upload", routers.Upload)
 
-	r.GET("/policy", routers.Policy)
-	r.GET("/terms", routers.Terms)
 	return r
 }
 

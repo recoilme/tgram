@@ -270,12 +270,29 @@ func Register(c *gin.Context) {
 			}
 
 		}
-		var u models.User
-		err = c.ShouldBind(&u)
+		type RegisterForm struct {
+			Username string `form:"username" json:"username" binding:"exists,alphanum,min=1,max=20"`
+			Password string `form:"password" json:"password" binding:"exists,min=6,max=255"`
+			Privacy  string `form:"privacy" json:"privacy" `
+			Terms    string `form:"terms" json:"terms" `
+		}
+		var rf RegisterForm
+		err = c.ShouldBind(&rf)
+
+		if rf.Privacy != "privacy" {
+			err = errors.New("Error: You must read and accept Privacy Statement")
+		}
+		if rf.Terms != "terms" {
+			err = errors.New("Error: You must read and accept Terms of Service")
+		}
 		if err != nil {
 			renderErr(c, err)
 			return
 		}
+
+		var u models.User
+		u.Username = rf.Username
+		u.Password = rf.Password
 
 		// create user
 		u.Username = strings.ToLower(u.Username)
@@ -931,11 +948,11 @@ func Upload(c *gin.Context) {
 }
 
 func Policy(c *gin.Context) {
-
 	c.HTML(http.StatusOK, "policy.html", c.Keys)
+	return
 }
 
 func Terms(c *gin.Context) {
-
 	c.HTML(http.StatusOK, "terms.html", c.Keys)
+	return
 }
