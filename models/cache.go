@@ -92,6 +92,7 @@ func ArticleViewGet(lang, ip string, aid uint32) (view int) {
 		v, notfounderr := cc.IncrementInt(unicCnt, 1)
 		if notfounderr != nil {
 			stored := ViewGet(lang, aid)
+			//log.Println("stored", stored)
 			cc.Add(unicCnt, stored, cache.NoExpiration)
 			view = 1
 		} else {
@@ -103,7 +104,9 @@ func ArticleViewGet(lang, ip string, aid uint32) (view int) {
 	} else {
 		if x, f := cc.Get(unicCnt); f {
 			view = x.(int)
-		}
+		} //else {
+		//	view = ViewGet(lang, aid)
+		//}
 	}
 	return view
 }

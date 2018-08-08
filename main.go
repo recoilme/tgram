@@ -14,7 +14,6 @@ import (
 
 	"github.com/recoilme/slowpoke"
 
-	"github.com/dpapathanasiou/go-recaptcha"
 	"github.com/joho/godotenv"
 	"github.com/recoilme/tgram/routers"
 )
@@ -27,8 +26,6 @@ func main() {
 	err := godotenv.Load("tgram.env")
 	if err == nil {
 		routers.NBSecretPassword = os.Getenv("TGRAMPWD")
-		routers.ReCaptcha = os.Getenv("RECAPTCHA")
-		recaptcha.Init(os.Getenv("RECAPTCHA"))
 		Port = os.Getenv("TGRAMPORT")
 	}
 
