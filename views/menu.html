@@ -20,6 +20,13 @@
         <div class="navright">
 {{if .username}}
       <li>
+          {{if eq "/editor/0" .path}}
+            new
+          {{else}}
+            <a href="/editor/0">new</a>
+          {{end}}
+      </li>
+      <li>
           {{if eq (print "/@" .username) .path}}
           @{{.username}}
           {{else}}
