@@ -15,7 +15,6 @@ import (
 	humanize "github.com/dustin/go-humanize"
 	"github.com/gin-gonic/gin"
 	"github.com/microcosm-cc/bluemonday"
-	"github.com/patrickmn/go-cache"
 	"github.com/recoilme/tgram/models"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/text/language"
@@ -24,23 +23,11 @@ import (
 
 var (
 	NBSecretPassword = "A String Very Very Very Niubilty!!@##$!@#4"
-	cc               *cache.Cache
 )
 
 const (
-	CookieTime   = 2592000
-	RateIP       = 10 * time.Minute
-	RatePost     = 10 * time.Minute
-	RateComment  = 1 * time.Minute
-	VoteComStore = 24 * time.Hour
-	VoteArtStore = 24 * time.Hour
-	VoteComMax   = 10
-	VoteArtMax   = 10
+	CookieTime = 2592000
 )
-
-func init() {
-	cc = cache.New(24*time.Hour, 10*time.Minute)
-}
 
 // CheckAuth - general hook sets all param like lang, user
 func CheckAuth() gin.HandlerFunc {
@@ -245,7 +232,7 @@ func Register(c *gin.Context) {
 	case "POST":
 		ip := c.ClientIP()
 
-		wait := ratelimit(ip, RateIP)
+		wait := models.RegisterIPGet(ip) //ratelimit(ip, RateIP)
 		if wait > 0 {
 			e := fmt.Sprintf("Rate limit on registraton from that ip, please wait: %d Seconds", wait)
 			renderErr(c, errors.New(e))
@@ -292,7 +279,8 @@ func Register(c *gin.Context) {
 			return
 		}
 		// add to cache on success
-		cc.Set(ip, time.Now().Unix(), cache.DefaultExpiration)
+		models.RegisterIPSet(ip)
+		//cc.Set(ip, time.Now().Unix(), cache.DefaultExpiration)
 
 		c.SetCookie("token", tokenString, CookieTime, "/", "", false, true)
 		switch c.Request.Header.Get("Accept") {
@@ -431,24 +419,11 @@ func Login(c *gin.Context) {
 	}
 }
 
-func ratelimit(key string, dur time.Duration) (wait int) {
-	if x, found := cc.Get(key); found {
-		// if found
-		t := time.Now()
-		elapsed := t.Sub(time.Unix(x.(int64), 0))
-
-		if elapsed < dur {
-			wait = int((dur - elapsed).Seconds())
-		}
-	}
-	return wait
-}
-
 // Editor page
 func Editor(c *gin.Context) {
 	aid, _ := strconv.Atoi(c.Param("aid"))
 	c.Set("aid", aid)
-	postRate := c.GetString("lang") + ":p:" + c.GetString("username")
+	//postRate := c.GetString("lang") + ":p:" + c.GetString("username")
 	switch c.Request.Method {
 	case "GET":
 
@@ -465,7 +440,7 @@ func Editor(c *gin.Context) {
 			c.Set("title", a.Title)
 			c.Set("ogimage", a.OgImage)
 		} else {
-			wait := ratelimit(postRate, RatePost)
+			wait := models.PostLimitGet(c.GetString("lang"), c.GetString("username")) //ratelimit(postRate, RatePost)
 			if wait > 0 {
 				e := fmt.Sprintf("Rate limit for new users on new post, please wait: %d Seconds", wait)
 				renderErr(c, errors.New(e))
@@ -520,13 +495,13 @@ func Editor(c *gin.Context) {
 			c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 			return
 		}
-		wait := ratelimit(postRate, RatePost)
+		wait := models.PostLimitGet(c.GetString("lang"), c.GetString("username")) //ratelimit(postRate, RatePost)
 		if wait > 0 {
 			e := fmt.Sprintf("Rate limit for new users on new post, please wait: %d Seconds", wait)
 			renderErr(c, errors.New(e))
 			return
 		}
-		if _, bannedAuthor := cc.Get("ban:uid:" + username); bannedAuthor {
+		if models.UserBanGet(username) { //_, bannedAuthor := cc.Get("ban:uid:" + username); bannedAuthor {
 			renderErr(c, errors.New("You are banned on 24 h for spam, advertising, illegal and / or copyrighted content. Sorry about that("))
 			return
 		}
@@ -550,7 +525,8 @@ func Editor(c *gin.Context) {
 		}
 		a.ID = newaid
 		// add to cache on success
-		cc.Set(postRate, time.Now().Unix(), cache.DefaultExpiration)
+		models.PostLimitSet(c.GetString("lang"), c.GetString("username"))
+		//cc.Set(postRate, time.Now().Unix(), cache.DefaultExpiration)
 
 		//log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
@@ -598,28 +574,7 @@ func Article(c *gin.Context) {
 		//log.Println("Art", a)
 
 		// view counter
-		unic := fmt.Sprintf("%s%d%s", lang, a.ID, c.ClientIP())
-		unicCnt := fmt.Sprintf("%s%d", lang, a.ID)
-		var view int
-		if _, found := cc.Get(unic); !found {
-			// new unique view for last 24 h - increment
-			cc.Set(unic, 0, cache.DefaultExpiration) //store on 24 h
-			v, notfounderr := cc.IncrementInt(unicCnt, 1)
-			if notfounderr != nil {
-				stored := models.ViewGet(lang, a.ID)
-				cc.Add(unicCnt, stored, cache.NoExpiration)
-				view = 1
-			} else {
-				view = v
-				//if v%5 == 0 {
-				models.ViewSet(lang, a.ID, v)
-				//}
-			}
-		} else {
-			if x, f := cc.Get(unicCnt); f {
-				view = x.(int)
-			}
-		}
+		view := models.ArticleViewGet(lang, c.ClientIP(), a.ID)
 		c.Set("view", view)
 		c.Set("ogimage", a.OgImage)
 		c.HTML(http.StatusOK, "article.html", c.Keys)
@@ -639,7 +594,8 @@ func ArticleDelete(c *gin.Context) {
 			return
 		}
 		// remove rate limit on delete
-		cc.Delete(c.GetString("lang") + ":p:" + username)
+		models.PostLimitDel(c.GetString("lang"), username)
+		//cc.Delete(c.GetString("lang") + ":p:" + username)
 		c.Redirect(http.StatusFound, "/")
 	}
 }
@@ -776,8 +732,8 @@ func CommentNew(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-		rateComKey := lang + ":c:" + c.GetString("username")
-		wait := ratelimit(rateComKey, RateComment)
+		//rateComKey := lang + ":c:" + c.GetString("username")
+		wait := models.ComLimitGet(lang, c.GetString("username")) //ratelimit(rateComKey, RateComment)
 		if wait > 0 {
 			e := fmt.Sprintf("Rate limit for new users on new comment, please wait: %d Seconds", wait)
 			renderErr(c, errors.New(e))
@@ -808,7 +764,8 @@ func CommentNew(c *gin.Context) {
 		models.MentionNew(a.Body, lang, ment, a.Author, url, fullurl, uint32(aid), cid)
 
 		// add to cache on success
-		cc.Set(rateComKey, time.Now().Unix(), cache.DefaultExpiration)
+		models.ComLimitSet(lang, c.GetString("username"))
+		//cc.Set(rateComKey, time.Now().Unix(), cache.DefaultExpiration)
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d#comment%d", username, aid, cid))
 		//c.JSON(http.StatusCreated, a) //gin.H{"article": serializer.Response()})
 		//c.Redirect(http.Sta
@@ -860,14 +817,9 @@ func ArticleBad(c *gin.Context) {
 			return
 		}
 		// remove rate limit on delete
-		cc.Delete(c.GetString("lang") + ":p:" + username)
-		// add author ip to ban
-		//_, errauthor := models.UserGet(c.GetString("lang"), author)
-		//if errauthor == nil {
-		/*if u.IP != "" {
-			cc.Set(u.IP, time.Now().Unix(), cache.DefaultExpiration)
-		}*/
-		cc.Set("ban:uid:"+author, time.Now().Unix(), cache.DefaultExpiration)
+		//cc.Delete(c.GetString("lang") + ":p:" + username)
+		models.UserBanSet(author)
+		//cc.Set("ban:uid:"+author, time.Now().Unix(), cache.DefaultExpiration)
 		//}
 		c.Redirect(http.StatusFound, "/@"+author)
 	}
