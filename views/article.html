@@ -20,7 +20,7 @@
   <footer>
       <nav>
         {{.view}}&nbsp;
-        <ul id="comments" class="share">
+        <ul id="comments" class="right">
             <li>
                 <a href="{{.link}}" rel="nofollow" target="_blank">
                     link 
@@ -59,19 +59,25 @@
 </article>
 {{$author := .article.Author}}
 {{$id := .article.ID}}
+<section>
 {{range .article.Comments}}
-    
-    <section id="comment{{.ID}}">
+    <article id="comment{{.ID}}">
         <header> 
                 <img align="left" class="u-square micro" src="{{.Image}}" /> 
-                <p><a href="/@{{.Author}}">@{{.Author}}</a>&nbsp;&nbsp;&nbsp;<a href="/@{{$author}}/{{$id}}#comment{{.ID}}">#</a>{{.CreatedAt| todate}}</p>
+                <p>
+                    <a href="/@{{.Author}}">@{{.Author}}</a>&nbsp;&nbsp;&nbsp;
+                    <a href="/@{{$author}}/{{$id}}#comment{{.ID}}">#</a>{{.CreatedAt| todate}}
+                    <span class="navright"><a href="/cup/@{{.Author}}/{{$id}}/{{.ID}}">+</a>&nbsp;{{.Plus}}</span> 
+                </p>
+                
         </header>
         <div class="comment">
         {{.HTML}}
         </div>
         <hr/>
-    </section>
+    </article>
 {{end}}
+</section>
 <form  action="/comments/@{{.article.Author}}/{{.article.ID}}" method="post">
     <textarea id="mde"  name="body" placeholder="Write a comment..." ></textarea>
 

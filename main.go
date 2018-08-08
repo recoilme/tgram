@@ -134,6 +134,7 @@ func InitRouter() *gin.Engine {
 	r.GET("unfav/:aid/*action", routers.Unfav)
 
 	r.POST("/comments/@:username/:aid", routers.CommentNew)
+	r.GET("/cup/@:author/:aid/:cid", routers.CommentUp)
 
 	r.GET("/upload", routers.Upload)
 	r.POST("/upload", routers.Upload)

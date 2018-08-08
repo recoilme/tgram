@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -94,7 +95,7 @@ func ArticleViewGet(lang, ip string, aid uint32) (view int) {
 			stored := ViewGet(lang, aid)
 			//log.Println("stored", stored)
 			cc.Add(unicCnt, stored, cache.NoExpiration)
-			view = 1
+			view = stored
 		} else {
 			view = v
 			//if v%5 == 0 {
@@ -104,9 +105,38 @@ func ArticleViewGet(lang, ip string, aid uint32) (view int) {
 	} else {
 		if x, f := cc.Get(unicCnt); f {
 			view = x.(int)
-		} //else {
-		//	view = ViewGet(lang, aid)
-		//}
+		} else {
+			view = ViewGet(lang, aid)
+		}
 	}
 	return view
+}
+
+func ComUpSet(lang, username, cid string) error {
+	unicCnt := fmt.Sprintf("%s:cuidcnt:%s", lang, username)
+
+	if val, found := cc.Get(unicCnt); !found {
+		//no votes
+		cc.Add(unicCnt, 1, VoteComStore)
+	} else {
+		// found
+		votes := val.(int)
+		//log.Println(votes)
+		if votes >= VoteComMax {
+			// limit
+			return errors.New("Oh: today comment vote limit exceeded(")
+		}
+		// add vote
+		cc.IncrementInt(unicCnt, 1)
+	}
+	// one comment - one vote
+	uniq := fmt.Sprintf("%s:ciduid:%s:s", lang, cid, username)
+	if _, found := cc.Get(uniq); !found {
+		// uniq
+		cc.Set(uniq, 1, 24*30*time.Hour) // 30 days
+	} else {
+		return errors.New("Oh: only one vote for each comment allowed(")
+	}
+
+	return nil
 }

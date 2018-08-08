@@ -890,3 +890,26 @@ func Terms(c *gin.Context) {
 	c.HTML(http.StatusOK, "terms.html", c.Keys)
 	return
 }
+
+func CommentUp(c *gin.Context) {
+	author := c.Param("author")
+	username := c.GetString("username")
+	lang := c.GetString("lang")
+	aid := c.Param("aid")
+	cid := c.Param("cid")
+	//log.Println("user", author, aid, cid)
+	if author != username {
+		// no myself vote
+		err := models.ComUpSet(lang, username, cid)
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		// store vote
+
+	} else {
+		renderErr(c, errors.New("You don't may vote for yourself("))
+		return
+	}
+	c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%s#comment%s", author, aid, cid))
+}

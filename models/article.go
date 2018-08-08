@@ -28,6 +28,7 @@ type Article struct {
 	CreatedAt time.Time
 	Lang      string
 	HTML      template.HTML
+	Plus      uint32
 	Comments  []Article
 }
 
