@@ -12,7 +12,6 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	recaptcha "github.com/dpapathanasiou/go-recaptcha"
 	humanize "github.com/dustin/go-humanize"
 	"github.com/gin-gonic/gin"
 	"github.com/microcosm-cc/bluemonday"
@@ -25,15 +24,18 @@ import (
 
 var (
 	NBSecretPassword = "A String Very Very Very Niubilty!!@##$!@#4"
-	ReCaptcha        = ""
 	cc               *cache.Cache
 )
 
 const (
-	CookieTime  = 2592000
-	RateIP      = 10 * time.Minute
-	RatePost    = 10 * time.Minute
-	RateComment = 1 * time.Minute
+	CookieTime   = 2592000
+	RateIP       = 10 * time.Minute
+	RatePost     = 10 * time.Minute
+	RateComment  = 1 * time.Minute
+	VoteComStore = 24 * time.Hour
+	VoteArtStore = 24 * time.Hour
+	VoteComMax   = 10
+	VoteArtMax   = 10
 )
 
 func init() {
@@ -242,34 +244,14 @@ func Register(c *gin.Context) {
 		c.HTML(http.StatusOK, "register.html", c.Keys)
 	case "POST":
 		ip := c.ClientIP()
-		//log.Println("ReCaptcha", ReCaptcha)
-		ReCaptcha = "" // disable
-		if ReCaptcha != "" {
-			//validate if set
-			c.Request.ParseForm()
-			//_ = c.Request.PostFormValue("g-recaptcha-response")
-			//log.Println("g-recaptcha-response", c.Request.PostFormValue("g-recaptcha-response"))
-			recaptchaResponse, responseFound := c.Request.Form["g-recaptcha-response"]
-			if responseFound {
-				result, err := recaptcha.Confirm(ip, recaptchaResponse[0])
-				//log.Println("recaptchaResponse", result, err)
-				if err != nil {
-					renderErr(c, err)
-					return
-				}
-				if !result {
-					renderErr(c, errors.New("Error validating captcha"))
-					return
-				}
-			}
-			wait := ratelimit(ip, RateIP)
-			if wait > 0 {
-				e := fmt.Sprintf("Rate limit on registraton from that ip, please wait: %d Seconds", wait)
-				renderErr(c, errors.New(e))
-				return
-			}
 
+		wait := ratelimit(ip, RateIP)
+		if wait > 0 {
+			e := fmt.Sprintf("Rate limit on registraton from that ip, please wait: %d Seconds", wait)
+			renderErr(c, errors.New(e))
+			return
 		}
+
 		type RegisterForm struct {
 			Username string `form:"username" json:"username" binding:"exists,alphanum,min=1,max=20"`
 			Password string `form:"password" json:"password" binding:"exists,min=6,max=255"`

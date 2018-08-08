@@ -101,7 +101,6 @@ You may create file tgram.env with params, sample:
 ```
 TGRAMPWD=SOM2324&E*&Ff!!EDjweljf
 TGRAMPORT=:8081
-RECAPTCHA=somekey
 ```
 
 
