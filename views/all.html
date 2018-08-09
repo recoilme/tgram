@@ -14,6 +14,9 @@
       {{if .Title}}
         <h3><a href="/@{{.Author}}/{{.ID}}">{{.Title}}</a></h3>
       {{end}}
+	<p>
+		{{.WordCount}} words ({{if eq .ReadingTime 0}}less than a minute{{else}}about {{.ReadingTime}} {{if eq .ReadingTime 1}}minute{{else}}minutes{{end}}{{end}})
+	</p>
       {{.Body | getlead}}
       <div class="comment">
         <a href="/@{{.Author}}/{{.ID}}#comments">comments: {{len .Comments}}</a>
