@@ -15,7 +15,9 @@
     {{if .article.Title}}
         <h3><a href="/@{{.article.Author}}/{{.article.ID}}">{{.article.Title}}</a></h3>
     {{end}}
-	<p>{{.article.WordCount}} (About {{.article.ReadingTime}})</p>
+	<p>
+		{{.WordCount}} words ({{if eq .ReadingTime 0}}less than a minute{{else}}about {{.ReadingTime}} {{if eq .ReadingTime 1}}minute{{else}}minutes{{end}}{{end}})
+	</p>
     {{.body}}
   </section>
   <footer>

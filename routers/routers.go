@@ -521,6 +521,8 @@ func Editor(c *gin.Context) {
 		a.HTML = html
 		a.Body = body
 		a.Title = title
+		a.ReadingTime = readingTime
+		a.WordCount = wordCount
 		newaid, err := models.ArticleNew(&a)
 		if err != nil {
 			renderErr(c, err)

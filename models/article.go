@@ -19,18 +19,20 @@ const (
 
 // Article model
 type Article struct {
-	ID        uint32
-	Title     string `form:"title" json:"title" binding:"max=255"`
-	Body      string `form:"body" json:"body" binding:"exists,min=10,max=65536"`
-	Author    string
-	Image     string
-	OgImage   string `form:"ogimage" json:"ogimage" binding:"omitempty,url"`
-	CreatedAt time.Time
-	Lang      string
-	HTML      template.HTML
-	Plus      uint32
-	Minus     uint32
-	Comments  []Article
+	ID          uint32
+	Title       string `form:"title" json:"title" binding:"max=255"`
+	Body        string `form:"body" json:"body" binding:"exists,min=10,max=65536"`
+	Author      string
+	Image       string
+	OgImage     string `form:"ogimage" json:"ogimage" binding:"omitempty,url"`
+	CreatedAt   time.Time
+	Lang        string
+	HTML        template.HTML
+	Plus        uint32
+	Minus       uint32
+	Comments    []Article
+	ReadingTime int
+	WordCount   int
 }
 
 // Uint32toBin convert to binary
