@@ -16,6 +16,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/recoilme/tgram/models"
+	"github.com/recoilme/tgram/utils"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/text/language"
 	"gopkg.in/russross/blackfriday.v2"
@@ -466,7 +467,7 @@ func Editor(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-
+		readingTime, wordCount := utils.ReadingTime(body)
 		unsafe := blackfriday.Run([]byte(body))
 		html := template.HTML(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
 
@@ -485,6 +486,8 @@ func Editor(c *gin.Context) {
 			a.Body = body
 			a.Title = title
 			a.OgImage = ogimage
+			a.ReadingTime = readingTime
+			a.WordCount = wordCount
 			err = models.ArticleUpd(a)
 			if err != nil {
 				renderErr(c, err)

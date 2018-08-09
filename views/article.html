@@ -15,6 +15,7 @@
     {{if .article.Title}}
         <h3><a href="/@{{.article.Author}}/{{.article.ID}}">{{.article.Title}}</a></h3>
     {{end}}
+	<p>{{.article.WordCount}} (About {{.article.ReadingTime}})</p>
     {{.body}}
   </section>
   <footer>
