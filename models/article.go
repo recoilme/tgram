@@ -29,6 +29,7 @@ type Article struct {
 	Lang      string
 	HTML      template.HTML
 	Plus      uint32
+	Minus     uint32
 	Comments  []Article
 }
 
