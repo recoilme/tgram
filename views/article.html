@@ -19,7 +19,7 @@
   </section>
   <footer>
       <nav>
-        {{.view}}&nbsp;
+        <a href="/vote/up/@{{.article.Author}}/{{.article.ID}}">+</a>&nbsp;{{.article.Plus}}:{{.article.Minus}}&nbsp;<a href="/vote/down/@{{.article.Author}}/{{.article.ID}}">-</a>
         <ul id="comments" class="right">
             <li>
                 <a href="{{.link}}" rel="nofollow" target="_blank">

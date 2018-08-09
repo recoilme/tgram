@@ -140,3 +140,29 @@ func ComUpSet(lang, username, cid string) error {
 
 	return nil
 }
+
+func VoteSet(lang, username string) error {
+	unicCnt := fmt.Sprintf("%s:auidcnt:%s", lang, username)
+
+	if val, found := cc.Get(unicCnt); !found {
+		//no votes
+		cc.Add(unicCnt, 1, VoteArtStore)
+	} else {
+		// found
+		votes := val.(int)
+		//log.Println(votes)
+		if votes >= VoteArtMax {
+			// limit
+			return errors.New("Oh: today article vote limit exceeded(")
+		}
+		// add vote
+		cc.IncrementInt(unicCnt, 1)
+	}
+	/*
+		uniq := fmt.Sprintf("%s:aiduid:%s:s", lang, aid, username)
+		if _, found := cc.Get(uniq); !found {
+			// uniq
+			cc.Set(uniq, 1, 24*30*time.Hour) // 30 days
+		}*/
+	return nil
+}
