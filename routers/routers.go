@@ -36,7 +36,7 @@ func CheckAuth() gin.HandlerFunc {
 		c.Set("path", c.Request.URL.Path)
 		var lang = "en"
 		var found bool
-		acceptedLang := []string{"de", "en", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh", "tst", "sub"}
+		acceptedLang := []string{"de", "en", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh", "tst", "sub", "bs"}
 		var tokenStr, username, image string
 
 		hosts := strings.Split(c.Request.Host, ".")

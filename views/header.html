@@ -22,6 +22,9 @@
     <meta property="og:image" content="/m/img/logo_big.png" />
     {{end}}
     <meta name="og:site_name" content="typegram"/>
+    {{if eq .lang "bs"}}
+    <meta name="robots" content="noindex,nofollow">
+    {{end}}
     
     <link rel="icon" href="/m/img/favicon.ico"/>
     <link rel="apple-touch-icon" sizes="180x180" href="/m/img/apple-touch-icon.png"/>
