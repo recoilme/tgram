@@ -75,10 +75,11 @@
         <div class="comment">
         {{.HTML}}
         </div>
-        <hr/>
+        
     </article>
 {{end}}
 </section>
+<br/>
 <form  action="/comments/@{{.article.Author}}/{{.article.ID}}" method="post">
     <textarea id="mde"  name="body" placeholder="Write a comment..." ></textarea>
 

@@ -52,11 +52,12 @@ nav{
       margin-right:1em;
       margin-bottom:.25em; }
 
-
+/*
 header nav {
   font-family:"PT Serif", Georgia, serif;
   color:#ccc;
 }
+*/
 nav a {
   background: none;
   text-decoration: none;
@@ -186,7 +187,7 @@ h6{
   color:#aaa; }
 
 article + article{
-  margin-top:5em; }
+  margin-top:3em; }
 
 article header p{
   font-family:"PT Sans", Helvetica, Arial, sans;
@@ -565,14 +566,14 @@ blockquote {
 
 article h3 {
   font-family: 'PT Sans Caption', serif;
-  font-size: 36px;
+  /*font-size: 36px;*/
 }
 article h3 a {
   border-bottom-style: none;
 }
 
 article section> p:nth-of-type(1) {
-  font-size: 21px;
+  /*font-size: 21px;*/
   font-family: 'PT Sans Caption', serif;
 }
 

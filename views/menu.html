@@ -1,24 +1,26 @@
 {{define "menu"}}
 <header>
-    <nav>
-      <ul>
-        <li>
-          {{if eq "/" .path}}
-          <b>tgr.am</b>
-          {{else}}
-            <a href="/"><b>tgr.am</b></a>
-          {{end}}
-        </li>
-        
-        <li>
-          {{if eq "/all" .path}}
-          all
-          {{else}}
-            <a href="/all">all</a>
-          {{end}}
-        </li>
-        <div class="navright">
-{{if .username}}
+  <nav>
+    <ul>
+      <li>
+        {{if eq "/" .path}}
+        <b>tgr.am</b>
+        {{else}}
+          <a href="/"><b>tgr.am</b></a>
+        {{end}}
+      </li>
+      <li>top</li>
+      <li>
+        {{if eq "/mid" .path}}
+          mid
+        {{else}}
+          <a href="/mid">mid</a>
+        {{end}}
+      </li>
+      <li>btm</li>
+    <div class="navright">
+      
+      {{if .username}}
       <li>
           {{if eq "/editor/0" .path}}
             new
@@ -35,7 +37,7 @@
             </a>
           {{end}}
       </li>
-{{ else}}
+    {{ else}}
       <li>
           {{if eq "/register" .path}}
           sign up
@@ -50,10 +52,10 @@
             <a href="/login">sign in</a>
           {{end}}
       </li>
-{{ end }}
-</div>
-</ul>
-</nav>
+    {{ end }}
+    </div>
+    </ul>
+  </nav>
 </header>
 <main>
 {{ end }}

@@ -13,12 +13,12 @@ fav: {{.favcnt}}&nbsp;&nbsp;fol: {{.followcnt}}&nbsp;&nbsp;
 {{else}}
   {{if .isfollow}}
   <a href="/unfollow/{{.article.Author}}/@{{.article.Author}}/{{.article.ID}}">
-    unfollow: {{.followcnt}}
-  </a>
+    unfollow:
+  </a> {{.followcnt}}
   {{else}}
   <a href="/follow/{{.article.Author}}/@{{.article.Author}}/{{.article.ID}}">
-    follow: {{.followcnt}}
-  </a>
+    follow:
+  </a> {{.followcnt}}
   {{end}}
 {{end}}&nbsp;
 {{if eq .article.Author .username }}
@@ -28,12 +28,12 @@ fav: {{.favcnt}}&nbsp;&nbsp;fol: {{.followcnt}}&nbsp;&nbsp;
 {{else}}
 {{if .isfav}}
 <a href="/unfav/{{.article.ID}}/@{{.article.Author}}/{{.article.ID}}">
-  unfavorite: {{.favcnt}}
-</a>
+  unfavorite:
+</a> {{.favcnt}}
 {{else}}
 <a href="/fav/{{.article.ID}}/@{{.article.Author}}/{{.article.ID}}">
-  favorite: {{.favcnt}}
-</a>
+  favorite:
+</a> {{.favcnt}}
 {{end}}
 {{end}}
 
