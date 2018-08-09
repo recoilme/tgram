@@ -30,9 +30,9 @@
       &nbsp;&nbsp;
       &lsaquo;
     {{else}}
-      <a href="/all">&laquo;</a>
+      <a href="/mid">&laquo;</a>
       &nbsp;&nbsp;
-      <a href="/all/?p={{.prev}}">&lsaquo;</a>
+      <a href="/mid/?p={{.prev}}">&lsaquo;</a>
     {{end}}
 
     &nbsp;&nbsp;&nbsp;&nbsp;{{.page}}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -40,10 +40,10 @@
     {{if le .next 1}}
     &rsaquo;
     {{else }}
-    <a href="/all/?p={{.next}}">&rsaquo;</a>
+    <a href="/mid/?p={{.next}}">&rsaquo;</a>
     {{end}}
     &nbsp;&nbsp;
-    <a href="/all/?p={{.last}}">&raquo;</a>
+    <a href="/mid/?p={{.last}}">&raquo;</a>
     </nav>
   {{end}}
 {{else}}
