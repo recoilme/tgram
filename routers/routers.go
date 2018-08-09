@@ -892,24 +892,46 @@ func Terms(c *gin.Context) {
 }
 
 func CommentUp(c *gin.Context) {
-	author := c.Param("author")
-	username := c.GetString("username")
-	lang := c.GetString("lang")
-	aid := c.Param("aid")
-	cid := c.Param("cid")
-	//log.Println("user", author, aid, cid)
-	if author != username {
-		// no myself vote
-		err := models.ComUpSet(lang, username, cid)
-		if err != nil {
-			renderErr(c, err)
+	switch c.Request.Method {
+	case "GET":
+
+		authorCom := c.Param("authorcom")
+		authorArt := c.Param("authorart")
+		username := c.GetString("username")
+		lang := c.GetString("lang")
+		aid := c.Param("aid")
+		cid := c.Param("cid")
+		//log.Println("user", author, aid, cid)
+		if authorCom != username {
+			// no myself vote
+			err := models.ComUpSet(lang, username, cid)
+			if err != nil {
+				renderErr(c, err)
+				return
+			}
+			// store vote
+			aidint, _ := strconv.Atoi(aid)
+			a, err := models.ArticleGet(lang, authorArt, uint32(aidint))
+			if err != nil {
+				renderErr(c, err)
+				return
+			}
+			//log.Println("a:", a)
+			comments := a.Comments
+			cidint, _ := strconv.Atoi(cid)
+
+			for ind, com := range comments {
+				if com.ID == uint32(cidint) {
+					votes := com.Plus
+					a.Comments[ind].Plus = votes + 1
+					models.ArticleUpd(a)
+					break
+				}
+			}
+		} else {
+			renderErr(c, errors.New("You don't may vote for yourself("))
 			return
 		}
-		// store vote
-
-	} else {
-		renderErr(c, errors.New("You don't may vote for yourself("))
-		return
+		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%s#comment%s", authorArt, aid, cid))
 	}
-	c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%s#comment%s", author, aid, cid))
 }
