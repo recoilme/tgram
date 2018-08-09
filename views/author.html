@@ -47,6 +47,9 @@
       <img align="left" class="u-square micro" src="{{.Image}}" />
       <p>
         <a href="/@{{.Author}}/{{.ID}}">{{.CreatedAt| todate}}</a>
+        <span class="navright">
+          {{ template "readtime" .}}
+        </span>
       </p>
     </header>
     <section>

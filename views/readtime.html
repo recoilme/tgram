@@ -1,0 +1,9 @@
+{{ define "readtime" }}
+{{ if .WordCount}}
+  {{if .ReadingTime}}
+    about {{.ReadingTime}} {{if eq .ReadingTime 1}}minute{{else}}minutes{{end}}
+  {{else}}
+    less than a minute
+  {{end}}
+{{ end }}
+{{end}}

@@ -8,15 +8,15 @@
       <a href="/@{{.Author}}"><img align="left" class="u-square micro" src="{{.Image}}"/></a>
       <p>
         <a href="/@{{.Author}}">@{{.Author}}</a>&nbsp;&nbsp;&nbsp;<a href="/@{{.Author}}/{{.ID}}">{{.CreatedAt| todate}}</a>
+        <span class="navright">
+          {{ template "readtime" .}}
+        </span>
       </p>
     </header>
     <section>
       {{if .Title}}
         <h3><a href="/@{{.Author}}/{{.ID}}">{{.Title}}</a></h3>
       {{end}}
-	<p>
-		{{.WordCount}} words ({{if eq .ReadingTime 0}}less than a minute{{else}}about {{.ReadingTime}} {{if eq .ReadingTime 1}}minute{{else}}minutes{{end}}{{end}})
-	</p>
       {{.Body | getlead}}
       <div class="comment">
         <a href="/@{{.Author}}/{{.ID}}#comments">comments: {{len .Comments}}</a>
