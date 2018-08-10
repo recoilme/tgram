@@ -265,10 +265,14 @@ func Register(c *gin.Context) {
 			Password string `form:"password" json:"password" binding:"exists,min=6,max=255"`
 			Privacy  string `form:"privacy" json:"privacy" `
 			Terms    string `form:"terms" json:"terms" `
+			Good     string `form:"good" json:"good" ` // This is to avoid spammers
 		}
 		var rf RegisterForm
 		err = c.ShouldBind(&rf)
 
+		if rf.Good == "good" {
+			err = errors.New("Error: Sorry, we do not endorse spammers or world domination... yet.")
+		}
 		if rf.Privacy != "privacy" {
 			err = errors.New("Error: You must read and accept our Privacy Statement")
 		}
