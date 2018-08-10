@@ -235,7 +235,7 @@ func Register(c *gin.Context) {
 
 		wait := models.RegisterIPGet(ip) //ratelimit(ip, RateIP)
 		if wait > 0 {
-			e := fmt.Sprintf("Rate limit on registraton from that ip, please wait: %d Seconds", wait)
+			e := fmt.Sprintf("Rate limit on registration from your ip, please wait: %d Seconds", wait)
 			renderErr(c, errors.New(e))
 			return
 		}
@@ -250,10 +250,10 @@ func Register(c *gin.Context) {
 		err = c.ShouldBind(&rf)
 
 		if rf.Privacy != "privacy" {
-			err = errors.New("Error: You must read and accept Privacy Statement")
+			err = errors.New("Error: You must read and accept our Privacy Statement")
 		}
 		if rf.Terms != "terms" {
-			err = errors.New("Error: You must read and accept Terms of Service")
+			err = errors.New("Error: You must read and accept our Terms of Service")
 		}
 		if err != nil {
 			renderErr(c, err)
@@ -505,12 +505,12 @@ func Editor(c *gin.Context) {
 			return
 		}
 		if models.UserBanGet(username) { //_, bannedAuthor := cc.Get("ban:uid:" + username); bannedAuthor {
-			renderErr(c, errors.New("You are banned on 24 h for spam, advertising, illegal and / or copyrighted content. Sorry about that("))
+			renderErr(c, errors.New("You are banned for 24 h for spam, advertising, illegal and / or copyrighted content. Sorry about that("))
 			return
 		}
 		/*
 			if _, bannedIP := cc.Get(c.ClientIP()); bannedIP {
-				renderErr(c, errors.New("This ip was banned on 24 h for spam, advertising, illegal and / or copyrighted content. Sorry about that("))
+				renderErr(c, errors.New("This ip was banned for 24 h for spam, advertising, illegal and / or copyrighted content. Sorry about that("))
 				return
 			}*/
 		a.Lang = lang
@@ -934,7 +934,7 @@ func CommentUp(c *gin.Context) {
 				}
 			}
 		} else {
-			renderErr(c, errors.New("You don't may vote for yourself("))
+			renderErr(c, errors.New("You may not vote for yourself("))
 			return
 		}
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%s#comment%s", authorArt, aid, cid))
@@ -978,7 +978,7 @@ func Vote(c *gin.Context) {
 			models.ArticleUpd(a)
 		} else {
 			// no myself vote
-			renderErr(c, errors.New("You don't may vote for yourself("))
+			renderErr(c, errors.New("You may not vote for yourself("))
 			return
 		}
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%s#comments", author, aid))
