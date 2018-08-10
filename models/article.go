@@ -166,15 +166,15 @@ func AllArticles(lang, from_str string) (models []Article, page string, prev, ne
 
 func TopArticles(lang string, cnt uint32, by string) (models []Article, err error) {
 
-	models, _, _, err = ArticlesSelect(lang, nil, cnt, uint32(0), false)
+	models, _, _, err = ArticlesSelect(lang, nil, cnt*5, uint32(0), false)
 	if err != nil {
 		return models, err
 	}
-	sorted, err := ArticlesSort(models, by)
+	sorted, err := ArticlesSort(models, by, cnt)
 	return sorted, err
 }
 
-func ArticlesSort(models []Article, by string) (sorted []Article, err error) {
+func ArticlesSort(models []Article, by string, cnt uint32) (sorted []Article, err error) {
 	type ArticleSort struct {
 		Article Article
 		Score   float64
@@ -203,8 +203,13 @@ func ArticlesSort(models []Article, by string) (sorted []Article, err error) {
 		return tmp[i].Score > tmp[j].Score
 	})
 
+	cur := 0
 	for _, nm := range tmp {
+		cur++
 		sorted = append(sorted, nm.Article)
+		if cur >= int(cnt) {
+			break
+		}
 	}
 	return sorted, err
 }
