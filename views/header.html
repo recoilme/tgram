@@ -6,14 +6,7 @@
     {{if .title}}
     <title>{{.title}}</title>
     {{else}}
-      {{if .lang}}
-      {{if eq .lang "bs" }}
-        <title>typegram</title>
-      {{else}}
-        <title>blogistan</title>
-      {{end}}
-      {{end}}
-    
+    <title>typegram</title>
     {{end}}
     {{if .description}}
     <meta name="description" content="{{.description}}"/>
@@ -29,11 +22,6 @@
     <meta property="og:image" content="/m/img/logo_big.png" />
     {{end}}
     <meta name="og:site_name" content="typegram"/>
-    {{if .lang}}
-    {{if eq .lang "bs" }}
-    <meta name="robots" content="noindex,nofollow">
-    {{end}}
-    {{end}}
     
     <link rel="icon" href="/m/img/favicon.ico"/>
     <link rel="apple-touch-icon" sizes="180x180" href="/m/img/apple-touch-icon.png"/>
