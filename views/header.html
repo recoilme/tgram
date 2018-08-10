@@ -6,7 +6,14 @@
     {{if .title}}
     <title>{{.title}}</title>
     {{else}}
-    <title>typegram</title>
+      {{if .lang}}
+      {{if eq .lang "bs" }}
+        <title>typegram</title>
+      {{else}}
+        <title>blogistan</title>
+      {{end}}
+      {{end}}
+    
     {{end}}
     {{if .description}}
     <meta name="description" content="{{.description}}"/>
