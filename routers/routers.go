@@ -42,6 +42,10 @@ type siteConfig struct {
 
 var Config siteConfig
 
+func init() {
+	Config = siteConfig{"typegram", "zen platform for writers", "recoilme", "Typegram", "/@recoilme/1", "tgr.am"}
+}
+
 // CheckAuth - general hook sets all param like lang, user
 func CheckAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
