@@ -4,6 +4,8 @@ import (
 	"encoding/binary"
 	"fmt"
 	"html/template"
+	"math"
+	"sort"
 	"strconv"
 	"time"
 
@@ -100,46 +102,52 @@ func ArticleDelete(lang, username string, aid uint32) (err error) {
 	return nil
 }
 
+func ArticlesSelect(lang string, from []byte, limit, offset uint32, asc bool) (models []Article, first, last uint32, err error) {
+	fAids := fmt.Sprintf(dbAids, lang)
+	keys, err := sp.Keys(fAids, from, limit, offset, asc)
+	if err != nil {
+		return models, first, last, err
+	}
+	for _, key := range keys {
+		var model Article
+		uidb, err := sp.Get(fAids, key)
+		if err != nil {
+			break
+			//continue
+		}
+		fAUser := fmt.Sprintf(dbAUser, lang, string(uidb))
+		if err = sp.GetGob(fAUser, key, &model); err != nil {
+			break
+			//continue
+		}
+		if first == 0 {
+			first = BintoUint32(key)
+		}
+		last = BintoUint32(key)
+		models = append(models, model)
+	}
+	return models, first, last, err
+}
+
 // AllArticles return page from list of articles
 func AllArticles(lang, from_str string) (models []Article, page string, prev, next, last uint32, err error) {
 
 	from_int, _ := strconv.Atoi(from_str)
 	var limit_int uint32
 	limit_int = 5
-	fAids := fmt.Sprintf(dbAids, lang)
+
 	var from []byte
 	if from_int > 0 {
 		from = Uint32toBin(uint32(from_int))
 	} else {
 		from = nil
 	}
-	keys, err := sp.Keys(fAids, from, limit_int, uint32(0), false)
-	if err != nil {
-		return models, page, prev, next, last, err
-	}
-	var firstkey uint32
-	for _, key := range keys {
-		var model Article
-
-		uidb, err := sp.Get(fAids, key)
-		if err != nil {
-			break
-		}
-		fAUser := fmt.Sprintf(dbAUser, lang, string(uidb))
-		if err = sp.GetGob(fAUser, key, &model); err != nil {
-			fmt.Println("kerr", err)
-			break //todo continue?
-		}
-		if firstkey == 0 {
-			firstkey = BintoUint32(key)
-		}
-		next = BintoUint32(key)
-		models = append(models, model)
-	}
+	models, firstkey, next, err := ArticlesSelect(lang, from, limit_int, uint32(0), false)
 	//all, _ := sp.Count(fAids)
 	page = fmt.Sprintf("%d..%d", firstkey, next)
 
 	// last article is prev to first article
+	fAids := fmt.Sprintf(dbAids, lang)
 	lastkeys, _ := sp.Keys(fAids, nil, uint32(1), uint32(1), true)
 	if len(lastkeys) > 0 {
 		last = BintoUint32(lastkeys[0])
@@ -154,6 +162,51 @@ func AllArticles(lang, from_str string) (models []Article, page string, prev, ne
 	}
 	return models, page, prev, next, last, err
 
+}
+
+func TopArticles(lang string, cnt uint32, by string) (models []Article, err error) {
+
+	models, _, _, err = ArticlesSelect(lang, nil, cnt, uint32(0), false)
+	if err != nil {
+		return models, err
+	}
+	sorted, err := ArticlesSort(models, by)
+	return sorted, err
+}
+
+func ArticlesSort(models []Article, by string) (sorted []Article, err error) {
+	type ArticleSort struct {
+		Article Article
+		Score   float64
+	}
+	now := time.Now()
+	var tmp []ArticleSort
+	for _, a := range models {
+		diff := now.Sub(a.CreatedAt)
+		min := diff.Minutes()
+		var vote float64
+		switch by {
+		case "minus":
+			vote = float64(a.Minus)
+		default:
+			vote = float64(a.Plus)
+		}
+		//https://medium.com/hacking-and-gonzo/how-hacker-news-ranking-algorithm-works-1d9b0cf2c08d
+		score := vote / (math.Pow(float64(min+120), float64(1.8)))
+		//log.Println(a.Title, a.Plus, int(min), score)
+		var as ArticleSort
+		as.Article = a
+		as.Score = score
+		tmp = append(tmp, as)
+	}
+	sort.Slice(tmp, func(i, j int) bool {
+		return tmp[i].Score > tmp[j].Score
+	})
+
+	for _, nm := range tmp {
+		sorted = append(sorted, nm.Article)
+	}
+	return sorted, err
 }
 
 // ArticlesAuthor return articles by author

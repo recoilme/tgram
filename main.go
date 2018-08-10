@@ -99,6 +99,8 @@ func InitRouter() *gin.Engine {
 	r.Use(routers.CheckAuth())
 	r.GET("/", routers.Home)
 	r.GET("/mid", routers.All)
+	r.GET("/top", routers.Top)
+	r.GET("/btm", routers.Btm)
 
 	r.GET("/register", routers.Register)
 	r.POST("/register", routers.Register)

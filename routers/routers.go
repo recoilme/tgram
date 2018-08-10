@@ -202,6 +202,26 @@ func All(c *gin.Context) {
 	c.HTML(http.StatusOK, "all.html", c.Keys)
 }
 
+func Top(c *gin.Context) {
+	articles, err := models.TopArticles(c.GetString("lang"), uint32(20), "plus")
+	if err != nil {
+		renderErr(c, err)
+		return
+	}
+	c.Set("articles", articles)
+	c.HTML(http.StatusOK, "all.html", c.Keys)
+}
+
+func Btm(c *gin.Context) {
+	articles, err := models.TopArticles(c.GetString("lang"), uint32(20), "minus")
+	if err != nil {
+		renderErr(c, err)
+		return
+	}
+	c.Set("articles", articles)
+	c.HTML(http.StatusOK, "all.html", c.Keys)
+}
+
 func renderErr(c *gin.Context, err error) {
 	switch c.Request.Header.Get("Accept") {
 	case "application/json":
