@@ -1,6 +1,6 @@
 {{ define "buttons" }}
 visitor: {{.view}}&nbsp;&nbsp;
-{{if eq .username "recoilme" }}
+{{if eq .username .config.Admin }}
 <a style="color:brown" href="/bad/@{{.article.Author}}/{{.article.ID}}">
   bad
 </a>&nbsp;&nbsp;

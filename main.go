@@ -27,6 +27,12 @@ func main() {
 	if err == nil {
 		routers.NBSecretPassword = os.Getenv("TGRAMPWD")
 		Port = os.Getenv("TGRAMPORT")
+		routers.Config.Title = os.Getenv("TGRAMTITLE")
+		routers.Config.SiteName = os.Getenv("TGRAMNAME")
+		routers.Config.Description = os.Getenv("TGRAMDESC")
+		routers.Config.Admin = os.Getenv("TGRAMADMIN")
+		routers.Config.AboutPage = os.Getenv("TGRAMABOUT")
+		routers.Config.Domain = os.Getenv("TGRAMDOMAIN")
 	}
 
 	srv := &http.Server{

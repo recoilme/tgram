@@ -4,9 +4,9 @@
     <ul>
       <li>
         {{if eq "/" .path}}
-        <b>tgr.am</b>
+        <b>{{.config.Domain}}</b>
         {{else}}
-          <a href="/"><b>tgr.am</b></a>
+          <a href="/"><b>{{.config.Domain}}</b></a>
         {{end}}
       </li>
       <li>

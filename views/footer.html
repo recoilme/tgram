@@ -3,7 +3,11 @@
 <footer>
   <p>
     <span>
-      <a href="/@recoilme/1">about</a>&nbsp;&nbsp; 
+		{{if .config.AboutPage}}
+      <a href={{.config.AboutPage}}>About</a>&nbsp;&nbsp; 
+{{else}}
+      <a href="/@recoilme/1">About</a>&nbsp;&nbsp; 
+{{end}}
     </span>
     <span>
       <a href="https://t.me/typegramgroup">typegramgroup</a>&nbsp;&nbsp;  

@@ -3,13 +3,13 @@
 <html>
   <head>
     <meta charset="utf-8">
-    {{if .title}}
-    <title>{{.title}}</title>
+    {{if .config.Title}}
+    <title>{{.config.Title}}</title>
     {{else}}
     <title>typegram</title>
     {{end}}
-    {{if .description}}
-    <meta name="description" content="{{.description}}"/>
+    {{if .config.Description}}
+    <meta name="description" content="{{.config.Description}}"/>
     {{else}}
     <meta name="description" content="zen platform for writers"/>
     {{end}}
@@ -21,7 +21,7 @@
     {{else}}
     <meta property="og:image" content="/m/img/logo_big.png" />
     {{end}}
-    <meta name="og:site_name" content="typegram"/>
+    <meta name="og:site_name" content="{{.config.SiteName}}"/>
     
     <link rel="icon" href="/m/img/favicon.ico"/>
     <link rel="apple-touch-icon" sizes="180x180" href="/m/img/apple-touch-icon.png"/>

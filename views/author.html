@@ -36,7 +36,7 @@
   <img align="left"  style="margin-right:20px" class="u-square medium" src="{{.author.Image}}">
   {{.author.Username}} 
   <br>{{.author.Bio}}
-  {{if eq .username "recoilme" }}
+  {{if eq .username .config.Admin }}
   <br>ip:"{{.author.IP}}"
   {{end}}
 </section>
