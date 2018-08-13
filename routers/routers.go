@@ -199,19 +199,21 @@ func Home(c *gin.Context) {
 
 // All all page
 func All(c *gin.Context) {
-	articles, page, prev, next, last, err := models.AllArticles(c.GetString("lang"), c.Query("p"))
+	articles, page, prev, next, last, err := models.AllArticles(c.GetString("lang"), c.Query("p"), c.Query("tag"))
 	if err != nil {
 		renderErr(c, err)
 		return
 	}
 	//log.Println(len(articles))
 	c.Set("articles", articles)
-	c.Set("page", page)
-	c.Set("prev", prev)
-	c.Set("next", next)
-	c.Set("last", last)
-	from_int, _ := strconv.Atoi(c.Query("p"))
-	c.Set("p", from_int)
+	if c.Query("tag") == "" {
+		c.Set("page", page)
+		c.Set("prev", prev)
+		c.Set("next", next)
+		c.Set("last", last)
+		from_int, _ := strconv.Atoi(c.Query("p"))
+		c.Set("p", from_int)
+	}
 	c.HTML(http.StatusOK, "all.html", c.Keys)
 }
 
@@ -477,6 +479,7 @@ func Editor(c *gin.Context) {
 			c.Set("body", str)
 			c.Set("title", a.Title)
 			c.Set("ogimage", a.OgImage)
+			c.Set("tag", a.Tag)
 		} else {
 			wait := models.PostLimitGet(c.GetString("lang"), c.GetString("username")) //ratelimit(postRate, RatePost)
 			if wait > 0 {
@@ -507,9 +510,9 @@ func Editor(c *gin.Context) {
 		readingTime, wordCount := utils.ReadingTime(body)
 		unsafe := blackfriday.Run([]byte(body))
 		html := template.HTML(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
-
-		title := abind.Title
-		ogimage := abind.OgImage
+		tag := strings.TrimSpace(abind.Tag)
+		title := strings.TrimSpace(abind.Title)
+		ogimage := strings.TrimSpace(abind.OgImage)
 		//log.Printf("ogimage:'%s'\n", ogimage)
 		var a models.Article
 		if aid > 0 {
@@ -525,7 +528,9 @@ func Editor(c *gin.Context) {
 			a.OgImage = ogimage
 			a.ReadingTime = readingTime
 			a.WordCount = wordCount
-			err = models.ArticleUpd(a)
+			oldTag := a.Tag
+			a.Tag = tag
+			err = models.ArticleUpd(a, oldTag)
 			if err != nil {
 				renderErr(c, err)
 				return
@@ -560,6 +565,7 @@ func Editor(c *gin.Context) {
 		a.Title = title
 		a.ReadingTime = readingTime
 		a.WordCount = wordCount
+		a.Tag = tag
 		newaid, err := models.ArticleNew(&a)
 		if err != nil {
 			renderErr(c, err)
@@ -962,7 +968,7 @@ func CommentUp(c *gin.Context) {
 				if com.ID == uint32(cidint) {
 					votes := com.Plus
 					a.Comments[ind].Plus = votes + 1
-					models.ArticleUpd(a)
+					models.ArticleUpd(a, a.Tag)
 					break
 				}
 			}
@@ -1008,7 +1014,7 @@ func Vote(c *gin.Context) {
 				renderErr(c, errors.New("Not implemented"))
 				return
 			}
-			models.ArticleUpd(a)
+			models.ArticleUpd(a, a.Tag)
 		} else {
 			// no myself vote
 			renderErr(c, errors.New("You may not vote for yourself("))

@@ -35,7 +35,7 @@ func main() {
 		Port = setifset(":8081", os.Getenv("TGRAMPORT"))
 		routers.Config.Title = setifset(os.Getenv("TGRAMTITLE"), "typegram")
 		routers.Config.SiteName = setifset(os.Getenv("TGRAMNAME"), "Typegram")
-		routers.Config.Description = setifset(os.Getenv("TGRAMDESC"), "zen platform for writers")
+		routers.Config.Description = setifset(os.Getenv("TGRAMDESC"), "zen blog platform")
 		routers.Config.Admin = setifset(os.Getenv("TGRAMADMIN"), "recoilme")
 		routers.Config.AboutPage = setifset(os.Getenv("TGRAMABOUT"), "/@recoilme/1")
 		routers.Config.Domain = setifset(os.Getenv("TGRAMDOMAIN"), "tgr.am")
@@ -90,6 +90,7 @@ func globalRecover(c *gin.Context) {
 
 // InitRouter - init router
 func InitRouter() *gin.Engine {
+	//gin.SetMode(gin.DebugMode)
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.Use(globalRecover)

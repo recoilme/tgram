@@ -17,6 +17,7 @@ const (
 	dbAids  = "db/%s/aids"
 	dbAUser = "db/%s/a/%s"
 	dbView  = "db/%s/view"
+	dbATag  = "db/%s/t/%s"
 )
 
 // Article model
@@ -35,6 +36,7 @@ type Article struct {
 	Comments    []Article
 	ReadingTime int
 	WordCount   int
+	Tag         string `form:"tag" json:"tag" binding:"omitempty,alphanum,max=20"`
 }
 
 // Uint32toBin convert to binary
@@ -66,6 +68,12 @@ func ArticleNew(a *Article) (id uint32, err error) {
 		return 0, err
 	}
 
+	// tag
+	if a.Tag != "" {
+		fATag := fmt.Sprintf(dbATag, a.Lang, a.Tag)
+		sp.Set(fATag, id32, []byte(a.Author))
+	}
+
 	// uid
 	fAUser := fmt.Sprintf(dbAUser, a.Lang, a.Author)
 	// store
@@ -73,7 +81,16 @@ func ArticleNew(a *Article) (id uint32, err error) {
 }
 
 // ArticleUpd update article
-func ArticleUpd(a *Article) (err error) {
+func ArticleUpd(a *Article, oldTag string) (err error) {
+	// tag check
+	if a.Tag != oldTag {
+		if oldTag != "" {
+			//remove old tag
+			sp.Delete(fmt.Sprintf(dbATag, a.Lang, oldTag), Uint32toBin(a.ID))
+		}
+		//set new tag
+		sp.Set(fmt.Sprintf(dbATag, a.Lang, a.Tag), Uint32toBin(a.ID), []byte(a.Author))
+	}
 	fAUser := fmt.Sprintf(dbAUser, a.Lang, a.Author)
 	return sp.SetGob(fAUser, Uint32toBin(a.ID), a)
 }
@@ -102,9 +119,9 @@ func ArticleDelete(lang, username string, aid uint32) (err error) {
 	return nil
 }
 
-func ArticlesSelect(lang string, from []byte, limit, offset uint32, asc bool) (models []Article, first, last uint32, err error) {
-	fAids := fmt.Sprintf(dbAids, lang)
+func ArticlesSelect(lang, fAids string, from []byte, limit, offset uint32, asc bool) (models []Article, first, last uint32, err error) {
 	keys, err := sp.Keys(fAids, from, limit, offset, asc)
+	//log.Println(fAids, keys)
 	if err != nil {
 		return models, first, last, err
 	}
@@ -130,8 +147,8 @@ func ArticlesSelect(lang string, from []byte, limit, offset uint32, asc bool) (m
 }
 
 // AllArticles return page from list of articles
-func AllArticles(lang, from_str string) (models []Article, page string, prev, next, last uint32, err error) {
-
+func AllArticles(lang, from_str, tag string) (models []Article, page string, prev, next, last uint32, err error) {
+	//log.Println("tag:", tag)
 	from_int, _ := strconv.Atoi(from_str)
 	var limit_int uint32
 	limit_int = 5
@@ -142,12 +159,16 @@ func AllArticles(lang, from_str string) (models []Article, page string, prev, ne
 	} else {
 		from = nil
 	}
-	models, firstkey, next, err := ArticlesSelect(lang, from, limit_int, uint32(0), false)
+	var fAids = fmt.Sprintf(dbAids, lang)
+	if tag != "" {
+		fAids = fmt.Sprintf(dbATag, lang, tag)
+	}
+	models, firstkey, next, err := ArticlesSelect(lang, fAids, from, limit_int, uint32(0), false)
 	//all, _ := sp.Count(fAids)
 	page = fmt.Sprintf("%d..%d", firstkey, next)
 
 	// last article is prev to first article
-	fAids := fmt.Sprintf(dbAids, lang)
+	//fAids := fmt.Sprintf(dbAids, lang)
 	lastkeys, _ := sp.Keys(fAids, nil, uint32(1), uint32(1), true)
 	if len(lastkeys) > 0 {
 		last = BintoUint32(lastkeys[0])
@@ -166,7 +187,7 @@ func AllArticles(lang, from_str string) (models []Article, page string, prev, ne
 
 func TopArticles(lang string, cnt uint32, by string) (models []Article, err error) {
 
-	models, _, _, err = ArticlesSelect(lang, nil, cnt*5, uint32(0), false)
+	models, _, _, err = ArticlesSelect(lang, fmt.Sprintf(dbAids, lang), nil, cnt*5, uint32(0), false)
 	if err != nil {
 		return models, err
 	}

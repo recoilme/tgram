@@ -21,6 +21,13 @@
       <nav>
         <a href="/vote/up/@{{.article.Author}}/{{.article.ID}}">+</a>&nbsp;{{.article.Plus}}:{{.article.Minus}}&nbsp;<a href="/vote/down/@{{.article.Author}}/{{.article.ID}}">-</a>
         <ul id="comments" class="right">
+            {{if .article.Tag}}
+            <li>
+                <a href="/mid/?tag={{.article.Tag}}" rel="nofollow">
+                    #{{.article.Tag}}
+                </a>
+            </li>
+            {{end}}
             <li>
                 <a href="{{.link}}" rel="nofollow" target="_blank">
                     link 
