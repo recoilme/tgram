@@ -22,14 +22,6 @@ import (
 	"gopkg.in/russross/blackfriday.v2"
 )
 
-var (
-	NBSecretPassword = "A String Very Very Very Niubilty!!@##$!@#4"
-)
-
-const (
-	CookieTime = 2592000
-)
-
 //The SiteConfig struct stores site customisations
 type siteConfig struct {
 	Title       string
@@ -40,11 +32,15 @@ type siteConfig struct {
 	Domain      string
 }
 
-var Config siteConfig
+var (
+	// NBSecretPassword some random string
+	NBSecretPassword = "A String Very Very Very Niubilty!!@##$!@#4"
+	Config           siteConfig
+)
 
-func init() {
-	Config = siteConfig{"typegram", "zen platform for writers", "recoilme", "Typegram", "/@recoilme/1", "tgr.am"}
-}
+const (
+	CookieTime = 2592000
+)
 
 // CheckAuth - general hook sets all param like lang, user
 func CheckAuth() gin.HandlerFunc {
@@ -288,7 +284,7 @@ func Register(c *gin.Context) {
 		err = c.ShouldBind(&rf)
 
 		if rf.Good == "good" {
-			err = errors.New("Error: Sorry, we do not endorse spammers or world domination... yet.")
+			err = errors.New("Error: Sorry, we do not endorse spammers...")
 		}
 		if rf.Privacy != "privacy" {
 			err = errors.New("Error: You must read and accept our Privacy Statement")
@@ -601,11 +597,7 @@ func Article(c *gin.Context) {
 		c.Set("link", "http://"+c.Request.Host+path)
 		c.Set("article", a)
 		c.Set("title", a.Title)
-		delim := strings.IndexByte(a.Body, '\n')
-		if delim > 10 && delim < 300 {
-			c.Set("description", a.Body[:delim])
-		}
-		//log.Printf("HTML:'%s'\n,", a.Body)
+		c.Set("description", GetLead(a.Body))
 		c.Set("body", a.HTML)
 		isFolow := models.IsFollowing(lang, "fol", username, c.GetString("username"))
 		c.Set("isfollow", isFolow)

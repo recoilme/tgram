@@ -18,21 +18,27 @@ import (
 	"github.com/recoilme/tgram/routers"
 )
 
-// Port - typegram port
+// Port - typegram port (and address)
 var Port = ":8081"
 
 func main() {
 
 	err := godotenv.Load("tgram.env")
 	if err == nil {
-		routers.NBSecretPassword = os.Getenv("TGRAMPWD")
-		Port = os.Getenv("TGRAMPORT")
-		routers.Config.Title = os.Getenv("TGRAMTITLE")
-		routers.Config.SiteName = os.Getenv("TGRAMNAME")
-		routers.Config.Description = os.Getenv("TGRAMDESC")
-		routers.Config.Admin = os.Getenv("TGRAMADMIN")
-		routers.Config.AboutPage = os.Getenv("TGRAMABOUT")
-		routers.Config.Domain = os.Getenv("TGRAMDOMAIN")
+		setifset := func(new, def string) string {
+			if new == "" {
+				return def
+			}
+			return new
+		}
+		routers.NBSecretPassword = setifset("A String Very Very Very Niubilty!!@##$!@#4", os.Getenv("TGRAMPWD"))
+		Port = setifset(":8081", os.Getenv("TGRAMPORT"))
+		routers.Config.Title = setifset(os.Getenv("TGRAMTITLE"), "typegram")
+		routers.Config.SiteName = setifset(os.Getenv("TGRAMNAME"), "Typegram")
+		routers.Config.Description = setifset(os.Getenv("TGRAMDESC"), "zen platform for writers")
+		routers.Config.Admin = setifset(os.Getenv("TGRAMADMIN"), "recoilme")
+		routers.Config.AboutPage = setifset(os.Getenv("TGRAMABOUT"), "/@recoilme/1")
+		routers.Config.Domain = setifset(os.Getenv("TGRAMDOMAIN"), "tgr.am")
 	}
 
 	srv := &http.Server{

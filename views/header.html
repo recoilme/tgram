@@ -3,15 +3,15 @@
 <html>
   <head>
     <meta charset="utf-8">
-    {{if .config.Title}}
+    {{if .title}}
+    <title>{{.title}}</title>
+    {{else}}
     <title>{{.config.Title}}</title>
-    {{else}}
-    <title>typegram</title>
     {{end}}
-    {{if .config.Description}}
-    <meta name="description" content="{{.config.Description}}"/>
+    {{if .description}}
+    <meta name="description" content="{{.description}}"/>
     {{else}}
-    <meta name="description" content="zen platform for writers"/>
+    <meta name="description" content="{{.config.Description}}"/>
     {{end}}
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
