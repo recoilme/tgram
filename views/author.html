@@ -5,35 +5,35 @@
     <ul>
         {{if eq (print "/@" .username) .path}}
         <li>
-          <a href="/editor/0">new post&nbsp;</a>
+          <a href="/editor/0" accesskey="n">new post&nbsp;</a>
         </li>
         <li>
-          <a href="/favorites/@{{.username}}">favorites&nbsp;</a>
+          <a href="/favorites/@{{.username}}"  accesskey="f">favorites&nbsp;</a>
         </li>
         <li>
-          <a href="/settings">settings&nbsp;</a>
+          <a href="/settings"  accesskey="s">settings&nbsp;</a>
         </li>
         {{else}}
           {{if .isfollow}}
           <li>
-            <a href="/unfollow/{{.author.Username}}/@{{.author.Username}}" >
+            <a href="/unfollow/{{.author.Username}}/@{{.author.Username}}"  accesskey="o" >
             &nbsp;unfollow: {{.followcnt}}</a>
           </li>
           {{else}}
             <li>
-              <a href="/follow/{{.author.Username}}/@{{.author.Username}}">
+              <a href="/follow/{{.author.Username}}/@{{.author.Username}}"  accesskey="o">
               &nbsp;follow: {{.followcnt}}</span></a>
             </li>
           {{end}}
           <li>
-            <a href="/favorites/@{{.author.Username}}">&nbsp;favorites</a>
+            <a href="/favorites/@{{.author.Username}}"  accesskey="f">&nbsp;favorites</a>
           </li>
         {{end}}
     </ul>
   </nav>
 </aside>
 <section>
-  <img align="left"  style="margin-right:20px" class="u-square medium" src="{{.author.Image}}">
+  <img align="left"  style="margin-right:20px" class="u-square medium" src="{{.author.Image}}" alt="Author image">
   {{.author.Username}} 
   <br>{{.author.Bio}}
   {{if eq .username .config.Admin }}
