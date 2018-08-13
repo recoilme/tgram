@@ -1,15 +1,13 @@
 # Typegram
 
-[typegram](http://tgr.am) - zen platform for writers and their subscribers with a minimalistic design.
+[typegram](http://tgr.am) - zen blog platform (like medium).
 
 **Basic Capabilities**
 
- - publications
- - comments
- - favorites
- - subscriptions
- - mentions
- - and so on
+ - publications, comments
+ - favorites, subscriptions
+ - mentions, tags
+ - ratings, votes and so on
 
 **Playground**
 
@@ -76,9 +74,9 @@ Each article may have a global tag. But only one. Be smart, then choose a tag fo
 
 The project is free and open source. I always welcome comments and suggestions on [github](https://github.com/recoilme/tgram)
 
-**Weekly digest**
+**Weekly news digest**
 
-[subscribe on weekly digest](https://www.producthunt.com/upcoming/typegram)
+[subscribe on weekly digest here](https://www.producthunt.com/upcoming/typegram)
 
 **App**
 
@@ -169,6 +167,9 @@ TGRAMDOMAIN=tgr.am
 - master
 
 ## Contributors
+
+[Contributors](https://github.com/recoilme/tgram/graphs/contributors)
+
 
 You are welcome to!
 
