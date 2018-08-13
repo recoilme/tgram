@@ -43,6 +43,29 @@ When someone mention you in comments you will see it on the main page
 The editor supports both typing in markdown markup, with rich features and visual formatting. With the ability to deploy the post to the full screen, preview, autosave and other convenient "chips"
 ![](https://en.tgr.am/i/en/recoilme/2_.png)
 
+**Rating system**
+
+You may see on the main page three sections with strange names:
+**top mid btm**
+
+![](http://www.wallpaperdx.com/photo/pudge-butcher-dota-abstract-art-chain-full-hd-732-416.jpg)
+
+Yes, I love DotA (my dog's name is Pudge, for example). And I'm sure that ratings are more about game mechanics/motivation than something seriously adequate. On typegram the content divided into three parts, top, middle and bottom. All new articles go to farm the rating on the midline. Good articles go to the top. Bad articles fall to the bottom. Technically  - ranking system stolen from the ycombinator
+
+**Rating of the article.**
+
+**+ 5:1 -**
+
+Each user has 10 votes per day. You may spend them on both pluses and minuses. For one article, or distribute them as you want.
+
+The author sees both the negative and the positive reaction, separately.
+
+**Rating of the comments**
+
+**+ 5**
+
+Comments are positive only. I do not know why. Do not ask. I just want to give more opportunities for collecting feedback with different mechanics. And for the comment, it is possible to give only one vote per comment. You have 10 votes for comments per day. One comment is one voice.
+
 **Openness**
 
 The project is free and open source. I always welcome comments and suggestions on [github](https://github.com/recoilme/tgram)
