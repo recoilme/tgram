@@ -31,8 +31,8 @@ func main() {
 			}
 			return new
 		}
-		routers.NBSecretPassword = setifset("A String Very Very Very Niubilty!!@##$!@#4", os.Getenv("TGRAMPWD"))
-		Port = setifset(":8081", os.Getenv("TGRAMPORT"))
+		routers.NBSecretPassword = setifset(os.Getenv("TGRAMPWD"), "A String Very Very Very Niubilty!!@##$!@#4")
+		Port = setifset(os.Getenv("TGRAMPORT"), ":8081")
 		routers.Config.Title = setifset(os.Getenv("TGRAMTITLE"), "typegram")
 		routers.Config.SiteName = setifset(os.Getenv("TGRAMNAME"), "Typegram")
 		routers.Config.Description = setifset(os.Getenv("TGRAMDESC"), "zen blog platform")
