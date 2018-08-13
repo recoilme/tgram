@@ -6,28 +6,28 @@
         {{if eq "/" .path}}
           <b>{{.config.Domain}}</b>
         {{else}}
-          <a href="/"><b>{{.config.Domain}}</b></a>
+          <a href="/"  accesskey="h"><b>{{.config.Domain}}</b></a>
         {{end}}
       </li>
       <li>
         {{if eq "/top" .path}}
           top
         {{else}}
-          <a href="/top">top</a>
+          <a href="/top"  accesskey="1">top</a>
         {{end}}
       </li>
       <li>
         {{if eq "/mid" .path}}
           mid
         {{else}}
-          <a href="/mid">mid</a>
+          <a href="/mid"  accesskey="2">mid</a>
         {{end}}
       </li>
       <li>
         {{if eq "/btm" .path}}
           btm
         {{else}}
-          <a href="/btm">btm</a>
+          <a href="/btm"  accesskey="3">btm</a>
         {{end}}
       </li>
     <div class="navright">
@@ -37,14 +37,14 @@
           {{if eq "/editor/0" .path}}
             new
           {{else}}
-            <a href="/editor/0">new</a>
+            <a href="/editor/0"  accesskey="n">new</a>
           {{end}}
       </li>
       <li>
           {{if eq (print "/@" .username) .path}}
           @{{.username}}
           {{else}}
-            <a href="/@{{.username}}">
+            <a href="/@{{.username}}"  accesskey="l">
               @{{.username}}
             </a>
           {{end}}
@@ -54,14 +54,14 @@
           {{if eq "/register" .path}}
           sign up
           {{else}}
-            <a href="/register">sign up</a>
+            <a href="/register"  accesskey="r">sign up</a>
           {{end}}
       </li>
       <li>
           {{if eq "/login" .path}}
           sign in
           {{else}}
-            <a href="/login">sign in</a>
+            <a href="/login"  accesskey="l">sign in</a>
           {{end}}
       </li>
     {{ end }}

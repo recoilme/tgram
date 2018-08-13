@@ -2,7 +2,7 @@
 {{ template "menu" . }}
 <article>
   <header> 
-    <img align="left" class="u-square small" src="{{.article.Image}}" />
+    <img align="left" class="u-square small" src="{{.article.Image}}" alt="article image" />
     <p>
         <a href="/@{{.article.Author}}">@{{.article.Author}}</a>&nbsp;&nbsp;&nbsp;{{.article.CreatedAt| todate}} 
         <span class="navright">
@@ -19,7 +19,7 @@
   </section>
   <footer>
       <nav>
-        <a href="/vote/up/@{{.article.Author}}/{{.article.ID}}">+</a>&nbsp;{{.article.Plus}}:{{.article.Minus}}&nbsp;<a href="/vote/down/@{{.article.Author}}/{{.article.ID}}">-</a>
+        <a href="/vote/up/@{{.article.Author}}/{{.article.ID}}"  accesskey="u">+</a>&nbsp;{{.article.Plus}}:{{.article.Minus}}&nbsp;<a href="/vote/down/@{{.article.Author}}/{{.article.ID}}" accesskey="d">-</a>
         <ul id="comments" class="right">
             {{if .article.Tag}}
             <li>
@@ -89,7 +89,7 @@
 <form  action="/comments/@{{.article.Author}}/{{.article.ID}}" method="post">
     <textarea id="mde"  name="body" placeholder="Write a comment..." ></textarea>
 
-    <button type="submit" >
+    <button type="submit"  accesskey="c" >
      Comment
     </button>
 </form>
