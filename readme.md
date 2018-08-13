@@ -66,6 +66,12 @@ The author sees both the negative and the positive reaction, separately.
 
 Comments are positive only. I do not know why. Do not ask. I just want to give more opportunities for collecting feedback with different mechanics. And for the comment, it is possible to give only one vote per comment. You have 10 votes for comments per day. One comment is one voice.
 
+
+**Tags**
+
+Each article may have global tag. But only one. Be smart, then you choose tag for your article.
+
+
 **Openness**
 
 The project is free and open source. I always welcome comments and suggestions on [github](https://github.com/recoilme/tgram)
