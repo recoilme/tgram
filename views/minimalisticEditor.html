@@ -1,0 +1,31 @@
+{{ define "minimalisticEditor" }}
+<section>
+<h1>Stats</h1>
+<div id="mdestats"></div>
+<h1>Preview</h1>
+    <div id="preview"></div>
+</section>
+
+<script>
+var converter = new showdown.Converter()
+var mde=document.getElementById("mde")
+mde.addEventListener('input', function () { markdownify(mde,'preview') })
+mde.placeholder = "text, markdown, 10..65536"
+mde.minHeight = "400px"
+markdownify(mde,'preview')
+
+	function markdownify(t,pd) {
+document.getElementById(pd).innerHTML=converter.makeHtml(t.value)
+Countable.count(t, counter => printStats(counter,t.id+"stats"), {hardReturns: true, stripTags: true})
+}
+
+	function printStats(c,id) {
+var pds = document.getElementById(id)
+	pds.innerHTML=c.characters+" characters<br/>"
+pds.innerHTML+=c.words+" words<br/>"
+pds.innerHTML+=c.paragraphs+" paragraphs<br/>"
+pds.innerHTML+=c.sentences+" sentences<br/>"
+pds.innerHTML+=c.all+" total characters<br/>"
+	}
+	</script>
+	{{end}}

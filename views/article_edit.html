@@ -9,14 +9,6 @@
     <button type="submit" accesskey="p" >Publish</button>
 </form>
 </section>
-{{if eq .editor 1}}
-<section>
-<h1>Stats</h1>
-<div id="mdestats"></div>
-<h1>Preview</h1>
-    <div id="preview"></div>
-</section>
-{{end}}
 <section>
 	<details>
 		<summary>upload image</summary>
@@ -25,9 +17,8 @@
 		</p>		
 	</details>
 </section>
-
-<script>
 	{{if eq .editor 0}}
+<script>
 var simplemde = new InscrybMDE({
     autoDownloadFontAwesome: true,
     autofocus: true,
@@ -42,29 +33,9 @@ var simplemde = new InscrybMDE({
     minHeight: "400px",
 	spellChecker: false,
 });
+</script>
 {{end}}
 {{if eq .editor 1}}
-var converter = new showdown.Converter()
-var mde=document.getElementById("mde")
-mde.addEventListener('input', markdownify(mde,'preview'), true)
-mde.placeholder = "text, markdown, 10..65536"
-mde.minHeight = "400px"
-
-	function markdownify(t,pd) {
-console.log(t.value)
-document.getElementById(pd).innerHTML=converter.makeHtml(t.value)
-Countable.count(t, counter => printStats(counter,t.id+"stats"))
-}
-
-	function printStats(c,id) {
-var pds = document.getElementById(id)
-	pds.innerHTML=c.characters+" characters<br/>"
-pds.innerHTML+=c.words+" words<br/>"
-pds.innerHTML+=c.paragraphs+" paragraphs<br/>"
-pds.innerHTML+=c.sentences+" sentences<br/>"
-pds.innerHTML+=c.all+" total characters<br/>"
-	}
+	{{ template "minimalisticEditor" . }}
 	{{end}}
-</script>
-
-{{ template "footer" . }}
+	{{ template "footer" . }}
