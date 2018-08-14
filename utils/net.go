@@ -123,7 +123,7 @@ func HTTPGetBody(url string) []byte {
 }
 
 // checkAndCreate may create dirs
-func СheckAndCreate(path string) (bool, error) {
+func CheckAndCreate(path string) (bool, error) {
 	// detect if file exists
 	var _, err = os.Stat(path)
 	if err == nil {

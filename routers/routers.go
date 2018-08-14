@@ -114,8 +114,8 @@ func CheckAuth() gin.HandlerFunc {
 		//fmt.Println("lang:", lang, "host:", host, "path", c.Request.URL.Path)
 
 		// token from cookie
-		if tokenС, err := c.Cookie("token"); err == nil && tokenС != "" {
-			tokenStr = tokenС
+		if tokenCookie, err := c.Cookie("token"); err == nil && tokenCookie != "" {
+			tokenStr = tokenCookie
 		}
 
 		if tokenStr == "" {
