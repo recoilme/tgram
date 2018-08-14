@@ -95,7 +95,7 @@ func Store(href, lang, username string, b []byte) (file, orig string, origSize i
 		//store
 		if imgid, err := sp.Counter(fmt.Sprintf(dbImgID, lang, username), []byte("id")); err == nil {
 			path := fmt.Sprintf(fileImg, lang, username, imgid, ".png")
-			if _, err := utils.СheckAndCreate(path); err == nil {
+			if _, err := utils.CheckAndCreate(path); err == nil {
 				// save Atkinson
 				f, err := os.Create(path)
 				defer f.Close()
