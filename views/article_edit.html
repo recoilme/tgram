@@ -17,7 +17,7 @@
 		</p>		
 	</details>
 </section>
-{{if eq .editor 0}}
+{{if ne .nojs "true"}}
 	<script>
 	var simplemde = new InscrybMDE({
 		autoDownloadFontAwesome: true,
@@ -34,8 +34,5 @@
 		spellChecker: false,
 	});
 	</script>
-{{end}}
-{{if eq .editor 1}}
-	{{ template "minimalisticEditor" . }}
 {{end}}
 {{ template "footer" . }}

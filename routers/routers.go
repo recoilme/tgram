@@ -51,7 +51,7 @@ func CheckAuth() gin.HandlerFunc {
 		var lang = "en"
 		var found bool
 		acceptedLang := []string{"de", "en", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh", "tst", "sub", "bs"}
-		var tokenStr, username, image string
+		var tokenStr, username, image, nojs string
 
 		hosts := strings.Split(c.Request.Host, ".")
 		var host = hosts[0]
@@ -110,7 +110,7 @@ func CheckAuth() gin.HandlerFunc {
 
 		// store subdomain
 		c.Set("lang", host)
-		c.Set("editor", 0)
+		c.Set("nojs", nojs)
 
 		//fmt.Println("lang:", lang, "host:", host, "path", c.Request.URL.Path)
 
@@ -142,11 +142,16 @@ func CheckAuth() gin.HandlerFunc {
 				if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 					username = claims["username"].(string)
 					image = claims["image"].(string)
+					if claims["nojs"] != nil {
+						nojs = claims["nojs"].(string)
+					}
+
 				}
 			}
 		}
 		c.Set("username", username)
 		c.Set("image", image)
+		c.Set("nojs", nojs)
 	}
 }
 
@@ -250,10 +255,11 @@ func renderErr(c *gin.Context, err error) {
 	}
 }
 
-func genToken(username, image string) (string, error) {
+func genToken(username, image, nojs string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
 		"image":    image,
+		"nojs":     nojs,
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
@@ -314,7 +320,7 @@ func Register(c *gin.Context) {
 			return
 		}
 
-		tokenString, err := genToken(u.Username, "")
+		tokenString, err := genToken(u.Username, "", "")
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -350,17 +356,31 @@ func Settings(c *gin.Context) {
 		c.Set("bio", user.Bio)
 		c.Set("email", user.Email)
 		c.Set("image", user.Image)
-		c.Set("editor", user.Editor)
+		if user.NoJs {
+			c.Set("nojschecked", "checked")
+		} else {
+			c.Set("nojschecked", "")
+		}
 		c.HTML(http.StatusOK, "settings.html", c.Keys)
 	case "POST":
+		var nojs bool
+		if c.Request.ParseForm() == nil {
+			nojsoption := c.Request.Form["nojsoption"]
+			if len(nojsoption) > 0 && nojsoption[0] == "nojs" {
+				nojs = true
+			}
+		}
+		//log.Println("isnogs", nojs)
 		var u models.User
 		var err error
 		u.Username = c.GetString("username")
+		u.NoJs = nojs
 		err = c.ShouldBind(&u)
 		if err != nil {
 			renderErr(c, err)
 			return
 		}
+
 		u.Lang = c.GetString("lang")
 		user, err := models.UserCheckGet(u.Lang, u.Username, u.Password)
 		if err != nil {
@@ -394,9 +414,13 @@ func Settings(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-		if u.Image != user.Image {
+		if u.Image != user.Image || u.NoJs != user.NoJs {
 			// upd token
-			tokenString, err := genToken(u.Username, u.Image)
+			var isnojs = ""
+			if u.NoJs {
+				isnojs = "true"
+			}
+			tokenString, err := genToken(u.Username, u.Image, isnojs)
 			if err != nil {
 				renderErr(c, err)
 				return
@@ -445,7 +469,11 @@ func Login(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-		tokenString, err := genToken(user.Username, user.Image)
+		var isnojs = ""
+		if user.NoJs {
+			isnojs = "true"
+		}
+		tokenString, err := genToken(user.Username, user.Image, isnojs)
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -469,12 +497,7 @@ func Editor(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
 		username := c.GetString("username")
-		user, err := models.UserGet(c.GetString("lang"), username)
-		if err != nil {
-			renderErr(c, err)
-			return
-		}
-		c.Set("editor", user.Editor)
+
 		if aid > 0 {
 			// check username
 			a, err := models.ArticleGet(c.GetString("lang"), username, uint32(aid))

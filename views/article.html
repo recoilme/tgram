@@ -94,7 +94,7 @@
     </button>
 </form>
 
-	{{if eq .editor 0}}
+{{if ne .nojs "true"}}
 <script>
 var simplemde = new InscrybMDE({
     autoDownloadFontAwesome: false,
@@ -107,9 +107,7 @@ var simplemde = new InscrybMDE({
 	toolbarTips: false,
 });
 </script>
-{{end}}
-	{{if eq .editor 1}}
-	{{ template "minimalisticEditor" . }}
-	{{end}}
 <script src="/m/js/main.js"></script>
+{{end}}
+
 {{template "footer" .}}
