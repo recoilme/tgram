@@ -28,17 +28,12 @@
     <link href="https://fonts.googleapis.com/css?family=PT+Sans+Caption|PT+Serif:400,400i,700,700i" rel="stylesheet"/>
     <link rel="stylesheet" href="/m/css/tgram.css"/>
     <!--Editor-->
-{{if eq .editor 0}}
     <link rel="stylesheet" href="/m/css/inscrybmde.min.css"/>
     <script src="/m/js/inscrybmde.min.js"></script>
-	{{end}}
-	{{if eq .editor 1}}
-  <script src="/m/js/showdown.min.js"></script>
+	  {{if eq .editor 1}}
+    <script src="/m/js/showdown.min.js"></script>
     <script src="/m/js/countable.min.js"></script>
-	{{end}}
-    {{if eq "/register" .path}}
-    <script src='https://www.google.com/recaptcha/api.js'></script>
-    {{end}}
+	  {{end}}
   </head>
   <body>
 {{ end }}

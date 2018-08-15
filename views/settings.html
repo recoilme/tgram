@@ -11,12 +11,12 @@
         <input name="email"  type="text" placeholder="email, omitempty" value="{{.email}}">
         <input name="newpassword" type="password" autocomplete="new-password" placeholder="new password, 6..255" value="">
         <input name="password" type="password" autocomplete="new-password" required placeholder="password" value="">
-<div>Editor:    
-<select name="editor">
-	<option value="0"{{if eq .editor 0}} selected{{end}}>Default</option>
-		<option value="1"{{if eq .editor 1}} selected{{end}}>Minimalistic</option>
-			<option value="2"{{if eq .editor 2}} selected{{end}}>Minimalistic, no Javascript</option>
-</select></div>
+        <div>Editor:    
+          <select name="editor">
+            <option value="0"{{if eq .editor 0}} selected{{end}}>Visual (default)</option>
+            <option value="1"{{if eq .editor 1}} selected{{end}}>No editor (textarea)</option>
+          </select>
+        </div>
       <button type="submit"  accesskey="u" >
         Update
       </button>

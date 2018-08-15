@@ -17,25 +17,25 @@
 		</p>		
 	</details>
 </section>
-	{{if eq .editor 0}}
-<script>
-var simplemde = new InscrybMDE({
-    autoDownloadFontAwesome: true,
-    autofocus: true,
-	autosave: {
-		enabled: true,
-		uniqueId: "{{.path}}",
-		delay: 1000,
-	},
-	promptURLs: true,
-	placeholder: "text, markdown, 10..65536",
-	element: document.getElementById("mde"),
-    minHeight: "400px",
-	spellChecker: false,
-});
-</script>
+{{if eq .editor 0}}
+	<script>
+	var simplemde = new InscrybMDE({
+		autoDownloadFontAwesome: true,
+		autofocus: true,
+		autosave: {
+			enabled: true,
+			uniqueId: "{{.path}}",
+			delay: 1000,
+		},
+		promptURLs: true,
+		placeholder: "text, markdown, 10..65536",
+		element: document.getElementById("mde"),
+		minHeight: "400px",
+		spellChecker: false,
+	});
+	</script>
 {{end}}
 {{if eq .editor 1}}
 	{{ template "minimalisticEditor" . }}
-	{{end}}
-	{{ template "footer" . }}
+{{end}}
+{{ template "footer" . }}

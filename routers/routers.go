@@ -110,6 +110,7 @@ func CheckAuth() gin.HandlerFunc {
 
 		// store subdomain
 		c.Set("lang", host)
+		c.Set("editor", 0)
 
 		//fmt.Println("lang:", lang, "host:", host, "path", c.Request.URL.Path)
 
@@ -146,12 +147,6 @@ func CheckAuth() gin.HandlerFunc {
 		}
 		c.Set("username", username)
 		c.Set("image", image)
-		user, err := models.UserGet(host, username)
-		if err != nil {
-			renderErr(c, err)
-			return
-		}
-		c.Set("editor", user.Editor)
 	}
 }
 
@@ -355,6 +350,7 @@ func Settings(c *gin.Context) {
 		c.Set("bio", user.Bio)
 		c.Set("email", user.Email)
 		c.Set("image", user.Image)
+		c.Set("editor", user.Editor)
 		c.HTML(http.StatusOK, "settings.html", c.Keys)
 	case "POST":
 		var u models.User
@@ -472,10 +468,15 @@ func Editor(c *gin.Context) {
 	//postRate := c.GetString("lang") + ":p:" + c.GetString("username")
 	switch c.Request.Method {
 	case "GET":
-
+		username := c.GetString("username")
+		user, err := models.UserGet(c.GetString("lang"), username)
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		c.Set("editor", user.Editor)
 		if aid > 0 {
 			// check username
-			username := c.GetString("username")
 			a, err := models.ArticleGet(c.GetString("lang"), username, uint32(aid))
 			if err != nil {
 				renderErr(c, err)

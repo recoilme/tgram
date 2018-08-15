@@ -1,9 +1,9 @@
 {{ define "minimalisticEditor" }}
 <section>
-<h1>Stats</h1>
-<div id="mdestats"></div>
-<h1>Preview</h1>
-    <div id="preview"></div>
+	<h5>Preview</h5>
+	<div id="preview"></div>
+	<h5>Stats</h5>
+	<div id="mdestats"></div>
 </section>
 
 <script>
@@ -21,10 +21,10 @@ Countable.count(t, counter => printStats(counter,t.id+"stats"), {hardReturns: tr
 
 	function printStats(c,id) {
 var pds = document.getElementById(id)
-	pds.innerHTML=c.characters+" characters<br/>"
-pds.innerHTML+=c.words+" words<br/>"
-pds.innerHTML+=c.paragraphs+" paragraphs<br/>"
-pds.innerHTML+=c.sentences+" sentences<br/>"
+	pds.innerHTML=c.characters+" characters "
+pds.innerHTML+=c.words+" words "
+pds.innerHTML+=c.paragraphs+" paragraphs "
+pds.innerHTML+=c.sentences+" sentences "
 pds.innerHTML+=c.all+" total characters<br/>"
 	}
 	</script>
