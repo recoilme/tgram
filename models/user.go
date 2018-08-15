@@ -35,6 +35,7 @@ type User struct {
 	LastPost     uint32 `json:"-"`
 	Unseen       uint32 `json:"-"`
 	IP           string `json:"-"`
+	Editor       int    `form:"editor" json:"editor" binding:"exists"`
 }
 
 type Mention struct {

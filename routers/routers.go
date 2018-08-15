@@ -146,6 +146,12 @@ func CheckAuth() gin.HandlerFunc {
 		}
 		c.Set("username", username)
 		c.Set("image", image)
+		user, err := models.UserGet(host, username)
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		c.Set("editor", user.Editor)
 	}
 }
 
