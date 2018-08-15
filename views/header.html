@@ -28,10 +28,12 @@
     <link href="https://fonts.googleapis.com/css?family=PT+Sans+Caption:400,700|PT+Serif:400,400i,700,700i" rel="stylesheet"/>
     <link rel="stylesheet" href="/m/css/tgram.css"/>
     <!--Editor-->
+    {{if .username}}
     {{if ne .nojs "true"}}
     <link rel="stylesheet" href="/m/css/inscrybmde.min.css"/>
     <script src="/m/js/inscrybmde.min.js"></script>
-	  {{end}}
+    {{end}}
+    {{end}}
   </head>
   <body>
 {{ end }}

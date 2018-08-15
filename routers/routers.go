@@ -48,10 +48,12 @@ func CheckAuth() gin.HandlerFunc {
 
 		c.Set("config", Config)
 		c.Set("path", c.Request.URL.Path)
+
 		var lang = "en"
 		var found bool
 		acceptedLang := []string{"de", "en", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh", "tst", "sub", "bs"}
 		var tokenStr, username, image, nojs string
+		c.Set("nojs", nojs)
 
 		hosts := strings.Split(c.Request.Host, ".")
 		var host = hosts[0]
@@ -89,11 +91,11 @@ func CheckAuth() gin.HandlerFunc {
 				lang = "en"
 			}
 			// redirect on subdomain
-			c.Redirect(http.StatusFound, "http://"+lang+".tgr.am")
+			c.Redirect(http.StatusFound, "https://"+lang+".tgr.am")
 			return
 		}
 		if len(host) < 2 || len(host) > 3 {
-			c.Redirect(http.StatusFound, "http://"+lang+".tgr.am")
+			c.Redirect(http.StatusFound, "https://"+lang+".tgr.am")
 			return
 		}
 
@@ -104,13 +106,12 @@ func CheckAuth() gin.HandlerFunc {
 			}
 		}
 		if !found {
-			c.Redirect(http.StatusFound, "http://"+lang+".tgr.am")
+			c.Redirect(http.StatusFound, "https://"+lang+".tgr.am")
 			return
 		}
 
 		// store subdomain
 		c.Set("lang", host)
-		c.Set("nojs", nojs)
 
 		//fmt.Println("lang:", lang, "host:", host, "path", c.Request.URL.Path)
 
@@ -497,6 +498,7 @@ func Editor(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
 		username := c.GetString("username")
+		c.Set("uniqueid", c.GetString("path"))
 
 		if aid > 0 {
 			// check username
@@ -510,6 +512,7 @@ func Editor(c *gin.Context) {
 			c.Set("title", a.Title)
 			c.Set("ogimage", a.OgImage)
 			c.Set("tag", a.Tag)
+			c.Set("uniqueid", strconv.Itoa(int(time.Now().Unix())))
 		} else {
 			wait := models.PostLimitGet(c.GetString("lang"), c.GetString("username")) //ratelimit(postRate, RatePost)
 			if wait > 0 {
@@ -530,7 +533,11 @@ func Editor(c *gin.Context) {
 		}
 		username := c.GetString("username")
 		lang := c.GetString("lang")
-		host := "http://" + c.Request.Host + "/"
+		var https = "https://"
+		if lang == "sub" {
+			https = "http://"
+		}
+		host := https + c.Request.Host + "/"
 
 		body, err := models.ImgProcess(strings.Replace(strings.TrimSpace(abind.Body), "\r\n", "\n\n", -1), lang, username, host)
 		if err != nil {
@@ -630,7 +637,7 @@ func Article(c *gin.Context) {
 			url := "/@" + username + "/" + c.Param("aid")
 			models.MentionDel(lang, c.GetString("username"), url)
 		}
-		c.Set("link", "http://"+c.Request.Host+path)
+		c.Set("link", "https://"+c.Request.Host+path)
 		c.Set("article", a)
 		c.Set("title", a.Title)
 		c.Set("description", GetLead(a.Body))
@@ -934,8 +941,11 @@ func Upload(c *gin.Context) {
 				renderErr(c, errors.New("Some error"))
 				return
 			}
-			//TODO https
-			host := "http://" + c.Request.Host + "/"
+			var https = "https://"
+			if c.GetString("lang") == "sub" {
+				https = "http://"
+			}
+			host := https + c.Request.Host + "/"
 
 			if origSize > minSize {
 				newElement = "[![](" + host + file + ")](" + host + orig + ")"

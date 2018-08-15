@@ -6,7 +6,7 @@
 	<input name="ogimage" type="text" placeholder="image, link, 0..255" value="{{.ogimage}}">
 	<textarea id="mde" name="body">{{.body}}</textarea>
 	<input name="tag" type="text" placeholder="tag, without #, alphanum, 0..20" value="{{.tag}}">
-    <button type="submit" accesskey="p" >Publish</button>
+  <button type="submit" accesskey="p" >Publish</button>
 </form>
 </section>
 <section>
@@ -24,7 +24,7 @@
 		autofocus: true,
 		autosave: {
 			enabled: true,
-			uniqueId: "{{.path}}",
+			uniqueId: "{{.uniqueid}}",
 			delay: 1000,
 		},
 		promptURLs: true,

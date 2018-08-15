@@ -51,8 +51,9 @@ func ImgProcess(s, lang, username, host string) (res string, err error) {
 			continue
 		}
 		b, href := isImg(element)
-
+		//log.Println("isimg", element, b)
 		if b != nil {
+
 			file, orig, _ := Store(href, lang, username, b)
 			//log.Println("e", file, orig)
 			if file == "" || orig == "" {
