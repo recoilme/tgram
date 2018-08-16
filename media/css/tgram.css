@@ -622,3 +622,29 @@ section header p{
   border-radius: .25em;
   background-color: #777;  
 }
+
+input {
+	border: 2px solid black;
+	border-radius: 3px;
+	padding: 5px;
+}
+
+input:hover,
+input:focus {
+	outline: none;
+}
+
+button {
+	border: 2px solid black;
+	border-radius: 3px;
+	background-color: white;
+	padding-left: 3px;
+	padding-right: 3px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+button:hover,
+button:focus {
+	outline:none;
+}
