@@ -9,25 +9,25 @@
           <a href="/"  accesskey="h"><b>{{.config.Domain}}</b></a>
         {{end}}
       </li>
-      <li>
+      <li class="unicode">
         {{if eq "/top" .path}}
-          top
+        ∧
         {{else}}
-          <a href="/top"  accesskey="1">top</a>
+          <a href="/top"  accesskey="1">∧</a>
         {{end}}
       </li>
-      <li>
+      <li class="unicode">
         {{if eq "/mid" .path}}
-          mid
+        Ξ
         {{else}}
-          <a href="/mid"  accesskey="2">mid</a>
+          <a href="/mid"  accesskey="2">Ξ</a>
         {{end}}
       </li>
-      <li>
+      <li class="unicode">
         {{if eq "/btm" .path}}
-          btm
+        ∨
         {{else}}
-          <a href="/btm"  accesskey="3">btm</a>
+          <a href="/btm"  accesskey="3">∨</a>
         {{end}}
       </li>
     <div class="navright">
@@ -35,9 +35,9 @@
       {{if .username}}
       <li>
           {{if eq "/editor/0" .path}}
-            new
+            +
           {{else}}
-            <a href="/editor/0"  accesskey="n">new</a>
+            <a href="/editor/0"  accesskey="n">+</a>
           {{end}}
       </li>
       <li>

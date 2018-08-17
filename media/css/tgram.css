@@ -1,6 +1,6 @@
 @charset "UTF-8";
 html{
-  font-family:"PT Serif", Georgia, serif;
+  font-family:'Georgia', serif;
   font-size:100%;
   line-height:1.6;
   background:#fff;
@@ -38,9 +38,10 @@ body{
     text-align:center;
     font-size:.8rem;
     color:#aaa; }
-
+.unicode {
+  font-family: 'Times New Roman', Times, serif;
+}
 nav{
-  font-family: 'PT Sans Caption', serif;
   color:#ccc;
   margin:1em 0;}
   nav ul{
@@ -52,12 +53,7 @@ nav{
       margin-right:1em;
       margin-bottom:.25em; }
 
-/*
-header nav {
-  font-family:"PT Serif", Georgia, serif;
-  color:#ccc;
-}
-*/
+
 nav a {
   background: none;
   text-decoration: none;
@@ -190,7 +186,6 @@ article + article{
   margin-top:3em; }
 
 article header p{
-  font-family:"PT Sans", Helvetica, Arial, sans;
   font-size:.7em;
   color:#aaa; }
   article header p + h1, article header p + h2{
@@ -218,26 +213,6 @@ article > footer{
   margin-top:1.5em;
   font-size:.85em; }
 
-/*
-a{
-  text-decoration:none;
-  color:#0064c1;
-  -webkit-transition:color 300ms ease-out, box-shadow 300ms ease-out;
-  transition:color 300ms ease-out, box-shadow 300ms ease-out;
-  background:url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1" height="1"%3E%3Crect x="0" y="0.5" width="1" height="0.5" fill="rgba(0, 100, 193, 0.35)"/%3E%3C/svg%3E') left bottom repeat-x; }
-  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none){
-    a{
-      background:url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="1" height="2"%3E%3Crect x="0" y="1" width="1" height="1" fill="rgba(0, 100, 193, 0.35)"/%3E%3C/svg%3E') left bottom repeat-x; } }
-  a:visited{
-    color:#80b2e0; }
-  a:hover, a:active{
-    outline-width:0; }
-  a:hover{
-    box-shadow:inset 0px -1px #3000c1;
-    color:#3000c1;
-    -webkit-transition:color 0s, box-shadow 0s;
-    transition:color 0s, box-shadow 0s; }
-*/
 a{
   text-decoration:none;
 
@@ -553,8 +528,13 @@ img.small {
 img.medium {
   max-width: 80px;}
 
+article section {
+  font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", "Roboto", "Oxygen","Ubuntu", "Cantarell", "Fira Sans","Droid Sans", "Helvetica Neue", sans-serif;
+}
 
-
+article section .comment {
+ font-family:'Georgia', serif;
+}
 article p {
   margin-top: 1em;
 }
@@ -564,21 +544,12 @@ blockquote {
 }
 
 
-article h3 {
-  font-family: 'PT Sans Caption', serif;
-  /*font-size: 36px;*/
-}
 article h3 a {
   border-bottom-style: none;
 }
 
 article section> p:nth-of-type(1) {
-  /*font-size: 21px;*/
-  font-family: 'PT Sans Caption', serif;
-}
-
-article header p {
-  font-family: 'PT Sans Caption', serif;
+  letter-spacing: .01em;
 }
 
 article header p span{
@@ -592,12 +563,10 @@ article footer a {
 
 .right {
   float: right;
-  font-family: 'PT Sans Caption', serif;
   font-size: 0.9em;
 }
 
 section header p{
-  font-family: 'PT Sans Caption', serif;
   font-size:.7em;
   color:#aaa; }
   section header p + h1, section header p + h2{
@@ -605,7 +574,7 @@ section header p{
 
 .comment{
   margin-top: 0.4em;
-  font-family:"PT Sans", Helvetica, Arial, sans;
+  font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", "Roboto", "Oxygen","Ubuntu", "Cantarell", "Fira Sans","Droid Sans", "Helvetica Neue", sans-serif;
   font-size: 0.9em;
 }
 
