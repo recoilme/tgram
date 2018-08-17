@@ -158,6 +158,8 @@ TGRAMDOMAIN=tgr.am
 [inscryb-markdown-editor](https://github.com/Inscryb/inscryb-markdown-editor)
 
 
+[dithering](https://github.com/MaxHalford/halfgone)
+
 ## Design
 
 [egorabaturov](https://egorabaturov.com)

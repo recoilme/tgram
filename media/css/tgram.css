@@ -1,6 +1,8 @@
 @charset "UTF-8";
 html{
-  font-family:'Georgia', serif;
+  /*font-family:'Georgia', serif;*/
+  font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", "Roboto", "Oxygen","Ubuntu", "Cantarell", "Fira Sans","Droid Sans", "Helvetica Neue", sans-serif;
+
   font-size:100%;
   line-height:1.6;
   background:#fff;
@@ -38,9 +40,11 @@ body{
     text-align:center;
     font-size:.8rem;
     color:#aaa; }
+
 .unicode {
   font-family: 'Times New Roman', Times, serif;
 }
+
 nav{
   color:#ccc;
   margin:1em 0;}
@@ -372,6 +376,7 @@ optgroup,
 select,
 textarea {
   color: inherit;
+  border: 2px solid black;
   /* 1 */
   font: inherit;
   /* 2 */
@@ -529,11 +534,14 @@ img.medium {
   max-width: 80px;}
 
 article section {
-  font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", "Roboto", "Oxygen","Ubuntu", "Cantarell", "Fira Sans","Droid Sans", "Helvetica Neue", sans-serif;
+  font-family:"PT Serif","Georgia", serif;
+  /*font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", "Roboto", "Oxygen","Ubuntu", "Cantarell", "Fira Sans","Droid Sans", "Helvetica Neue", sans-serif;
+  */
 }
 
 article section .comment {
- font-family:'Georgia', serif;
+ /*font-family:"PT Serif","Georgia", serif;*/
+ font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", "Roboto", "Oxygen","Ubuntu", "Cantarell", "Fira Sans","Droid Sans", "Helvetica Neue", sans-serif;
 }
 article p {
   margin-top: 1em;
@@ -574,7 +582,10 @@ section header p{
 
 .comment{
   margin-top: 0.4em;
+  font-family:"PT Serif","Georgia", serif;
+  /*
   font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", "Roboto", "Oxygen","Ubuntu", "Cantarell", "Fira Sans","Droid Sans", "Helvetica Neue", sans-serif;
+  */
   font-size: 0.9em;
 }
 
