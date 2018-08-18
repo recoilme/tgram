@@ -64,6 +64,7 @@ func CheckAuth() gin.HandlerFunc {
 		}
 		//log.Println("ref", c.Query("ref"))
 		if c.Query("ref") == "producthunt" {
+			c.Set("lang", "ph")
 			c.Redirect(http.StatusFound, "https://ph.tgr.am")
 			return
 		}
