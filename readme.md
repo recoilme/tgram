@@ -44,7 +44,8 @@ The editor supports typing in markdown markup, with rich features and visual for
 **Rating system**
 
 You may see three sections with strange names on the main page:
-**top mid btm**
+
+**top (∧) mid (Ξ) btm (∨)**
 
 ![](http://www.wallpaperdx.com/photo/pudge-butcher-dota-abstract-art-chain-full-hd-732-416.jpg)
 
