@@ -164,6 +164,9 @@ func CheckAuth() gin.HandlerFunc {
 
 // ToStr convert object to string
 func ToStr(value interface{}) string {
+	if value == nil {
+		return ""
+	}
 	return fmt.Sprintf("%s", value)
 }
 
@@ -202,6 +205,7 @@ func Home(c *gin.Context) {
 		users = models.IFollow(c.GetString("lang"), "fol", username)
 		mentions = models.Mentions(c.GetString("lang"), username)
 	}
+	c.Set("lang", c.GetString("lang"))
 	c.Set("users", users)
 	c.Set("mentions", mentions)
 	if len(users) > 0 || len(mentions) > 0 {
