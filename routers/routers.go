@@ -51,7 +51,7 @@ func CheckAuth() gin.HandlerFunc {
 
 		var lang = "en"
 		var found bool
-		acceptedLang := []string{"de", "en", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh", "tst", "sub", "bs"}
+		acceptedLang := []string{"de", "en", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh", "tst", "sub", "bs", "ph"}
 		var tokenStr, username, image, nojs string
 		c.Set("nojs", nojs)
 
@@ -60,6 +60,11 @@ func CheckAuth() gin.HandlerFunc {
 		if host == "localhost:8081" {
 			// dev
 			c.Redirect(http.StatusFound, "http://sub."+host)
+			return
+		}
+		//log.Println("ref", c.Query("ref"))
+		if c.Query("ref") == "producthunt" {
+			c.Redirect(http.StatusFound, "https://ph."+host)
 			return
 		}
 		if host == "tgr" {
