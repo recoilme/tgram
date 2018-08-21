@@ -35,7 +35,7 @@ func main() {
 		Port = setifset(os.Getenv("TGRAMPORT"), ":8081")
 		routers.Config.Title = setifset(os.Getenv("TGRAMTITLE"), "typegram")
 		routers.Config.SiteName = setifset(os.Getenv("TGRAMNAME"), "Typegram")
-		routers.Config.Description = setifset(os.Getenv("TGRAMDESC"), "zen blog platform")
+		routers.Config.Description = setifset(os.Getenv("TGRAMDESC"), "open source publishing platform")
 		routers.Config.Admin = setifset(os.Getenv("TGRAMADMIN"), "recoilme")
 		routers.Config.AboutPage = setifset(os.Getenv("TGRAMABOUT"), "/@recoilme/1")
 		routers.Config.Domain = setifset(os.Getenv("TGRAMDOMAIN"), "tgr.am")
