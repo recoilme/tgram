@@ -24,18 +24,17 @@ import (
 
 //The SiteConfig struct stores site customisations
 type siteConfig struct {
-	Title       string
-	Description string
-	Admin       string
-	SiteName    string
-	AboutPage   string
-	Domain      string
+	Title            string
+	Description      string
+	Admin            string
+	SiteName         string
+	AboutPage        string
+	Domain           string
+	NBSecretPassword string
 }
 
 var (
-	// NBSecretPassword some random string
-	NBSecretPassword = "A String Very Very Very Niubilty!!@##$!@#4"
-	Config           siteConfig
+	Config siteConfig
 )
 
 const (
@@ -142,7 +141,7 @@ func CheckAuth() gin.HandlerFunc {
 				}
 
 				// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-				return []byte(NBSecretPassword), nil
+				return []byte(Config.NBSecretPassword), nil
 			})
 			if tokenErr == nil && token != nil {
 				//token found
@@ -274,7 +273,7 @@ func genToken(username, image, nojs string) (string, error) {
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
-	return token.SignedString([]byte(NBSecretPassword))
+	return token.SignedString([]byte(Config.NBSecretPassword))
 }
 
 // Register page
@@ -1027,6 +1026,54 @@ func CommentUp(c *gin.Context) {
 			return
 		}
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%s#comment%s", authorArt, aid, cid))
+	}
+}
+
+func CommentDel(c *gin.Context) {
+	switch c.Request.Method {
+	case "GET":
+
+		authorCom := c.Param("authorcom")
+		authorArt := c.Param("authorart")
+		username := c.GetString("username")
+		lang := c.GetString("lang")
+		aid := c.Param("aid")
+		cid := c.Param("cid")
+		var prevcom = uint32(0)
+		//log.Println("user", author, aid, cid)
+		if authorCom == username || authorArt == username {
+
+			// get article
+			aidint, _ := strconv.Atoi(aid)
+			a, err := models.ArticleGet(lang, authorArt, uint32(aidint))
+			if err != nil {
+				renderErr(c, err)
+				return
+			}
+			//log.Println("a:", a)
+			comments := a.Comments
+			newcomments := make([]models.Article, 0)
+			cidint, _ := strconv.Atoi(cid)
+
+			var found bool
+			for _, com := range comments {
+				if !found {
+					prevcom = com.ID
+				}
+
+				if com.ID == uint32(cidint) {
+					found = true
+					continue
+				}
+				newcomments = append(newcomments, com)
+			}
+			a.Comments = newcomments
+			models.ArticleUpd(a, a.Tag)
+		} else {
+			renderErr(c, errors.New("You don't may delete this comment("))
+			return
+		}
+		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%s#comment%d", authorArt, aid, prevcom))
 	}
 }
 

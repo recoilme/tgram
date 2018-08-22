@@ -65,6 +65,7 @@
   <hr/>
 </article>
 {{$author := .article.Author}}
+{{$uname := .username}}
 {{$id := .article.ID}}
 <section>
 {{range .article.Comments}}
@@ -74,7 +75,17 @@
                 <p>
                     <a href="/@{{.Author}}">@{{.Author}}</a>&nbsp;&nbsp;&nbsp;
                     <a href="/@{{$author}}/{{$id}}#comment{{.ID}}">#</a>{{.CreatedAt| todate}}
-                    <span class="navright"><a href="/commentup/@{{$author}}/{{.Author}}/{{$id}}/{{.ID}}">+</a>&nbsp;{{.Plus}}</span> 
+                    <span class="navright">
+                        <a href="/commentup/@{{$author}}/{{.Author}}/{{$id}}/{{.ID}}">+</a>&nbsp;{{.Plus}}
+                        {{if eq $uname $author}}
+                        &nbsp;<a href="/commentdel/@{{$author}}/{{.Author}}/{{$id}}/{{.ID}}">delete</a>
+                        {{else }}
+                            {{if eq .Author  $uname}}
+                            &nbsp;<a href="/commentdel/@{{$author}}/{{.Author}}/{{$id}}/{{.ID}}">delete</a>
+                            {{end}}
+                        {{end}}
+                        
+                    </span> 
                 </p>
                 
         </header>

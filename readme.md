@@ -1,6 +1,6 @@
 # Typegram
 
-[typegram](http://tgr.am) - zen blog platform (like medium).
+[typegram](http://tgr.am) - open source publishing platform.
 
 **Basic Capabilities**
 

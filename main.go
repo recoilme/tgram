@@ -31,7 +31,6 @@ func main() {
 			}
 			return new
 		}
-		routers.NBSecretPassword = setifset(os.Getenv("TGRAMPWD"), "A String Very Very Very Niubilty!!@##$!@#4")
 		Port = setifset(os.Getenv("TGRAMPORT"), ":8081")
 		routers.Config.Title = setifset(os.Getenv("TGRAMTITLE"), "typegram")
 		routers.Config.SiteName = setifset(os.Getenv("TGRAMNAME"), "Typegram")
@@ -39,6 +38,7 @@ func main() {
 		routers.Config.Admin = setifset(os.Getenv("TGRAMADMIN"), "recoilme")
 		routers.Config.AboutPage = setifset(os.Getenv("TGRAMABOUT"), "/@recoilme/1")
 		routers.Config.Domain = setifset(os.Getenv("TGRAMDOMAIN"), "tgr.am")
+		routers.Config.NBSecretPassword = setifset(os.Getenv("TGRAMPWD"), "A String Very Very Very Niubilty!!@##$!@#4")
 	}
 
 	srv := &http.Server{
@@ -129,6 +129,7 @@ func InitRouter() *gin.Engine {
 	r.GET("/policy", routers.Policy)
 	r.GET("/terms", routers.Terms)
 
+	// only for registered users
 	r.Use(routers.GoToRegister())
 
 	r.GET("/settings", routers.Settings)
@@ -152,6 +153,7 @@ func InitRouter() *gin.Engine {
 
 	r.POST("/comments/@:username/:aid", routers.CommentNew)
 	r.GET("/commentup/@:authorart/:authorcom/:aid/:cid", routers.CommentUp)
+	r.GET("/commentdel/@:authorart/:authorcom/:aid/:cid", routers.CommentDel)
 
 	r.GET("/upload", routers.Upload)
 	r.POST("/upload", routers.Upload)

@@ -15,7 +15,7 @@ var (
 const (
 	RateIP      = 10 * time.Minute
 	RatePost    = 10 * time.Minute
-	RateComment = 1 * time.Minute
+	RateComment = 30 * time.Second
 
 	VoteComStore = 24 * time.Hour
 	VoteArtStore = 24 * time.Hour
