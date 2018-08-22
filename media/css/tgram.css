@@ -377,12 +377,18 @@ select,
 textarea {
   color: inherit;
   border: 1px solid #777;
+  border-radius: 2px;
   /* 1 */
   font: inherit;
   /* 2 */
+  padding: 10px;
   margin: 0;
-  padding-left: 5px;
-  /* 3 */ }
+  /* 3 */ 
+}
+textarea:hover,
+textarea:focus {
+  outline: none
+}
 
 /**
  * Address `overflow` set to `hidden` in IE 8/9/10/11.
@@ -606,8 +612,8 @@ section header p{
 
 input {
 	border: 1px solid #777;
-	border-radius: 0px;
-	padding: 5px;
+	border-radius: 2px;
+	padding: 10px;
 }
 
 input:hover,
@@ -617,9 +623,12 @@ input:focus {
 
 button {
 	border: 1px solid #777;
-	border-radius: 0px;
+	border-radius: 2px;
 	background-color: white;
-	padding: 5px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 button:hover,
