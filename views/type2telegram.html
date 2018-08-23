@@ -1,0 +1,14 @@
+{{template "header" .}}
+{{template "menu" .}}
+
+<h5>Type 2 Tele gram</h5>
+
+<form action="/type2telegram" method="post">
+  <section>
+    <input name="channel" type="text" placeholder="channel name, @channel, text" value="{{.channel}}">
+    <button type="submit"  accesskey="u">Update</button>
+  </section>
+</form>
+<hr/>
+
+{{template "footer" .}}
