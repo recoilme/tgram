@@ -622,7 +622,10 @@ func Editor(c *gin.Context) {
 		// add to cache on success
 		models.PostLimitSet(c.GetString("lang"), c.GetString("username"))
 		//cc.Set(postRate, time.Now().Unix(), cache.DefaultExpiration)
-
+		u, err := models.UserGet(c.GetString("lang"), c.GetString("username"))
+		if err == nil && u.Type2Telegram != "" {
+			models.TgMsg(Config.Type2TeleBot, u.Type2Telegram, a.Body)
+		}
 		//log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		return

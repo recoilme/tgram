@@ -4,6 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"strings"
 
 	"github.com/recoilme/tgram/utils"
 )
@@ -65,4 +69,29 @@ func TgIsAdmin(bot, req, admin string) (isAdmin bool, err error) {
 		}
 	}
 	return isAdmin, err
+}
+
+func TgMsg(bot, channel, txt string) {
+	apiurl := fmt.Sprintf(tgapi, bot, "sendMessage")
+	v := url.Values{}
+	v.Set("chat_id", channel)
+	v.Set("text", txt)
+	v.Set("parse_mode", "Markdown")
+	req, err := http.NewRequest("POST", apiurl, strings.NewReader(v.Encode()))
+	if err != nil {
+		return
+	}
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	c := &http.Client{}
+	resp, err := c.Do(req)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("ioutil.ReadAll() error: %v\n", err)
+		return
+	}
+	fmt.Printf("read resp.Body successfully:\n%v\n", string(data))
 }
