@@ -97,21 +97,22 @@ func TgSendMsg(bot, channel, txt string, msgID int) (mid int) {
 	v.Set("chat_id", channel)
 	v.Set("text", txt)
 	v.Set("parse_mode", "Markdown")
+
 	req, err := http.NewRequest("POST", apiurl, strings.NewReader(v.Encode()))
 	if err != nil {
-		return
+		return mid
 	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	c := &http.Client{}
 	resp, err := c.Do(req)
 	if err != nil {
-		return
+		return mid
 	}
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		//fmt.Printf("ioutil.ReadAll() error: %v\n", err)
-		return
+		return mid
 	}
 	var m TgMsg
 	if err = json.Unmarshal(data, &m); err == nil {
