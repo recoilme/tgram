@@ -1,9 +1,11 @@
 {{template "header" .}}
 {{template "menu" .}}
 
-<h5>Type 2 Tele gram</h5>
+<h5>Typegram 2 Telegram</h5>
 
-<form action="/type2telegram" method="post">
+<form action="/export/type2tele" method="post">
+ <h4>This is an experimental feature! Use it on your own risk</h4>
+ <p>Add type2telegrambot to your channel as administrator</p>
   <section>
     <input name="channel" type="text" placeholder="channel name, @channel, text" value="{{.channel}}">
     <button type="submit"  accesskey="u">Update</button>

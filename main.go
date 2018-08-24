@@ -39,6 +39,7 @@ func main() {
 		routers.Config.AboutPage = setifset(os.Getenv("TGRAMABOUT"), "/@recoilme/1")
 		routers.Config.Domain = setifset(os.Getenv("TGRAMDOMAIN"), "tgr.am")
 		routers.Config.NBSecretPassword = setifset(os.Getenv("TGRAMPWD"), "A String Very Very Very Niubilty!!@##$!@#4")
+		routers.Config.Type2TeleBot = setifset(os.Getenv("TGRAM2TELE"), "")
 	}
 
 	srv := &http.Server{
@@ -157,6 +158,9 @@ func InitRouter() *gin.Engine {
 
 	r.GET("/upload", routers.Upload)
 	r.POST("/upload", routers.Upload)
+
+	r.GET("/export/type2tele", routers.Type2tele)
+	r.POST("/export/type2tele", routers.Type2tele)
 
 	return r
 }

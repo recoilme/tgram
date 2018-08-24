@@ -31,6 +31,7 @@ type siteConfig struct {
 	AboutPage        string
 	Domain           string
 	NBSecretPassword string
+	Type2TeleBot     string
 }
 
 var (
@@ -1118,5 +1119,53 @@ func Vote(c *gin.Context) {
 			return
 		}
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%s#comments", author, aid))
+	}
+}
+
+func Type2tele(c *gin.Context) {
+	switch c.Request.Method {
+	case "GET":
+		u, err := models.UserGet(c.GetString("lang"), c.GetString("username"))
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		c.Set("channel", u.Type2Telegram)
+		c.HTML(http.StatusOK, "type2tele.html", c.Keys)
+	case "POST":
+		if err := c.Request.ParseForm(); err == nil {
+			channel := c.Request.Form["channel"]
+			if len(channel) > 0 && len(channel[0]) > 0 && (channel[0][:1] == "@" || channel[0][:1] == "-") {
+				//log.Println("ch:", channel[0])
+				isAdmin, err := models.TgIsAdmin(Config.Type2TeleBot, fmt.Sprintf("getChatAdministrators?chat_id=%s", channel[0]), "type2telegrambot")
+				if err != nil {
+					renderErr(c, err)
+					return
+				}
+				if !isAdmin {
+					renderErr(c, errors.New("Add type2telegrambot as administrator in channel:"+channel[0]))
+					return
+				}
+				u, err := models.UserGet(c.GetString("lang"), c.GetString("username"))
+				if err != nil {
+					renderErr(c, err)
+					return
+				}
+				u.Type2Telegram = channel[0]
+				err = models.UserSave(u)
+				if err != nil {
+					renderErr(c, err)
+					return
+				}
+				c.Set("channel", u.Type2Telegram)
+				c.Redirect(http.StatusFound, "/export/type2tele")
+			} else {
+				renderErr(c, errors.New("Wrong channel name, expected: @channel get:"+channel[0]))
+				return
+			}
+		} else {
+			renderErr(c, err)
+			return
+		}
 	}
 }
