@@ -166,3 +166,15 @@ func VoteSet(lang, username string) error {
 		}*/
 	return nil
 }
+
+func Type2TeleSet(aid uint32, mid int) {
+	cc.Set(fmt.Sprintf("type2tele:%d", aid), mid, cache.DefaultExpiration)
+}
+
+func Type2TeleGet(aid uint32) int {
+	if x, found := cc.Get(fmt.Sprintf("type2tele:%d", aid)); found {
+		// if found
+		return x.(int)
+	}
+	return 0
+}
