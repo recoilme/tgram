@@ -85,7 +85,7 @@ func TgIsAdmin(bot, req, admin string) (isAdmin bool, err error) {
 	return isAdmin, err
 }
 
-func TgSendMsg(bot, channel, txt string, msgID int) (mid int) {
+func TgSendMsg(bot, channel, txt, title, link, img string, msgID int) (mid int) {
 	var method = "sendMessage"
 	v := url.Values{}
 	if msgID != 0 {
@@ -93,9 +93,34 @@ func TgSendMsg(bot, channel, txt string, msgID int) (mid int) {
 		v.Set("message_id", fmt.Sprintf("%d", msgID))
 	}
 	apiurl := fmt.Sprintf(tgapi, bot, method)
+	var send = ""
+	if title != "" {
+		send += "*" + title + "*" + "\n\n"
+	}
+	if img != "" {
+		send += "\n" + "[image](" + img + ")\n"
+	}
+	//italic
+	txt = strings.Replace(txt, " *", " _", -1)
+	txt = strings.Replace(txt, "* ", "_ ", -1)
+	//bold
+	txt = strings.Replace(txt, "******", "*", -1)
+	txt = strings.Replace(txt, "*****", "*", -1)
+	txt = strings.Replace(txt, "****", "*", -1)
+	txt = strings.Replace(txt, "***", "*", -1)
+	txt = strings.Replace(txt, "**", "*", -1)
 
+	//image 2 link
+	txt = strings.Replace(txt, "![]", "![image]", -1)
+	txt = strings.Replace(txt, "![", "[", -1)
+	//rn
+	txt = strings.Replace(txt, "\n\n", "\n", -1)
+	//link
+	txt += "\n" + "[comments](" + link + ")"
+
+	send += txt
 	v.Set("chat_id", channel)
-	v.Set("text", txt)
+	v.Set("text", send)
 	v.Set("parse_mode", "Markdown")
 
 	req, err := http.NewRequest("POST", apiurl, strings.NewReader(v.Encode()))
