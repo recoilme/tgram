@@ -12,13 +12,11 @@ import (
 	"time"
 )
 
-var defHeaders = make(map[string]string)
-
-func init() {
-	defHeaders["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:52.0) Gecko/20100101 Firefox/52.0"
-	defHeaders["Accept-Language"] = "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3"
-	defHeaders["Referer"] = "https://ya.ru/"
-	defHeaders["Cookie"] = ""
+var defHeaders = map[string]string{
+	"User-Agent":      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:52.0) Gecko/20100101 Firefox/52.0",
+	"Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+	"Referer":         "https://ya.ru/",
+	"Cookie":          "",
 }
 
 // Config for http dialer
