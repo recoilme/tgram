@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 
 	"github.com/recoilme/tgram/utils"
@@ -98,23 +99,48 @@ func TgSendMsg(bot, channel, txt, title, link, img string, msgID int) (mid int) 
 		send += "*" + title + "*" + "\n\n"
 	}
 	if img != "" {
-		send += "\n" + "[image](" + img + ")\n"
+		if title == "" {
+			send += "\n"
+		}
+		send += "[" + img + "](" + img + ")\n"
 	}
-	//italic
-	txt = strings.Replace(txt, " *", " _", -1)
-	txt = strings.Replace(txt, "* ", "_ ", -1)
+	//clicable image 2 link
+	txt = TgClickableImage(txt)
+
+	var arrayFrom = []string{}
+	var arrayTo = []string{}
+
+	//italic (dirty)
+	arrayFrom = append(arrayFrom, " *")
+	arrayTo = append(arrayTo, " _")
+	arrayFrom = append(arrayFrom, "* ")
+	arrayTo = append(arrayTo, "_ ")
+
+	//bold link
+	arrayFrom = append(arrayFrom, "**[")
+	arrayTo = append(arrayTo, "[")
+	arrayFrom = append(arrayFrom, ")**")
+	arrayTo = append(arrayTo, ")")
+
 	//bold
-	txt = strings.Replace(txt, "******", "*", -1)
-	txt = strings.Replace(txt, "*****", "*", -1)
-	txt = strings.Replace(txt, "****", "*", -1)
-	txt = strings.Replace(txt, "***", "*", -1)
-	txt = strings.Replace(txt, "**", "*", -1)
+	arrayFrom = append(arrayFrom, "**")
+	arrayTo = append(arrayTo, "*")
+
+	//empty image descr
+	arrayFrom = append(arrayFrom, "![]")
+	arrayTo = append(arrayTo, "![image]")
 
 	//image 2 link
-	txt = strings.Replace(txt, "![]", "![image]", -1)
-	txt = strings.Replace(txt, "![", "[", -1)
-	//rn
-	txt = strings.Replace(txt, "\n\n", "\n", -1)
+	arrayFrom = append(arrayFrom, "![")
+	arrayTo = append(arrayTo, "[")
+
+	//double rn
+	arrayFrom = append(arrayFrom, "\n\n")
+	arrayTo = append(arrayTo, "\n")
+	//txt = strings.Replace(txt, "\n\n", "\n", -1)
+
+	txt = strings.NewReplacer(Zip(arrayFrom, arrayTo)...).Replace(txt)
+
 	//link
 	txt += "\n" + "[comments](" + link + ")"
 
@@ -147,4 +173,48 @@ func TgSendMsg(bot, channel, txt, title, link, img string, msgID int) (mid int) 
 	}
 	return mid
 	//fmt.Printf("read resp.Body successfully:\n%v\n", string(data))
+}
+
+func TgClickableImage(s string) string {
+	/*
+		s := `Первое, что бросается в глаза, это высокая скорость загрузки страниц и агрессивная оптимизация.
+		[![](http://tst.tgr.am/i/tst/recoilme/17.png)](http://tst.tgr.am/i/tst/recoilme/17_.png)
+		Вы не найдете сторонних скриптов`
+	*/
+	r, err := regexp.Compile(`\[!\[(.*?)\]\((.*?)\)\]\((.*?)\)`)
+	if err != nil {
+		//fmt.Println(err)
+		return s
+	}
+	rimg, err := regexp.Compile(`!\[(.*?)\]\((.*?)\)`)
+	if err != nil {
+		//fmt.Println(err)
+		return s
+	}
+
+	var arrayFrom = []string{}
+	var arrayTo = []string{}
+
+	submatchall := r.FindAllString(s, -1)
+	for _, element := range submatchall {
+		//log.Println("elemment", element)
+		imgarr := rimg.FindAllString(s, -1)
+		if len(imgarr) > 0 {
+			var href = ""
+			//var err error
+			first := strings.IndexByte(imgarr[0], '(') + 1
+			last := strings.IndexByte(imgarr[0], ')')
+			if first > 0 && last > 0 && last > first {
+				// extract link
+				href = imgarr[0][first:last]
+				arrayFrom = append(arrayFrom, element)
+				arrayTo = append(arrayTo, " ["+href+"]("+href+") ")
+			}
+		}
+	}
+	if len(arrayFrom) > 0 {
+		s = strings.NewReplacer(Zip(arrayFrom, arrayTo)...).Replace(s)
+	}
+	//log.Println(s)
+	return s
 }

@@ -583,7 +583,7 @@ func Editor(c *gin.Context) {
 				return
 			}
 			send2telegram(c.GetString("lang"), c.GetString("username"), a.Body, a.Title,
-				fmt.Sprintf("https://%s.tgr.am/@%s/%d#comments", c.GetString("lang"), a.Author, a.ID), a.Image, a.ID)
+				fmt.Sprintf("https://%s.tgr.am/@%s/%d#comments", c.GetString("lang"), a.Author, a.ID), a.OgImage, a.ID)
 			//log.Println("aid2", a)
 			//log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 			c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
@@ -625,7 +625,7 @@ func Editor(c *gin.Context) {
 		models.PostLimitSet(c.GetString("lang"), c.GetString("username"))
 		//cc.Set(postRate, time.Now().Unix(), cache.DefaultExpiration)
 		send2telegram(c.GetString("lang"), c.GetString("username"), a.Body, a.Title,
-			fmt.Sprintf("https://%s.tgr.am/@%s/%d#comments", c.GetString("lang"), a.Author, a.ID), a.Image, a.ID)
+			fmt.Sprintf("https://%s.tgr.am/@%s/%d#comments", c.GetString("lang"), a.Author, a.ID), a.OgImage, a.ID)
 		//log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		return
@@ -635,9 +635,13 @@ func Editor(c *gin.Context) {
 func send2telegram(lang, username, text, title, link, img string, aid uint32) {
 	u, err := models.UserGet(lang, username)
 	if err == nil && u.Type2Telegram != "" {
-		msgId := models.Type2TeleGet(aid)
-		mid := models.TgSendMsg(Config.Type2TeleBot, u.Type2Telegram, text, title, link, img, msgId)
-		models.Type2TeleSet(aid, mid)
+		msgID := models.Type2TeleGet(aid)
+		mid := models.TgSendMsg(Config.Type2TeleBot, u.Type2Telegram, text, title, link, img, msgID)
+		if mid != 0 {
+			//mid will be 0 in case of error
+			models.Type2TeleSet(aid, mid)
+		}
+
 	}
 }
 

@@ -103,3 +103,7 @@ func TestFindUser(t *testing.T) {
 		log.Println(ss)
 	}
 }
+
+func TestTgImgProcess(t *testing.T) {
+	models.TgClickableImage()
+}

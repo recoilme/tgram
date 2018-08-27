@@ -130,7 +130,7 @@ func ComUpSet(lang, username, cid string) error {
 		cc.IncrementInt(unicCnt, 1)
 	}
 	// one comment - one vote
-	uniq := fmt.Sprintf("%s:ciduid:%s:s", lang, cid, username)
+	uniq := fmt.Sprintf("%s:ciduid:%s:%s", lang, cid, username)
 	if _, found := cc.Get(uniq); !found {
 		// uniq
 		cc.Set(uniq, 1, 24*30*time.Hour) // 30 days
