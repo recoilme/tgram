@@ -5,9 +5,10 @@
 
 <form action="/export/type2tele" method="post">
  <h4>This is an experimental feature! Use it on your own risk</h4>
- <p>Add type2telegrambot to your channel as administrator</p>
+ <p>Add type2telegrambot to your channel (as administrator!)</p>
+ <p>And i will publish new posts to this channel</p>
   <section>
-    <input name="channel" type="text" placeholder="channel name, @channel, text" value="{{.channel}}">
+    <input name="channel" type="text" placeholder="channel name (or id for private channels), @channel, text" value="{{.channel}}">
     <button type="submit"  accesskey="u">Update</button>
   </section>
 </form>
