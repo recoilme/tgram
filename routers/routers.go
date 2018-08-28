@@ -45,18 +45,17 @@ const (
 // CheckAuth - general hook sets all param like lang, user
 func CheckAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		c.Set("config", Config)
 		c.Set("path", c.Request.URL.Path)
 
-		var lang = "en"
-		var found bool
+		lang := "en"
+		found := false
 		acceptedLang := []string{"de", "en", "es", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh", "tst", "sub", "bs", "ph"}
 		var tokenStr, username, image, nojs string
 		c.Set("nojs", nojs)
 
 		hosts := strings.Split(c.Request.Host, ".")
-		var host = hosts[0]
+		host := hosts[0]
 		if host == "localhost:8081" {
 			// dev
 			c.Redirect(http.StatusFound, "http://sub."+host)
@@ -73,14 +72,14 @@ func CheckAuth() gin.HandlerFunc {
 			//fmt.Println("host:tgr")
 			t, _, err := language.ParseAcceptLanguage(c.Request.Header.Get("Accept-Language"))
 			if err == nil && len(t) > 0 {
-				if len(t[0].String()) >= 2 {
+				if l := t[0].String(); len(l) >= 2 {
 					// some lang found
-					if len(t[0].String()) == 2 || len(t[0].String()) == 3 {
+					if len(l) == 2 || len(l) == 3 {
 						// some lang 3 char
-						lang = t[0].String()
+						lang = l
 					} else {
 						// remove country code en-US
-						langs := strings.Split(t[0].String(), "-")
+						langs := strings.Split(l, "-")
 						if len(langs[0]) == 2 || len(langs[0]) == 3 {
 							lang = langs[0]
 						}
@@ -181,15 +180,15 @@ func GetLead(s string) string {
 	if len(s) < 300 {
 		return s + ".."
 	}
-	var delim = strings.IndexRune(s, '\n')
+	delim := strings.IndexRune(s, '\n')
 	if delim > 300 || delim < 0 {
-		var len = len([]rune(s))
-		if len > 300 {
-			len = 300
+		l := len([]rune(s))
+		if l > 300 {
+			l = 300
 		}
-		delim = strings.LastIndexByte(s[:len], ' ')
+		delim = strings.LastIndexByte(s[:l], ' ')
 		if delim < 0 {
-			delim = len
+			delim = l
 		}
 	}
 	//log.Println(s, delim)
@@ -198,7 +197,6 @@ func GetLead(s string) string {
 
 // Home - main page
 func Home(c *gin.Context) {
-
 	username := c.GetString("username")
 	var users []models.User
 	var mentions []models.Mention
@@ -281,7 +279,6 @@ func genToken(username, image, nojs string) (string, error) {
 
 // Register page
 func Register(c *gin.Context) {
-	var err error
 	switch c.Request.Method {
 	case "GET":
 		c.HTML(http.StatusOK, "register.html", c.Keys)
@@ -303,7 +300,7 @@ func Register(c *gin.Context) {
 			Good     string `form:"good" json:"good" ` // This is to avoid spammers
 		}
 		var rf RegisterForm
-		err = c.ShouldBind(&rf)
+		err := c.ShouldBind(&rf)
 
 		if rf.Good == "good" {
 			err = errors.New("Error: Sorry, we do not endorse spammers...")
@@ -346,7 +343,6 @@ func Register(c *gin.Context) {
 		switch c.Request.Header.Get("Accept") {
 		case "application/json":
 			c.JSON(http.StatusCreated, u)
-			return
 		default:
 			c.Redirect(http.StatusFound, "/")
 		}
@@ -358,7 +354,6 @@ func Register(c *gin.Context) {
 
 // Settings page
 func Settings(c *gin.Context) {
-
 	switch c.Request.Method {
 	case "GET":
 		user, err := models.UserGet(c.GetString("lang"), c.GetString("username"))
@@ -376,7 +371,7 @@ func Settings(c *gin.Context) {
 		}
 		c.HTML(http.StatusOK, "settings.html", c.Keys)
 	case "POST":
-		var nojs bool
+		nojs := false
 		if c.Request.ParseForm() == nil {
 			nojsoption := c.Request.Form["nojsoption"]
 			if len(nojsoption) > 0 && nojsoption[0] == "nojs" {
@@ -385,10 +380,9 @@ func Settings(c *gin.Context) {
 		}
 		//log.Println("isnogs", nojs)
 		var u models.User
-		var err error
 		u.Username = c.GetString("username")
 		u.NoJs = nojs
-		err = c.ShouldBind(&u)
+		err := c.ShouldBind(&u)
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -417,19 +411,18 @@ func Settings(c *gin.Context) {
 			c.SetCookie("token", "", 0, "/", "", false, true)
 			c.Redirect(http.StatusFound, "/")
 			return
-		} else {
-			u.Password = ""
-			u.PasswordHash = user.PasswordHash
-			err = models.UserSave(&u)
 		}
 
+		u.Password = ""
+		u.PasswordHash = user.PasswordHash
+		err = models.UserSave(&u)
 		if err != nil {
 			renderErr(c, err)
 			return
 		}
 		if u.Image != user.Image || u.NoJs != user.NoJs {
 			// upd token
-			var isnojs = ""
+			isnojs := ""
 			if u.NoJs {
 				isnojs = "true"
 			}
@@ -446,7 +439,6 @@ func Settings(c *gin.Context) {
 		switch c.Request.Header.Get("Accept") {
 		case "application/json":
 			c.JSON(http.StatusOK, u)
-			return
 		default:
 			c.Redirect(http.StatusFound, "/")
 		}
@@ -465,13 +457,12 @@ func Logout(c *gin.Context) {
 
 // Login page
 func Login(c *gin.Context) {
-	var err error
 	switch c.Request.Method {
 	case "GET":
 		c.HTML(http.StatusOK, "login.html", c.Keys)
 	case "POST":
 		var u models.User
-		err = c.ShouldBind(&u)
+		err := c.ShouldBind(&u)
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -482,7 +473,7 @@ func Login(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-		var isnojs = ""
+		isnojs := ""
 		if user.NoJs {
 			isnojs = "true"
 		}
@@ -498,7 +489,6 @@ func Login(c *gin.Context) {
 		default:
 			c.Redirect(http.StatusFound, "/")
 		}
-
 	}
 }
 
@@ -536,20 +526,19 @@ func Editor(c *gin.Context) {
 		c.HTML(http.StatusOK, "article_edit.html", c.Keys)
 	case "POST":
 		//log.Println("aid", aid)
-		var err error
 		var abind models.Article
-		err = c.ShouldBind(&abind)
+		err := c.ShouldBind(&abind)
 		if err != nil {
 			renderErr(c, err)
 			return
 		}
 		username := c.GetString("username")
 		lang := c.GetString("lang")
-		var https = "https://"
+		proto := "https://"
 		if lang == "sub" {
-			https = "http://"
+			proto = "http://"
 		}
-		host := https + c.Request.Host + "/"
+		host := proto + c.Request.Host + "/"
 
 		body, err := models.ImgProcess(strings.Replace(strings.TrimSpace(abind.Body), "\r\n", "\n\n", -1), lang, username, host)
 		if err != nil {
@@ -643,7 +632,6 @@ func send2telegram(lang, username, text, title, link, img string, aid uint32) {
 			//mid will be 0 in case of error
 			models.Type2TeleSet(aid, mid)
 		}
-
 	}
 }
 
@@ -744,7 +732,6 @@ func Unfollow(c *gin.Context) {
 func Fav(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
-
 		aid, _ := strconv.Atoi(c.Param("aid"))
 		aid32 := models.Uint32toBin(uint32(aid))
 		//fmt.Println(aid32, string(aid32), []byte(string(aid32)))
@@ -834,9 +821,8 @@ func CommentNew(c *gin.Context) {
 		aid, _ := strconv.Atoi(c.Param("aid"))
 		username := c.Param("username")
 
-		var err error
 		var a models.Article
-		err = c.ShouldBind(&a)
+		err := c.ShouldBind(&a)
 		if err != nil {
 			renderErr(c, err)
 			return
@@ -943,7 +929,7 @@ func Upload(c *gin.Context) {
 		var fileHeader *multipart.FileHeader
 		var err error
 		var src multipart.File
-		var newElement = ""
+		newElement := ""
 		minSize := 102400
 		if fileHeader, err = c.FormFile("file"); err != nil {
 			renderErr(c, err)
@@ -969,11 +955,11 @@ func Upload(c *gin.Context) {
 				renderErr(c, errors.New("Some error"))
 				return
 			}
-			var https = "https://"
+			proto := "https://"
 			if c.GetString("lang") == "sub" {
-				https = "http://"
+				proto = "http://"
 			}
-			host := https + c.Request.Host + "/"
+			host := proto + c.Request.Host + "/"
 
 			if origSize > minSize {
 				newElement = "[![](" + host + file + ")](" + host + orig + ")"
@@ -1006,7 +992,6 @@ func Terms(c *gin.Context) {
 func CommentUp(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
-
 		authorCom := c.Param("authorcom")
 		authorArt := c.Param("authorart")
 		username := c.GetString("username")
@@ -1014,36 +999,36 @@ func CommentUp(c *gin.Context) {
 		aid := c.Param("aid")
 		cid := c.Param("cid")
 		//log.Println("user", author, aid, cid)
-		if authorCom != username {
+		if authorCom == username {
 			// no myself vote
-			err := models.ComUpSet(lang, username, cid)
-			if err != nil {
-				renderErr(c, err)
-				return
-			}
-			// store vote
-			aidint, _ := strconv.Atoi(aid)
-			a, err := models.ArticleGet(lang, authorArt, uint32(aidint))
-			if err != nil {
-				renderErr(c, err)
-				return
-			}
-			//log.Println("a:", a)
-			comments := a.Comments
-			cidint, _ := strconv.Atoi(cid)
-
-			for ind, com := range comments {
-				if com.ID == uint32(cidint) {
-					votes := com.Plus
-					a.Comments[ind].Plus = votes + 1
-					models.ArticleUpd(a, a.Tag)
-					break
-				}
-			}
-		} else {
 			renderErr(c, errors.New("You may not vote for yourself("))
 			return
 		}
+		err := models.ComUpSet(lang, username, cid)
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		// store vote
+		aidint, _ := strconv.Atoi(aid)
+		a, err := models.ArticleGet(lang, authorArt, uint32(aidint))
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		//log.Println("a:", a)
+		comments := a.Comments
+		cidint, _ := strconv.Atoi(cid)
+
+		for ind, com := range comments {
+			if com.ID == uint32(cidint) {
+				votes := com.Plus
+				a.Comments[ind].Plus = votes + 1
+				models.ArticleUpd(a, a.Tag)
+				break
+			}
+		}
+
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%s#comment%s", authorArt, aid, cid))
 	}
 }
@@ -1051,47 +1036,46 @@ func CommentUp(c *gin.Context) {
 func CommentDel(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
-
 		authorCom := c.Param("authorcom")
 		authorArt := c.Param("authorart")
 		username := c.GetString("username")
 		lang := c.GetString("lang")
 		aid := c.Param("aid")
 		cid := c.Param("cid")
-		var prevcom = uint32(0)
-		//log.Println("user", author, aid, cid)
-		if authorCom == username || authorArt == username {
+		prevcom := uint32(0)
 
-			// get article
-			aidint, _ := strconv.Atoi(aid)
-			a, err := models.ArticleGet(lang, authorArt, uint32(aidint))
-			if err != nil {
-				renderErr(c, err)
-				return
-			}
-			//log.Println("a:", a)
-			comments := a.Comments
-			newcomments := make([]models.Article, 0)
-			cidint, _ := strconv.Atoi(cid)
-
-			var found bool
-			for _, com := range comments {
-				if !found {
-					prevcom = com.ID
-				}
-
-				if com.ID == uint32(cidint) {
-					found = true
-					continue
-				}
-				newcomments = append(newcomments, com)
-			}
-			a.Comments = newcomments
-			models.ArticleUpd(a, a.Tag)
-		} else {
-			renderErr(c, errors.New("You don't may delete this comment("))
+		if authorCom != username && authorArt != username {
+			renderErr(c, errors.New("You may not delete this comment("))
 			return
 		}
+
+		// get article
+		aidint, _ := strconv.Atoi(aid)
+		a, err := models.ArticleGet(lang, authorArt, uint32(aidint))
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		//log.Println("a:", a)
+		comments := a.Comments
+		newcomments := make([]models.Article, 0)
+		cidint, _ := strconv.Atoi(cid)
+
+		found := false
+		for _, com := range comments {
+			if !found {
+				prevcom = com.ID
+			}
+
+			if com.ID == uint32(cidint) {
+				found = true
+				continue
+			}
+			newcomments = append(newcomments, com)
+		}
+		a.Comments = newcomments
+		models.ArticleUpd(a, a.Tag)
+
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%s#comment%d", authorArt, aid, prevcom))
 	}
 }
@@ -1107,38 +1091,40 @@ func Vote(c *gin.Context) {
 
 		//log.Println("author", author, aid, mode, username, lang)
 
-		if author != username {
-
-			err := models.VoteSet(lang, username)
-			if err != nil {
-				renderErr(c, err)
-				return
-			}
-			// store vote
-			aidint, _ := strconv.Atoi(aid)
-			a, err := models.ArticleGet(lang, author, uint32(aidint))
-			if err != nil {
-				renderErr(c, err)
-				return
-			}
-			switch mode {
-			case "up":
-				a.Plus = a.Plus + 1
-			case "down":
-				a.Minus = a.Minus + 1
-			default:
-				renderErr(c, errors.New("Not implemented"))
-				return
-			}
-			models.ArticleUpd(a, a.Tag)
-		} else {
+		if author == username {
 			// no myself vote
 			renderErr(c, errors.New("You may not vote for yourself("))
 			return
 		}
+
+		err := models.VoteSet(lang, username)
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		// store vote
+		aidint, _ := strconv.Atoi(aid)
+		a, err := models.ArticleGet(lang, author, uint32(aidint))
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		switch mode {
+		case "up":
+			a.Plus = a.Plus + 1
+		case "down":
+			a.Minus = a.Minus + 1
+		default:
+			renderErr(c, errors.New("Not implemented"))
+			return
+		}
+		models.ArticleUpd(a, a.Tag)
+
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%s#comments", author, aid))
 	}
 }
+
+func goodChanName(name string) bool { return len(name) > 0 && (name[0] == '@' || name[0] == '-') }
 
 func Type2tele(c *gin.Context) {
 	switch c.Request.Method {
@@ -1151,39 +1137,39 @@ func Type2tele(c *gin.Context) {
 		c.Set("channel", u.Type2Telegram)
 		c.HTML(http.StatusOK, "type2tele.html", c.Keys)
 	case "POST":
-		if err := c.Request.ParseForm(); err == nil {
-			channel := c.Request.Form["channel"]
-			if len(channel) > 0 && len(channel[0]) > 0 && (channel[0][:1] == "@" || channel[0][:1] == "-") {
-				//log.Println("ch:", channel[0])
-				isAdmin, err := models.TgIsAdmin(Config.Type2TeleBot, fmt.Sprintf("getChatAdministrators?chat_id=%s", channel[0]), "type2telegrambot")
-				if err != nil {
-					renderErr(c, err)
-					return
-				}
-				if !isAdmin {
-					renderErr(c, errors.New("Add type2telegrambot as administrator in channel:"+channel[0]))
-					return
-				}
-				u, err := models.UserGet(c.GetString("lang"), c.GetString("username"))
-				if err != nil {
-					renderErr(c, err)
-					return
-				}
-				u.Type2Telegram = channel[0]
-				err = models.UserSave(u)
-				if err != nil {
-					renderErr(c, err)
-					return
-				}
-				c.Set("channel", u.Type2Telegram)
-				c.Redirect(http.StatusFound, "/export/type2tele")
-			} else {
-				renderErr(c, errors.New("Wrong channel name, expected: @channel get:"+channel[0]))
-				return
-			}
-		} else {
+		if err := c.Request.ParseForm(); err != nil {
 			renderErr(c, err)
 			return
 		}
+
+		channel := c.Request.Form["channel"]
+		if len(channel) == 0 || !goodChanName(channel[0]) {
+			renderErr(c, errors.New("Wrong channel name, expected: @channel get:"+channel[0]))
+			return
+		}
+
+		//log.Println("ch:", channel[0])
+		isAdmin, err := models.TgIsAdmin(Config.Type2TeleBot, fmt.Sprintf("getChatAdministrators?chat_id=%s", channel[0]), "type2telegrambot")
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		if !isAdmin {
+			renderErr(c, errors.New("Add type2telegrambot as administrator in channel:"+channel[0]))
+			return
+		}
+		u, err := models.UserGet(c.GetString("lang"), c.GetString("username"))
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		u.Type2Telegram = channel[0]
+		err = models.UserSave(u)
+		if err != nil {
+			renderErr(c, err)
+			return
+		}
+		c.Set("channel", u.Type2Telegram)
+		c.Redirect(http.StatusFound, "/export/type2tele")
 	}
 }
