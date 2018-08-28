@@ -71,6 +71,9 @@ func UserBanSet(author string) {
 }
 
 func ratelimit(key string, dur time.Duration) (wait int) {
+	if key == "" {
+		return 0
+	}
 	if x, found := cc.Get(key); found {
 		// if found
 		t := time.Now()
@@ -158,12 +161,6 @@ func VoteSet(lang, username string) error {
 		// add vote
 		cc.IncrementInt(unicCnt, 1)
 	}
-	/*
-		uniq := fmt.Sprintf("%s:aiduid:%s:s", lang, aid, username)
-		if _, found := cc.Get(uniq); !found {
-			// uniq
-			cc.Set(uniq, 1, 24*30*time.Hour) // 30 days
-		}*/
 	return nil
 }
 

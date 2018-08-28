@@ -63,8 +63,15 @@
       <!--<a href="http://tr.tgr.am"><sup>tr</sup></a>-->
       <!--<a href="http://us.tgr.am"><sup>us</sup></a>-->
       <!--<a href="http://zh.tgr.am"><sup>zh</sup></a>-->
+      
     </h5>
+    {{if eq (.username| tostr) .config.Admin }}
+      {{if .dau}}
+        &nbsp;dau:{{.dau}}
+      {{end}}
+    {{end}}
   {{end}}
+  
  
 </section>
 {{end}}

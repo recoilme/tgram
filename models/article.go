@@ -18,6 +18,7 @@ const (
 	dbAUser = "db/%s/a/%s"
 	dbView  = "db/%s/view"
 	dbATag  = "db/%s/t/%s"
+	dbDau   = "db/%s/dau/%d/%d/%d"
 )
 
 // Article model
@@ -373,4 +374,24 @@ func ViewGet(lang string, aid uint32) (v int) {
 		v = int(BintoUint32(b))
 	}
 	return v
+}
+
+// DauSet log of dau
+func DauSet(lang, ip string) {
+	t := time.Now()
+	year, month, day := t.Date()
+	stat := fmt.Sprintf(dbDau, lang, year, int(month), day)
+	has, _ := sp.Has(stat, []byte(ip))
+	if !has {
+		go sp.Set(stat, []byte(ip), nil)
+	}
+}
+
+// DauSet log of dau
+func DauGet(lang string) int {
+	t := time.Now()
+	year, month, day := t.Date()
+	stat := fmt.Sprintf(dbDau, lang, year, int(month), day)
+	cnt, _ := sp.Count(stat)
+	return int(cnt)
 }

@@ -118,6 +118,7 @@ func CheckAuth() gin.HandlerFunc {
 
 		// store subdomain
 		c.Set("lang", host)
+		models.DauSet(host, c.ClientIP())
 
 		//fmt.Println("lang:", lang, "host:", host, "path", c.Request.URL.Path)
 
@@ -211,6 +212,7 @@ func Home(c *gin.Context) {
 	if len(users) > 0 || len(mentions) > 0 {
 		c.Set("personal", true)
 	}
+	c.Set("dau", models.DauGet(c.GetString("lang")))
 	c.HTML(http.StatusOK, "home.html", c.Keys)
 }
 
