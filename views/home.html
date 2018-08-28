@@ -65,9 +65,11 @@
       <!--<a href="http://zh.tgr.am"><sup>zh</sup></a>-->
       
     </h5>
-    {{if eq (.username| tostr) .config.Admin }}
-      {{if .dau}}
-        &nbsp;dau:{{.dau}}
+    {{if .username}}
+      {{if eq (.username| tostr) .config.Admin }}
+        {{if .dau}}
+          &nbsp;dau:{{.dau}}
+        {{end}}
       {{end}}
     {{end}}
   {{end}}
