@@ -139,7 +139,7 @@ func InitRouter() *gin.Engine {
 	r.GET("/logout", routers.Logout)
 
 	r.GET("/delete/a/:aid", routers.ArticleDelete)
-	r.GET("/bad/@:author/:aid", routers.ArticleBad)
+	r.GET("/bad/@:author/:aid/:bad", routers.ArticleBad)
 
 	r.GET("/editor/:aid", routers.Editor)
 	r.POST("/editor/:aid", routers.Editor)

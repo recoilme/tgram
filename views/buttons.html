@@ -1,9 +1,12 @@
 {{ define "buttons" }}
 visitor: {{.view}}&nbsp;&nbsp;
 {{if eq .username .config.Admin }}
-<a style="color:brown" href="/bad/@{{.article.Author}}/{{.article.ID}}">
-  bad
+<a style="color:brown" href="/bad/@{{.article.Author}}/{{.article.ID}}/del">
+  del
 </a>&nbsp;&nbsp;
+<a style="color:brown" href="/bad/@{{.article.Author}}/{{.article.ID}}/bad">
+  bad
+</a>&nbsp;
 {{end}}
 {{if eq .article.Author .username}}
 fav: {{.favcnt}}&nbsp;&nbsp;fol: {{.followcnt}}&nbsp;&nbsp;

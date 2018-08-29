@@ -902,6 +902,7 @@ func ArticleBad(c *gin.Context) {
 	case "GET":
 		aid, _ := strconv.Atoi(c.Param("aid"))
 		author := c.Param("author")
+		bad := c.Param("bad")
 		username := c.GetString("username")
 
 		//check for me
@@ -919,9 +920,9 @@ func ArticleBad(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-		// remove rate limit on delete
-		//cc.Delete(c.GetString("lang") + ":p:" + username)
-		models.UserBanSet(author)
+		if bad == "bad" {
+			models.UserBanSet(author)
+		}
 		//cc.Set("ban:uid:"+author, time.Now().Unix(), cache.DefaultExpiration)
 		//}
 		c.Redirect(http.StatusFound, "/@"+author)
