@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	humanize "github.com/dustin/go-humanize"
@@ -167,12 +168,12 @@ func ToStr(value interface{}) string {
 	if value == nil {
 		return ""
 	}
-	return fmt.Sprintf("%s", value)
+	return fmt.Sprint(value)
 }
 
 // ToDate convert time 2 date
 func ToDate(t time.Time) string {
-	return fmt.Sprintf("%s", humanize.Time(t))
+	return fmt.Sprint(humanize.Time(t))
 }
 
 // GetLead return first paragraph
@@ -180,7 +181,7 @@ func GetLead(s string) string {
 	if len(s) < 300 {
 		return s + ".."
 	}
-	delim := strings.IndexRune(s, '\n')
+	delim := strings.IndexByte(s, '\n')
 	if delim > 300 || delim < 0 {
 		l := len([]rune(s))
 		if l > 300 {
@@ -188,6 +189,13 @@ func GetLead(s string) string {
 		}
 		delim = strings.LastIndexByte(s[:l], ' ')
 		if delim < 0 {
+			for l > 0 {
+				r, size := utf8.DecodeLastRuneInString(s[:l])
+				if r != utf8.RuneError {
+					break
+				}
+				l -= size
+			}
 			delim = l
 		}
 	}
