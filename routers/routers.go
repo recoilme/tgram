@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"strconv"
@@ -1179,5 +1180,19 @@ func Type2tele(c *gin.Context) {
 		}
 		c.Set("channel", u.Type2Telegram)
 		c.Redirect(http.StatusFound, "/export/type2tele")
+	}
+}
+
+// Avatar how it work:
+// if file present  - it serve statically
+// if not - you will see request here
+// how tricky i am ;)
+func Avatar(c *gin.Context) {
+	switch c.Request.Method {
+	case "GET":
+		avatar := c.Param("avatar")
+		log.Println(avatar)
+		_ = avatar
+		//generate avatar and redirect to /a/username.png
 	}
 }

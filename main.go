@@ -98,10 +98,10 @@ func InitRouter() *gin.Engine {
 	//r.Use(gin.Recovery())
 	//gin.DefaultWriter = ioutil.Discard
 
-	//r.Use(favicon.New("./favicon.ico"))
 	r.Use(static.Serve("/m", static.LocalFile("./media", false)))
-	r.Use(static.Serve("/i", static.LocalFile("./img", false)))
-	r.Use(static.Serve("/", static.LocalFile("./media/txt", false)))
+	r.Use(static.Serve("/i", static.LocalFile("./img", false))) //where i use it?
+	r.Use(static.Serve("/a", static.LocalFile("./ava", false)))
+	r.Use(static.Serve("/", static.LocalFile("./media/txt", false))) //for ssl cert
 
 	r.SetFuncMap(template.FuncMap{
 		"tostr":   routers.ToStr,
@@ -124,6 +124,7 @@ func InitRouter() *gin.Engine {
 
 	r.GET("/@:username/:aid", routers.Article)
 	r.GET("/@:username", routers.Author)
+	r.GET("/a/:avatar", routers.Avatar)
 
 	r.GET("/favorites/@:username", routers.Favorites)
 
