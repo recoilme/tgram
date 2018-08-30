@@ -1,9 +1,11 @@
 package routers
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"html/template"
+	"image/png"
 	"io/ioutil"
 	"log"
 	"mime/multipart"
@@ -1192,7 +1194,16 @@ func Avatar(c *gin.Context) {
 	case "GET":
 		avatar := c.Param("avatar")
 		log.Println(avatar)
-		_ = avatar
-		//generate avatar and redirect to /a/username.png
+		img, err := models.GenerateMonster(avatar)
+		if err == nil {
+			err = models.SaveToFile(img, "ava/"+avatar)
+			if err == nil {
+				smallb := new(bytes.Buffer)
+				err = png.Encode(smallb, img)
+				if err == nil {
+					c.Data(http.StatusOK, "image/png", smallb.Bytes())
+				}
+			}
+		}
 	}
 }

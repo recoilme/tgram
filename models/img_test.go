@@ -105,5 +105,8 @@ func TestFindUser(t *testing.T) {
 }
 
 func TestTgImgProcess(t *testing.T) {
-	models.TgClickableImage()
+	s := `Первое, что бросается в глаза, это высокая скорость загрузки страниц и агрессивная оптимизация.
+	[![](http://tst.tgr.am/i/tst/recoilme/17.png)](http://tst.tgr.am/i/tst/recoilme/17_.png)
+	Вы не найдете сторонних скриптов`
+	models.TgClickableImage(s)
 }
