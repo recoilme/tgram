@@ -7,7 +7,6 @@ import (
 	"html/template"
 	"image/png"
 	"io/ioutil"
-	"log"
 	"mime/multipart"
 	"net/http"
 	"strconv"
@@ -1193,7 +1192,7 @@ func Avatar(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
 		avatar := c.Param("avatar")
-		log.Println(avatar)
+		//log.Println(avatar)
 		img, err := models.GenerateMonster(avatar)
 		if err == nil {
 			err = models.SaveToFile(img, "ava/"+avatar)

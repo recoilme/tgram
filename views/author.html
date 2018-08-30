@@ -36,7 +36,7 @@
   </nav>
 </aside>
 <section>
-  <img align="left"  style="margin-right:20px" class="u-square medium" src="{{.author.Image}}" >
+  <img align="left"  style="margin-right:20px" class="u-square medium" src="/a/{{.author.Username}}.png" >
   {{.author.Username}} 
   <br>{{.author.Bio}}
   {{if eq .username .config.Admin }}
@@ -47,7 +47,7 @@
   {{range .articles}}
   <article>
     <header> 
-      <img align="left" class="u-square micro" src="{{.Image}}" />
+      <img align="left" class="u-square micro" src="/a/{{.Author}}.png" />
       <p>
         <a href="/@{{.Author}}/{{.ID}}">{{.CreatedAt| todate}}</a>
         <span class="navright">

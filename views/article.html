@@ -2,7 +2,7 @@
 {{ template "menu" . }}
 <article>
   <header> 
-    <img align="left" class="u-square small" src="{{.article.Image}}"  />
+    <img align="left" class="u-square small" src="/a/{{.article.Author}}.png"  />
     <p>
         <a href="/@{{.article.Author}}">@{{.article.Author}}</a>&nbsp;&nbsp;&nbsp;{{.article.CreatedAt| todate}} 
         <span class="navright">
@@ -71,7 +71,7 @@
 {{range .article.Comments}}
     <article id="comment{{.ID}}">
         <header> 
-                <img align="left" class="u-square micro" src="{{.Image}}" /> 
+                <img align="left" class="u-square micro" src="/a/{{.Author}}.png" /> 
                 <p>
                     <a href="/@{{.Author}}">@{{.Author}}</a>&nbsp;&nbsp;&nbsp;
                     <a href="/@{{$author}}/{{$id}}#comment{{.ID}}">#</a>{{.CreatedAt| todate}}
