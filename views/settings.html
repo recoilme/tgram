@@ -16,5 +16,7 @@
   </section>
 </form>
 <hr/>
-<a href="logout"  accesskey="o">Or click here to logout.</a>
+<form action="/logout" method="post">
+  <button type="submit" accesskey="o">Log out</button>
+</form>
 {{template "footer" .}}

@@ -136,7 +136,7 @@ func InitRouter() *gin.Engine {
 	r.GET("/settings", routers.Settings)
 	r.POST("/settings", routers.Settings)
 
-	r.GET("/logout", routers.Logout)
+	r.POST("/logout", routers.Logout)
 
 	r.GET("/delete/a/:aid", routers.ArticleDelete)
 	r.GET("/bad/@:author/:aid/:bad", routers.ArticleBad)
