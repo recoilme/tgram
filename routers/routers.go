@@ -456,10 +456,9 @@ func Settings(c *gin.Context) {
 // Logout remove cookie
 func Logout(c *gin.Context) {
 	switch c.Request.Method {
-	case "GET":
+	case "POST":
 		c.SetCookie("token", "", 0, "/", "", false, true)
 		c.Redirect(http.StatusFound, "/")
-	case "POST":
 	}
 }
 
