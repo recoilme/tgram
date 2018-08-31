@@ -165,6 +165,9 @@ TGRAMDOMAIN=tgr.am
 
 [egorabaturov](https://egorabaturov.com)
 
+
+[razuvaev](http://be.net/razuvaev)
+
 ## Dev branch
 
 - master

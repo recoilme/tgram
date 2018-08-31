@@ -206,7 +206,49 @@ func GetLead(s string) string {
 }
 
 // Home - main page
+func Main(c *gin.Context) {
+	username := c.GetString("username")
+	if username == "" {
+		// unregistered on top
+		c.Redirect(http.StatusFound, "/top")
+		return
+	} else {
+		users := models.IFollow(c.GetString("lang"), "fol", username)
+		mentions := models.Mentions(c.GetString("lang"), username)
+
+		personal := false
+		if len(mentions) > 0 {
+			personal = true
+		}
+		for _, u := range users {
+			if u.Unseen > 0 {
+				personal = true
+				break
+			}
+		}
+
+		if personal {
+			c.Set("lang", c.GetString("lang"))
+			c.Set("users", users)
+			c.Set("mentions", mentions)
+			if len(users) > 0 || len(mentions) > 0 {
+				c.Set("personal", true)
+			}
+			c.Set("dau", models.DauGet(c.GetString("lang")))
+			c.HTML(http.StatusOK, "home.html", c.Keys)
+			return
+		}
+		c.Redirect(http.StatusFound, "/mid")
+		return
+	}
+
+}
+
 func Home(c *gin.Context) {
+	renderHome(c)
+}
+
+func renderHome(c *gin.Context) {
 	username := c.GetString("username")
 	var users []models.User
 	var mentions []models.Mention
@@ -354,7 +396,7 @@ func Register(c *gin.Context) {
 		case "application/json":
 			c.JSON(http.StatusCreated, u)
 		default:
-			c.Redirect(http.StatusFound, "/")
+			c.Redirect(http.StatusFound, "/home")
 		}
 
 	default:
@@ -496,7 +538,7 @@ func Login(c *gin.Context) {
 		case "application/json":
 			c.JSON(http.StatusOK, user)
 		default:
-			c.Redirect(http.StatusFound, "/")
+			c.Redirect(http.StatusFound, "/home")
 		}
 	}
 }

@@ -111,7 +111,8 @@ func InitRouter() *gin.Engine {
 	r.LoadHTMLGlob("views/*.html")
 
 	r.Use(routers.CheckAuth())
-	r.GET("/", routers.Home)
+	r.GET("/", routers.Main)
+	r.GET("/home", routers.Home)
 	r.GET("/mid", routers.All)
 	r.GET("/top", routers.Top)
 	r.GET("/btm", routers.Btm)

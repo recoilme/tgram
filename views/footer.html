@@ -1,6 +1,24 @@
 {{ define "footer" }}
 </main>
 <footer>
+  {{if eq .path "/home" }}
+  <p>
+      <h5>Languages:
+          <a href="https://de.tgr.am">de</a>
+          <a href="https://en.tgr.am">en</a>
+          <a href="https://es.tgr.am">es</a>
+          <a href="https://fr.tgr.am">fr</a>
+          <!--<a href="http://ko.tgr.am"><sup>ko</sup></a>-->
+          <a href="https://pt.tgr.am">pt</a>
+          <a href="https://ru.tgr.am">ru</a>
+          <!--<a href="http://sv.tgr.am"><sup>sv</sup></a>-->
+          <!--<a href="http://tr.tgr.am"><sup>tr</sup></a>-->
+          <!--<a href="http://us.tgr.am"><sup>us</sup></a>-->
+          <!--<a href="http://zh.tgr.am"><sup>zh</sup></a>-->
+        </h5> 
+        
+  </p>
+  {{end}}
   <p>
     <span>
     <a href="{{.config.AboutPage}}">about</a>&nbsp;&nbsp; 
