@@ -39,3 +39,7 @@ func TestAvatar(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestWau(t *testing.T) {
+	models.WauGet("sub")
+}

@@ -387,11 +387,32 @@ func DauSet(lang, ip string) {
 	}
 }
 
-// DauSet log of dau
+// DauGet return dau
 func DauGet(lang string) int {
 	t := time.Now()
 	year, month, day := t.Date()
 	stat := fmt.Sprintf(dbDau, lang, year, int(month), day)
 	cnt, _ := sp.Count(stat)
 	return int(cnt)
+}
+
+// WauGet return wau
+func WauGet(lang string) int {
+	t := time.Now()
+	ips := make(map[string]int)
+	for i := 1; i <= 7; i++ {
+		year, month, day := t.Date()
+		stat := fmt.Sprintf(dbDau, lang, year, int(month), day)
+		//log.Println(stat)
+		keys, err := sp.Keys(stat, nil, uint32(0), uint32(0), true)
+		if err != nil {
+			continue
+		}
+		for _, key := range keys {
+			ips[string(key)]++
+			//log.Println(string(key))
+		}
+		t = t.AddDate(0, 0, -1)
+	}
+	return len(ips)
 }

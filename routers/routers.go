@@ -235,6 +235,7 @@ func Main(c *gin.Context) {
 				c.Set("personal", true)
 			}
 			c.Set("dau", models.DauGet(c.GetString("lang")))
+			c.Set("wau", models.WauGet(c.GetString("lang")))
 			c.HTML(http.StatusOK, "home.html", c.Keys)
 			return
 		}
@@ -263,6 +264,7 @@ func renderHome(c *gin.Context) {
 		c.Set("personal", true)
 	}
 	c.Set("dau", models.DauGet(c.GetString("lang")))
+	c.Set("wau", models.WauGet(c.GetString("lang")))
 	c.HTML(http.StatusOK, "home.html", c.Keys)
 }
 
