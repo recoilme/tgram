@@ -1189,25 +1189,19 @@ func Type2tele(c *gin.Context) {
 		c.Set("channel", u.Type2Telegram)
 		c.HTML(http.StatusOK, "type2tele.html", c.Keys)
 	case "POST":
-		if err := c.Request.ParseForm(); err != nil {
-			renderErr(c, err)
+		channel := c.Request.FormValue("channel")
+		if !goodChanName(channel) {
+			renderErr(c, errors.New("Wrong channel name, expected: @channel got:"+channel))
 			return
 		}
 
-		channel := c.Request.Form["channel"]
-		if len(channel) == 0 || !goodChanName(channel[0]) {
-			renderErr(c, errors.New("Wrong channel name, expected: @channel get:"+channel[0]))
-			return
-		}
-
-		//log.Println("ch:", channel[0])
-		isAdmin, err := models.TgIsAdmin(Config.Type2TeleBot, fmt.Sprintf("getChatAdministrators?chat_id=%s", channel[0]), "type2telegrambot")
+		isAdmin, err := models.TgIsAdmin(Config.Type2TeleBot, fmt.Sprintf("getChatAdministrators?chat_id=%s", channel), "type2telegrambot")
 		if err != nil {
 			renderErr(c, err)
 			return
 		}
 		if !isAdmin {
-			renderErr(c, errors.New("Add type2telegrambot as administrator in channel:"+channel[0]))
+			renderErr(c, errors.New("Add type2telegrambot as administrator in channel:"+channel))
 			return
 		}
 		u, err := models.UserGet(c.GetString("lang"), c.GetString("username"))
@@ -1215,7 +1209,7 @@ func Type2tele(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
-		u.Type2Telegram = channel[0]
+		u.Type2Telegram = channel
 		err = models.UserSave(u)
 		if err != nil {
 			renderErr(c, err)
