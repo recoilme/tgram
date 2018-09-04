@@ -9,7 +9,7 @@
     <textarea name="bio" rows="5" placeholder="description, text, 0..1024">{{.bio}}</textarea>
     <input type="checkbox" id="nojs" name="nojsoption" value="nojs" {{.nojschecked}} />
     <label for="nojs">disable javascript</label>
-    <input name="email"  type="text" placeholder="email, omitempty (used only for mentions)" value="{{.email}}">
+    <input name="email"  type="text" placeholder="email, omitempty (for mentions)" value="{{.email}}">
     <input name="newpassword" type="password" autocomplete="new-password" placeholder="new password, 6..255" value="">
     <input name="password" type="password" autocomplete="new-password" required placeholder="password" value="">
     <button type="submit"  accesskey="u">Update</button>
