@@ -460,6 +460,9 @@ func Settings(c *gin.Context) {
 			u.Password = ""
 			u.NewPassword = ""
 			u.PasswordHash = string(passwordHash)
+			u.Type2Telegram = user.Type2Telegram
+			u.Type2TeleNoTxt = user.Type2TeleNoTxt
+
 			err = models.UserSave(&u)
 			if err != nil {
 				renderErr(c, err)
@@ -473,6 +476,9 @@ func Settings(c *gin.Context) {
 
 		u.Password = ""
 		u.PasswordHash = user.PasswordHash
+		u.Type2Telegram = user.Type2Telegram
+		u.Type2TeleNoTxt = user.Type2TeleNoTxt
+
 		err = models.UserSave(&u)
 		if err != nil {
 			renderErr(c, err)
