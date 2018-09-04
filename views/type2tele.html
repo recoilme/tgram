@@ -9,8 +9,10 @@
  <p>And i will publish new posts to this channel</p>
   <section>
     <input name="channel" type="text" placeholder="channel name (or id for private channels), @channel, text" value="{{.channel}}">
-    <button type="submit"  accesskey="u">Update</button>
+    <input type="checkbox" id="notext" name="notext" value="notext" {{.notextchecked}} />
+    <label for="notext">don't send full text</label>
   </section>
+  <button type="submit"  accesskey="u">Update</button>
 </form>
 <hr/>
 

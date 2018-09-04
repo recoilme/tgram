@@ -21,8 +21,8 @@ import (
 // Port - typegram port (and address)
 var Port = ":8081"
 
-func main() {
-
+// LoadEnv parse env file if present or load
+func LoadEnv() {
 	err := godotenv.Load("tgram.env")
 	if err == nil {
 		setifset := func(new, def string) string {
@@ -31,7 +31,7 @@ func main() {
 			}
 			return new
 		}
-		Port = setifset(os.Getenv("TGRAMPORT"), ":8081")
+		Port = setifset(os.Getenv("TGRAMPORT"), ":8081") //port with ":", example -  :8081
 		routers.Config.Title = setifset(os.Getenv("TGRAMTITLE"), "typegram")
 		routers.Config.SiteName = setifset(os.Getenv("TGRAMNAME"), "Typegram")
 		routers.Config.Description = setifset(os.Getenv("TGRAMDESC"), "open source publishing platform")
@@ -40,7 +40,16 @@ func main() {
 		routers.Config.Domain = setifset(os.Getenv("TGRAMDOMAIN"), "tgr.am")
 		routers.Config.NBSecretPassword = setifset(os.Getenv("TGRAMPWD"), "A String Very Very Very Niubilty!!@##$!@#4")
 		routers.Config.Type2TeleBot = setifset(os.Getenv("TGRAM2TELE"), "")
+		routers.Config.SMTPHost = setifset(os.Getenv("TGRAMSMTPHOST"), "")
+		routers.Config.SMTPPort = setifset(os.Getenv("TGRAMSMTPPORT"), "") //port with ":", example -  :587
+		routers.Config.SMTPUser = setifset(os.Getenv("TGRAMSMTPUSER"), "")
+		routers.Config.SMTPPassword = setifset(os.Getenv("TGRAMSMTPPASS"), "")
 	}
+}
+
+func main() {
+
+	LoadEnv()
 
 	srv := &http.Server{
 		Addr:    Port,

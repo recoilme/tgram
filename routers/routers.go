@@ -35,6 +35,10 @@ type siteConfig struct {
 	Domain           string
 	NBSecretPassword string
 	Type2TeleBot     string
+	SMTPHost         string
+	SMTPPort         string
+	SMTPUser         string
+	SMTPPassword     string
 }
 
 var (
@@ -680,6 +684,9 @@ func send2telegram(lang, username, text, title, link, img string, aid uint32) {
 	u, err := models.UserGet(lang, username)
 	if err == nil && u.Type2Telegram != "" {
 		msgID := models.Type2TeleGet(aid)
+		if u.Type2TeleNoTxt {
+			text = ""
+		}
 		mid := models.TgSendMsg(Config.Type2TeleBot, u.Type2Telegram, text, title, link, img, msgID)
 		if mid != 0 {
 			//mid will be 0 in case of error
@@ -909,8 +916,8 @@ func CommentNew(c *gin.Context) {
 		ment := GetLead(a.Body)
 		url := "/@" + username + "/" + c.Param("aid")
 		fullurl := url + "#comment" + strconv.Itoa(int(cid))
-		models.MentionNew(a.Body, lang, ment, a.Author, url, fullurl, uint32(aid), cid)
-
+		mentions := models.MentionNew(a.Body, lang, ment, a.Author, url, fullurl, uint32(aid), cid)
+		models.SendMentions(lang, Config.SMTPHost, Config.SMTPPort, Config.SMTPUser, Config.SMTPPassword, Config.Domain, mentions)
 		// add to cache on success
 		models.ComLimitSet(lang, c.GetString("username"))
 		//cc.Set(rateComKey, time.Now().Unix(), cache.DefaultExpiration)
@@ -1189,8 +1196,19 @@ func Type2tele(c *gin.Context) {
 			return
 		}
 		c.Set("channel", u.Type2Telegram)
+		if u.Type2TeleNoTxt {
+			c.Set("notextchecked", "checked")
+		} else {
+			c.Set("notextchecked", "")
+		}
 		c.HTML(http.StatusOK, "type2tele.html", c.Keys)
 	case "POST":
+		notext := false
+		notxt := c.Request.FormValue("notext")
+		if notxt == "notext" {
+			notext = true
+		}
+		//log.Println("notxt:", notxt)
 		channel := c.Request.FormValue("channel")
 		if !goodChanName(channel) {
 			renderErr(c, errors.New("Wrong channel name, expected: @channel got:"+channel))
@@ -1212,6 +1230,7 @@ func Type2tele(c *gin.Context) {
 			return
 		}
 		u.Type2Telegram = channel
+		u.Type2TeleNoTxt = notext
 		err = models.UserSave(u)
 		if err != nil {
 			renderErr(c, err)

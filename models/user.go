@@ -12,6 +12,7 @@ import (
 	"time"
 
 	sp "github.com/recoilme/slowpoke"
+
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -24,19 +25,20 @@ const (
 
 // User model
 type User struct {
-	Username      string `form:"username" json:"username" binding:"exists,alphanum,min=1,max=20"`
-	Email         string `form:"email" json:"email" binding:"omitempty,email"`
-	Password      string `form:"password" json:"password" binding:"exists,min=6,max=255"`
-	NewPassword   string `form:"newpassword" json:"newpassword" binding:"omitempty,min=6,max=255"`
-	Bio           string `form:"bio" json:"bio" binding:"max=1024"`
-	Image         string `form:"image" json:"image" binding:"omitempty,url"`
-	Lang          string
-	PasswordHash  string `json:"-"`
-	LastPost      uint32 `json:"-"`
-	Unseen        uint32 `json:"-"`
-	IP            string `json:"-"`
-	NoJs          bool   `json:"-"`
-	Type2Telegram string `json:"-"`
+	Username       string `form:"username" json:"username" binding:"exists,alphanum,min=1,max=20"`
+	Email          string `form:"email" json:"email" binding:"omitempty,email"`
+	Password       string `form:"password" json:"password" binding:"exists,min=6,max=255"`
+	NewPassword    string `form:"newpassword" json:"newpassword" binding:"omitempty,min=6,max=255"`
+	Bio            string `form:"bio" json:"bio" binding:"max=1024"`
+	Image          string `form:"image" json:"image" binding:"omitempty,url"`
+	Lang           string
+	PasswordHash   string `json:"-"`
+	LastPost       uint32 `json:"-"`
+	Unseen         uint32 `json:"-"`
+	IP             string `json:"-"`
+	NoJs           bool   `json:"-"`
+	Type2Telegram  string `json:"-"`
+	Type2TeleNoTxt bool   `json:"-"`
 }
 
 type Mention struct {
@@ -46,6 +48,7 @@ type Mention struct {
 	Aid        uint32
 	Cid        uint32
 	Text       string
+	ToUsername string
 }
 
 // UserNew - create
@@ -246,7 +249,7 @@ func ReplyParse(s, lang string) string {
 }
 
 // MentionNew parce mentions
-func MentionNew(s, lang, text, byuser, url, fullurl string, aid, cid uint32) {
+func MentionNew(s, lang, text, byuser, url, fullurl string, aid, cid uint32) (mentions []Mention) {
 	var users = []string{}
 	r, e := regexp.Compile(`@[a-z0-9]*`)
 	if e != nil {
@@ -282,14 +285,15 @@ func MentionNew(s, lang, text, byuser, url, fullurl string, aid, cid uint32) {
 	for _, u := range users {
 		f := fmt.Sprintf(dbMention, lang, u)
 		mention := Mention{Aid: aid, Cid: cid, Then: time.Now(),
-			ByUsername: byuser, Text: text, Path: fullurl}
+			ByUsername: byuser, Text: text, Path: fullurl, ToUsername: u}
 		//log.Println(mention)
 		e := sp.SetGob(f, url, mention)
 		if e != nil {
 			log.Println(e)
 		}
+		mentions = append(mentions, mention)
 	}
-	return
+	return mentions
 }
 
 // Mentions return arr of mentions
@@ -331,4 +335,28 @@ func MentionDel(lang, username, path string) {
 		//log.Println(ex, e, f, bufKey.Bytes())
 		sp.Delete(f, bufKey.Bytes())
 	}
+}
+
+func SendMentions(lang, SMTPHost, SMTPPort, SMTPUser, SMTPPassword, Domain string, mentions []Mention) {
+	if !IsSmtpSet(SMTPHost, SMTPPort, SMTPUser, SMTPPassword) {
+		return
+	}
+	f := fmt.Sprintf(dbUser, lang)
+	for _, m := range mentions {
+		uname := m.ToUsername
+		var u User
+		err := sp.GetGob(f, []byte(uname), &u)
+		if err != nil {
+			continue
+		}
+		//log.Println(u)
+
+		if u.Email != "" {
+			title := "New comment from @" + m.ByUsername
+			body := "@" + m.ByUsername + " write to you:\n\n" + m.Text + "\n\nLink:\n" + "https://" + lang + "." + Domain + m.Path
+			SendMail(SMTPHost, SMTPPort, SMTPUser, SMTPPassword, Domain,
+				u.Email, title, body)
+		}
+	}
+
 }
