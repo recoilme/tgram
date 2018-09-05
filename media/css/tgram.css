@@ -15,7 +15,7 @@ body{
   @media (min-width: 20rem){
     body{
       font-size:calc(1rem + 0.0125 * (100vw - 20rem)); } }
-  @media (min-width: 45rem){
+  @media (min-width: 44rem){
     body{
       font-size:1.25rem; } }
   body header,
@@ -24,7 +24,7 @@ body{
   body article{
     word-wrap: break-word;
     position:relative;
-    max-width:45rem;
+    max-width:44rem;
     margin:0 auto; }
   body > header{
     margin-bottom:3.5em; }
@@ -97,12 +97,10 @@ p{
   p + ul, p + ol{
     margin-top:-.75em; }
   p img, p picture{
-
-    margin-bottom:.5em;
-    margin-left:.5em; }
-    p img img, p picture img{
-      float:none;
-      margin:0; }
+    margin-bottom:.5em;}
+  p img img, p picture img{
+    float:none;
+    margin:0; }
 
 span{
   margin:1em 0;
@@ -529,9 +527,9 @@ body > footer {
 	margin-top: 30px;
 }
 
-img.u-square {
+/*img.u-square {
 	border-radius: 50%;}
-
+*/
 img.micro {
   margin-right:10px;
   max-width: 20px;}
