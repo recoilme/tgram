@@ -30,6 +30,10 @@
           <a href="/btm"  accesskey="3">∨</a>
         {{end}}
       </li>
+      {{if .username}}
+      {{else}}
+        <a href="{{.config.AboutPage}}"  accesskey="4">?</a>
+      {{end}}
     <div class="navright">
       
       {{if .username}}

@@ -2,8 +2,10 @@
 </main>
 <footer>
   {{if eq .path "/home" }}
+  {{if eq (.lang| tostr) "ph"}}
+  {{else}}
   <p>
-      <h5>Languages:
+      <h5>Lang:
           <a href="https://de.tgr.am">de</a>
           <a href="https://en.tgr.am">en</a>
           <a href="https://es.tgr.am">es</a>
@@ -19,9 +21,10 @@
         
   </p>
   {{end}}
+  {{end}}
   <p>
     <span>
-    <a href="{{.config.AboutPage}}">about</a>&nbsp;&nbsp; 
+      <a href="{{.config.AboutPage}}">about</a>&nbsp;&nbsp; 
     </span>
     <span>
       <a href="https://t.me/typegramgroup">typegramgroup</a>&nbsp;&nbsp;  

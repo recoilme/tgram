@@ -42,18 +42,14 @@
   {{end}}
 {{else}}
 <section style="text-align: center;font-family: 'PT Sans Caption', serif;">
+  <a href="{{.config.AboutPage}}"><img style="max-width: 140px;" src="/m/img/logo_big.png"/></a>
+  <h2><a class="glitch" data-text="typegram" href="{{.config.AboutPage}}">typegram</a></h2>
   {{if eq (.lang| tostr) "ph"}}
-    <a href="/@recoilme/1"><img style="max-width: 140px;" src="/m/img/logo_ph.png"/></a>
-    <h1><a href="/@recoilme/1">typegram for makers</a></h1>
-    <h3><a href="/@recoilme/1">online publishing platform</a></h3>
-    <h6><a href="/@recoilme/1">Connect with Startups Makers</a></h6>
+    <h3><a class="href" href="{{.config.AboutPage}}">Present Your Startup</a></h3>
   {{else}}
-    <a href="/@recoilme/1"><img style="max-width: 140px;" src="/m/img/logo_big.png"/></a>
-    <h1><a href="/@recoilme/1">typegram</a></h1>
-    <h3><a href="/@recoilme/1">online publishing platform</a></h3>
-    <h6><a href="/@recoilme/1">Don't Click Here!</a></h6>
-    <br/><br/><br/>
+    <h3><a class="href" href="{{.config.AboutPage}}">online publishing platform</a></h3>
   {{end}}
+  <br/><br/>
   {{if .username}}
     {{if eq (.username| tostr) .config.Admin }}
       {{if .dau}}

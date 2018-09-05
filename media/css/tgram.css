@@ -635,3 +635,115 @@ button:hover,
 button:focus {
 	outline:none;
 }
+
+/*
+glitch
+*/
+.glitch {
+  color: black;
+
+  position: relative;
+  margin: 0 auto;
+}
+
+@keyframes noise-anim {
+  0% {
+    clip: rect(2px, 9999px, 14px, 0);
+  }
+  10% {
+    clip: rect(19px, 9999px, 7px, 0);
+  }
+  20% {
+    clip: rect(25px, 9999px, 38px, 0);
+  }
+  30% {
+    clip: rect(23px, 9999px, 16px, 0);
+  }
+  40% {
+    clip: rect(14px, 9999px, 7px, 0);
+  }
+  50% {
+    clip: rect(7px, 9999px, 19px, 0);
+  }
+  60% {
+    clip: rect(33px, 9999px, 18px, 0);
+  }
+  70% {
+    clip: rect(31px, 9999px, 12px, 0);
+  }
+  80% {
+    clip: rect(3px, 9999px, 9px, 0);
+  }
+  90% {
+    clip: rect(22px, 9999px, 4px, 0);
+  }
+  100% {
+    clip: rect(27px, 9999px, 18px, 0);
+  }
+}
+.glitch:after {
+  content: attr(data-text);
+  position: absolute;
+  left: 2px;
+  text-shadow: -1px 0 red;
+  top: 0;
+  color: black;
+  background: white;
+  overflow: hidden;
+  clip: rect(0, 900px, 0, 0);
+  animation: noise-anim 10s infinite linear alternate-reverse;
+}
+
+@keyframes noise-anim-2 {
+  0% {
+    clip: rect(34px, 9999px, 18px, 0);
+  }
+  10% {
+    clip: rect(28px, 9999px, 17px, 0);
+  }
+  20% {
+    clip: rect(6px, 9999px, 19px, 0);
+  }
+  30% {
+    clip: rect(26px, 9999px, 39px, 0);
+  }
+  40% {
+    clip: rect(28px, 9999px, 6px, 0);
+  }
+  50% {
+    clip: rect(8px, 9999px, 34px, 0);
+  }
+  60% {
+    clip: rect(10px, 9999px, 30px, 0);
+  }
+  70% {
+    clip: rect(11px, 9999px, 14px, 0);
+  }
+  80% {
+    clip: rect(34px, 9999px, 35px, 0);
+  }
+  90% {
+    clip: rect(13px, 9999px, 13px, 0);
+  }
+  100% {
+    clip: rect(15px, 9999px, 19px, 0);
+  }
+}
+.glitch:before {
+  content: attr(data-text);
+  position: absolute;
+  left: -2px;
+  text-shadow: 1px 0 blue;
+  top: 0;
+  color: black;
+  background: white;
+  overflow: hidden;
+  clip: rect(0, 900px, 0, 0);
+  animation: noise-anim-2 10s infinite linear alternate-reverse;
+}
+
+.href {
+  border-bottom-color: currentcolor;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}

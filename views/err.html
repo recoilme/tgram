@@ -1,7 +1,11 @@
 {{template "header" .}}
 {{ template "menu" . }}
-<ul class="error-messages">
-  {{ .err }}
-</ul>
-<section></section>
+
+<section   >
+  <br/>
+  <h4 data-text="{{.err}}" class="glitch">
+    {{ .err }}
+  </h4>
+  <br/><br/>
+</section>
 {{template "footer" .}}
