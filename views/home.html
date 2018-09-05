@@ -43,11 +43,11 @@
 {{else}}
 <section style="text-align: center;font-family: 'PT Sans Caption', serif;">
   <a href="{{.config.AboutPage}}"><img style="max-width: 140px;" src="/m/img/logo_big.png"/></a>
-  <h1><a class="glitch" data-text="typegram" href="{{.config.AboutPage}}">typegram</a></h1>
+  <h1><a data-text="typegram" href="{{.config.AboutPage}}">typegram</a></h1>
   {{if eq (.lang| tostr) "ph"}}
-    <h3><a href="{{.config.AboutPage}}">Present Your Startup</a></h3>
+    <a href="{{.config.AboutPage}}">Present Your Startup</a>
   {{else}}
-    <h3><a href="{{.config.AboutPage}}">online publishing platform</a></h3>
+    <a href="{{.config.AboutPage}}">online publishing platform</a>
   {{end}}
   <br/><br/>
   {{if .username}}

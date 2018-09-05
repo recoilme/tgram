@@ -40,6 +40,9 @@ body{
     text-align:center;
     font-size:.8rem;
     color:#aaa; }
+  body > main {
+    min-height: calc(100vh - 17rem);
+  }
 
 .unicode {
   font-family: 'Times New Roman', Times, serif;
