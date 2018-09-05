@@ -6,34 +6,30 @@
         {{if eq "/" .path}}
           <b>{{.config.Domain}}</b>
         {{else}}
-          <a href="/home"  accesskey="h"><b>{{.config.Domain}}</b></a>
+          <a href="/home" title="main page" accesskey="h"><b>{{.config.Domain}}</b></a>
         {{end}}
       </li>
       <li class="unicode">
         {{if eq "/top" .path}}
         ∧
         {{else}}
-          <a href="/top"  accesskey="1">∧</a>
+          <a href="/top" title="top articles" accesskey="1">∧</a>
         {{end}}
       </li>
       <li class="unicode">
         {{if eq "/mid" .path}}
         Ξ
         {{else}}
-          <a href="/mid"  accesskey="2">Ξ</a>
+          <a href="/mid" title="new articles" accesskey="2">Ξ</a>
         {{end}}
       </li>
       <li class="unicode">
         {{if eq "/btm" .path}}
         ∨
         {{else}}
-          <a href="/btm"  accesskey="3">∨</a>
+          <a href="/btm" title="bottom articles" accesskey="3">∨</a>
         {{end}}
       </li>
-      {{if .username}}
-      {{else}}
-        <a href="{{.config.AboutPage}}"  accesskey="4">?</a>
-      {{end}}
     <div class="navright">
       
       {{if .username}}
@@ -41,14 +37,14 @@
           {{if eq "/editor/0" .path}}
             +
           {{else}}
-            <a href="/editor/0"  accesskey="n">+</a>
+            <a href="/editor/0" title="new article" accesskey="n">+</a>
           {{end}}
       </li>
       <li>
           {{if eq (print "/@" .username) .path}}
           @{{.username}}
           {{else}}
-            <a href="/@{{.username}}"  accesskey="l">
+            <a href="/@{{.username}}" title="profile settings" accesskey="l">
               @{{.username}}
             </a>
           {{end}}
@@ -58,15 +54,18 @@
           {{if eq "/register" .path}}
           sign up
           {{else}}
-            <a href="/register"  accesskey="r">sign up</a>
+            <a href="/register" title="register" accesskey="r">sign up</a>
           {{end}}
       </li>
       <li>
           {{if eq "/login" .path}}
           sign in
           {{else}}
-            <a href="/login"  accesskey="l">sign in</a>
+            <a href="/login" title="login" accesskey="l">sign in</a>
           {{end}}
+      </li>
+      <li>
+        <a href="{{.config.AboutPage}}" title="about page" accesskey="4">?</a>
       </li>
     {{ end }}
     </div>
