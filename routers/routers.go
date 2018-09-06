@@ -125,7 +125,6 @@ func CheckAuth() gin.HandlerFunc {
 
 		// store subdomain
 		c.Set("lang", host)
-		models.DauSet(host, c.ClientIP())
 
 		//fmt.Println("lang:", lang, "host:", host, "path", c.Request.URL.Path)
 
@@ -214,10 +213,12 @@ func GetLead(s string) string {
 func Main(c *gin.Context) {
 	username := c.GetString("username")
 	if username == "" {
+		models.DauSet(c.GetString("lang"), c.ClientIP())
 		// unregistered on top
 		c.Redirect(http.StatusFound, "/top")
 		return
 	} else {
+		models.DauSet(c.GetString("lang"), username)
 		users := models.IFollow(c.GetString("lang"), "fol", username)
 		mentions := models.Mentions(c.GetString("lang"), username)
 
@@ -739,6 +740,12 @@ func Article(c *gin.Context) {
 
 		// view counter
 		view := models.ArticleViewGet(lang, c.ClientIP(), a.ID)
+		if c.GetString("username") == "" {
+			models.DauSet(c.GetString("lang"), c.ClientIP())
+		} else {
+			models.DauSet(c.GetString("lang"), c.GetString("username"))
+		}
+
 		c.Set("view", view)
 		c.Set("ogimage", a.OgImage)
 		c.HTML(http.StatusOK, "article.html", c.Keys)
