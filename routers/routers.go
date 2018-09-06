@@ -69,11 +69,12 @@ func CheckAuth() gin.HandlerFunc {
 			return
 		}
 		//log.Println("ref", c.Query("ref"))
-		if c.Query("ref") == "producthunt" {
-			c.Set("lang", "ph")
-			c.Redirect(http.StatusFound, "https://ph.tgr.am")
-			return
-		}
+		/*
+			if c.Query("ref") == "producthunt" {
+				c.Set("lang", "ph")
+				c.Redirect(http.StatusFound, "https://ph.tgr.am")
+				return
+			}*/
 		if host == "tgr" {
 			// tgr.am
 			//fmt.Println("host:tgr")
