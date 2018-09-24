@@ -57,7 +57,7 @@ func CheckAuth() gin.HandlerFunc {
 
 		lang := "en"
 		found := false
-		acceptedLang := []string{"de", "en", "es", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh", "tst", "sub", "bs", "ph"}
+		acceptedLang := []string{"de", "en", "es", "fr", "ko", "pt", "ru", "sv", "tr", "us", "zh", "tst", "sub", "bs", "ph", "id"}
 		var tokenStr, username, image, nojs string
 		c.Set("nojs", nojs)
 
