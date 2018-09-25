@@ -1,6 +1,6 @@
 # Typegram
 
-[typegram](http://tgr.am) - open source publishing platform.
+[typegram](https://tgr.am) - open source publishing platform.
 
 **Basic Capabilities**
 
@@ -11,11 +11,11 @@
 
 **Playground**
 
-You can try the service on a special [test site](http://tst.tgr.am/). Please! Use this [playground](http://tst.tgr.am/) for play with engine!
+You can try the service on a special [test site](https://tst.tgr.am/). Please! Use this [playground](https://tst.tgr.am/) for play with engine!
 
 **Localization**
 
-The service is available, for example, for [Russian-speaking](http://ru.tgr.am/), or [English-speaking](http://en.tgr.am/) users. During development, platforms for other languages are opened. On each subdomain, users and publications are separate. Please, help me to translate the welcome post for your language
+The service is available, for example, for [Russian-speaking](https://ru.tgr.am/), or [English-speaking](https://en.tgr.am/) users. During development, platforms for other languages are opened. On each subdomain, users and publications are separate. Please, help me to translate the welcome post for your language
 [Add my country](https://github.com/recoilme/tgram/issues/43)
 
 **Optimization**
