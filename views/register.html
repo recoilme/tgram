@@ -1,19 +1,35 @@
 {{template "header" .}}
 {{template "menu" .}}
+
+{{$signup := var "Sign up"}}
+{{$good := var "I am here to spam and destroy this site"}}
+{{$read := var "I have read and accept the"}}
+{{$has := var "Already have an account?"}}
+{{$unameplace := var "username, alphanum"}}
+{{$pasplace := var "password"}}
+
+{{if eq .lang "ru"}}
+  {{set $signup "Регистрация"}}
+  {{set $good "Я пришел чтобы спамить и мешать другим"}}
+  {{set $read  "Я прочёл и принимаю"}}
+  {{set $has "Уже есть аккаунт?"}}
+  {{set $unameplace "имя, латинские буквы и цифры"}}
+  {{set $pasplace "пароль"}}
+{{end}}
 <section>
-    <h2>Sign up</h2>
+    <h2>{{$signup}}</h2>
     <p>
-        <a href="/login">Already have an account?</a>
+        <a href="/login">{{$has}}</a>
     </p>
     <form action="/register" method="post">
     <section>
-      <input required name="username" type="text" placeholder="username, alphanum, 1..20" value="{{.Username}}">
-      <input required name="password" type="password" placeholder="password, 6..255" value="{{.Password}}">
+      <input required name="username" type="text" placeholder="{{$unameplace}}, 1..20" value="{{.Username}}">
+      <input required name="password" type="password" placeholder="{{$pasplace}}, 6..255" value="{{.Password}}">
     </section>
     <section>
-        <input type="checkbox" name="good" value="good"> I am here to spam and destroy this site<br/>
-        <input type="checkbox" name="privacy" value="privacy"> I have read and accept the <a href="/policy" target="_blank" >{{.config.SiteName}} Privacy Statement</a><br>
-        <input type="checkbox" name="terms" value="terms"> I have read and accept the <a href="/terms" target="_blank" >{{.config.SiteName}} Terms of Service</a><br>
+        <input type="checkbox" name="good" value="good"> {{$good}}<br/>
+        <input type="checkbox" name="privacy" value="privacy"> {{$read}} <a href="/policy" target="_blank" >{{.config.SiteName}} Privacy Statement</a><br>
+        <input type="checkbox" name="terms" value="terms"> {{$read}} <a href="/terms" target="_blank" >{{.config.SiteName}} Terms of Service</a><br>
     </section>
     <!--
     <section>
@@ -22,7 +38,7 @@
     -->
     <section>
       <button type="submit"  accesskey="s">
-        Sign up
+        {{$signup}}
       </button>
     </section>
   </form>      

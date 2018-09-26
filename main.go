@@ -116,6 +116,8 @@ func InitRouter() *gin.Engine {
 		"tostr":   routers.ToStr,
 		"todate":  routers.ToDate,
 		"getlead": routers.GetLead,
+		"var":     routers.NewVar,
+		"set":     routers.SetVar,
 	})
 	r.LoadHTMLGlob("views/*.html")
 

@@ -209,6 +209,18 @@ func GetLead(s string) string {
 	return s[:delim] + ".."
 }
 
+// NewVar create new var: https://play.golang.org/p/C1MtTKvdmGT
+func NewVar(v interface{}) (*interface{}, error) {
+	x := interface{}(v)
+	return &x, nil
+}
+
+// SetVar change var
+func SetVar(x *interface{}, v interface{}) (string, error) {
+	*x = v
+	return "", nil
+}
+
 // Home - main page
 func Main(c *gin.Context) {
 	username := c.GetString("username")
