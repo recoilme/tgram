@@ -6,7 +6,7 @@
 	<input name="ogimage" type="text" placeholder="image, link, 0..255" value="{{.ogimage}}">
 	<textarea id="mde" name="body">{{.body}}</textarea>
 	<input name="tag" type="text" placeholder="tag, without #, alphanum, 0..20" value="{{.tag}}">
-  <button type="submit" accesskey="p" >Publish</button>
+  <button type="submit" onclick="simplemde.toTextArea();" accesskey="p" >Publish</button>
 </form>
 </section>
 <section>
@@ -31,6 +31,7 @@
 		placeholder: "text, markdown, 10..65536",
 		element: document.getElementById("mde"),
 		minHeight: "400px",
+		maxHeight: "400px",
 		spellChecker: false,
 	});
 	</script>
