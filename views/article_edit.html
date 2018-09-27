@@ -1,17 +1,31 @@
 {{ template "header" . }}
 {{ template "menu" . }}
+
+{{$titl := var "title, text"}}
+{{$img := var "image, link"}}
+{{$hashtag := var "tag, without #, alphanum"}}
+{{$pub := var "Publish"}}
+{{$upl := var "upload image"}}
+
+{{if eq .lang "ru"}}
+	{{set $titl "заголовок, текст"}}
+	{{set $img "картинка, ссылка"}}
+	{{set $hashtag "тег, без #, латинские буквы, слитно"}}
+	{{set $pub "Опубликовать"}}
+	{{set $upl "загрузить картинку"}}
+{{end}}
 <section>
 <form  action="{{.path}}" method="post">
-	<input name="title"  type="text" placeholder="title, text, 0..255" value="{{.title}}">
-	<input name="ogimage" type="text" placeholder="image, link, 0..255" value="{{.ogimage}}">
+	<input name="title"  type="text" placeholder="{{$titl}}, 0..255" value="{{.title}}">
+	<input name="ogimage" type="text" placeholder="{{$img}}, 0..255" value="{{.ogimage}}">
 	<textarea id="mde" name="body">{{.body}}</textarea>
-	<input name="tag" type="text" placeholder="tag, without #, alphanum, 0..20" value="{{.tag}}">
-  <button type="submit" onclick="simplemde.toTextArea();" accesskey="p" >Publish</button>
+	<input name="tag" type="text" placeholder="{{$hashtag}}, 0..20" value="{{.tag}}">
+  <button type="submit" onclick="simplemde.toTextArea();" accesskey="p" >{{$pub}}</button>
 </form>
 </section>
 <section>
 	<details>
-		<summary>upload image</summary>
+		<summary>{{$upl}}</summary>
 		<p>
 			<a href="/upload" target="_blank" >upload from file</a>
 		</p>		
