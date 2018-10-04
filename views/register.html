@@ -4,23 +4,31 @@
 {{$signup := var "Sign up"}}
 {{$good := var "I am here to spam and destroy this site"}}
 {{$read := var "I have read and accept the"}}
-{{$has := var "Already have an account?"}}
+{{$has := var "Already have an account? Click here"}}
 {{$unameplace := var "username, alphanum"}}
 {{$pasplace := var "password"}}
+{{$taketime := var "9.5 seconds"}}
+{{$willtake := var " will take registration. Enter your login, password and put 2 daws below."}}
 
-{{if eq .lang "ru"}}
+{{if eq .lang "sub"}}
   {{set $signup "Регистрация"}}
   {{set $good "Я пришел чтобы спамить и мешать другим"}}
   {{set $read  "Я прочёл и принимаю"}}
-  {{set $has "Уже есть аккаунт?"}}
+  {{set $has "Уже есть аккаунт? Жми сюда"}}
   {{set $unameplace "имя, латинские буквы и цифры"}}
   {{set $pasplace "пароль"}}
+  {{set $taketime "9.5 секунд"}}
+  {{set $willtake " займет регистрация. Введите логин, пароль и поставьте 2 галки снизу."}}
 {{end}}
 <section>
     <h2>{{$signup}}</h2>
     <p>
-        <a href="/login">{{$has}}</a>
+      <a href="/login">{{$has}}</a>
     </p>
+    <p>
+      <b>{{$taketime}}</b>{{$willtake}}
+    </p>
+    
     <form action="/register" method="post">
     <section>
       <input required name="username" type="text" placeholder="{{$unameplace}}, 1..20" value="{{.Username}}">
