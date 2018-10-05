@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"html/template"
 	"math"
@@ -110,7 +111,10 @@ func ArticleGet(lang, username string, aid uint32) (a *Article, err error) {
 // ArticleDelete delete article
 func ArticleDelete(lang, username string, aid uint32) (err error) {
 	fAUser := fmt.Sprintf(dbAUser, lang, username)
-
+	has, err := sp.Has(fAUser, Uint32toBin(aid))
+	if !has || err != nil {
+		return errors.New("Article not found")
+	}
 	_, err = sp.Delete(fAUser, Uint32toBin(aid))
 	if err != nil {
 		return err
