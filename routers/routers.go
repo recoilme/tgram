@@ -714,6 +714,9 @@ func send2fcm(to, author, title, desc, url string, id uint32, date int64) {
 			"Content-type":  "application/json",
 		}
 		utils.HTTPPostJson("https://fcm.googleapis.com/fcm/send", defHeaders, b)
+		//if t != nil {
+		//	fmt.Println(string(t))
+		//}
 	}
 }
 
