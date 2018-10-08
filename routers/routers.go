@@ -653,6 +653,9 @@ func Editor(c *gin.Context) {
 			}
 			send2telegram(c.GetString("lang"), c.GetString("username"), a.Body, a.Title,
 				fmt.Sprintf("https://%s.tgr.am/@%s/%d#comments", c.GetString("lang"), a.Author, a.ID), a.OgImage, a.ID)
+
+			send2fcm("/topics/news", c.GetString("username"), a.Title, GetLead(a.Body),
+				fmt.Sprintf("https://%s.tgr.am/@%s/%d", c.GetString("lang"), a.Author, a.ID), a.ID, a.CreatedAt.Unix())
 			//log.Println("aid2", a)
 			//log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 			c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
@@ -696,7 +699,7 @@ func Editor(c *gin.Context) {
 		send2telegram(c.GetString("lang"), c.GetString("username"), a.Body, a.Title,
 			fmt.Sprintf("https://%s.tgr.am/@%s/%d#comments", c.GetString("lang"), a.Author, a.ID), a.OgImage, a.ID)
 
-		send2fcm("/topics/news", c.GetString("username"), a.Title, a.Title,
+		send2fcm("/topics/news", c.GetString("username"), a.Title, GetLead(a.Body),
 			fmt.Sprintf("https://%s.tgr.am/@%s/%d", c.GetString("lang"), a.Author, a.ID), a.ID, a.CreatedAt.Unix())
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		return
