@@ -39,6 +39,7 @@ type siteConfig struct {
 	SMTPPort         string
 	SMTPUser         string
 	SMTPPassword     string
+	FCMAuth          string
 }
 
 var (
@@ -694,9 +695,25 @@ func Editor(c *gin.Context) {
 		//cc.Set(postRate, time.Now().Unix(), cache.DefaultExpiration)
 		send2telegram(c.GetString("lang"), c.GetString("username"), a.Body, a.Title,
 			fmt.Sprintf("https://%s.tgr.am/@%s/%d#comments", c.GetString("lang"), a.Author, a.ID), a.OgImage, a.ID)
-		//log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
+
+		send2fcm("/topics/news", c.GetString("username"), a.Title, a.Title,
+			fmt.Sprintf("https://%s.tgr.am/@%s/%d", c.GetString("lang"), a.Author, a.ID), a.ID, a.CreatedAt.Unix())
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		return
+	}
+}
+
+func send2fcm(to, author, title, desc, url string, id uint32, date int64) {
+	if Config.FCMAuth == "" {
+		return
+	}
+	b := models.Send2fcm(to, author, title, desc, url, id, date)
+	if b != nil {
+		defHeaders := map[string]string{
+			"Authorization": "key=" + Config.FCMAuth,
+			"Content-type":  "application/json",
+		}
+		utils.HTTPPostJson("https://fcm.googleapis.com/fcm/send", defHeaders, b)
 	}
 }
 

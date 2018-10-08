@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bytes"
 	"crypto/tls"
 	"io/ioutil"
 	"log"
@@ -134,4 +135,31 @@ func CheckAndCreate(path string) (bool, error) {
 		}
 	}
 	return false, err
+}
+
+func HTTPPostJson(url string, headers map[string]string, json []byte) []byte {
+
+	client := NewTimeoutClient(1 * time.Second)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(json))
+	if err != nil {
+		return nil
+	}
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return nil
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err == nil {
+		return body
+	}
+
+	return nil
 }

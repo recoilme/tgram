@@ -44,6 +44,8 @@ func LoadEnv() {
 		routers.Config.SMTPPort = setifset(os.Getenv("TGRAMSMTPPORT"), "") //port with ":", example -  :587
 		routers.Config.SMTPUser = setifset(os.Getenv("TGRAMSMTPUSER"), "")
 		routers.Config.SMTPPassword = setifset(os.Getenv("TGRAMSMTPPASS"), "")
+		routers.Config.FCMAuth = setifset(os.Getenv("TGRAMFCMAUTH"), "")
+
 	}
 }
 

@@ -7,6 +7,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/recoilme/tgram/utils"
+
 	"github.com/recoilme/tgram/models"
 	"github.com/recoilme/tgram/routers"
 )
@@ -49,4 +51,16 @@ func TestSendEmail(t *testing.T) {
 	log.Println(routers.Config)
 	c := routers.Config
 	models.SendMail(c.SMTPHost, c.SMTPPort, c.SMTPUser, c.SMTPPassword, c.Domain, "vadim-kulibaba@yandex.ru", "Some title", "Some body\nhttps://ru.tgr.am/@recoilme/1")
+}
+
+func TestSendFCM(t *testing.T) {
+	b := models.Send2fcm()
+	if b != nil {
+		defHeaders := map[string]string{
+			"Authorization": "key=AAAAO13kBSU:APA91bFzpZpxH6bej7VpY5PIJSZEqgPJ4UHYou23rdxLaM8vxfD6DU8SvyRuBfX3rWj3dFxUppYVoXq8fkozL5eYobbDMDqXJL7Q7veAAFgKMc57uGZmBXIjjTZulwRIbgAAuNEu5SaI",
+			"Content-type":  "application/json",
+		}
+		res := utils.HTTPPostJson("https://fcm.googleapis.com/fcm/send", defHeaders, b)
+		fmt.Println(string(res))
+	}
 }
