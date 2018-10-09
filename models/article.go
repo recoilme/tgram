@@ -156,7 +156,7 @@ func AllArticles(lang, from_str, tag string) (models []Article, page string, pre
 	//log.Println("tag:", tag)
 	from_int, _ := strconv.Atoi(from_str)
 	var limit_int uint32
-	limit_int = 5
+	limit_int = 20
 
 	var from []byte
 	if from_int > 0 {
@@ -179,7 +179,7 @@ func AllArticles(lang, from_str, tag string) (models []Article, page string, pre
 		last = BintoUint32(lastkeys[0])
 	}
 	// prev article
-	prevkeys, _ := sp.Keys(fAids, Uint32toBin(firstkey), uint32(1), uint32(5), true)
+	prevkeys, _ := sp.Keys(fAids, Uint32toBin(firstkey), uint32(1), limit_int, true)
 	if len(prevkeys) > 0 {
 		prev = BintoUint32(prevkeys[0])
 	}
@@ -245,7 +245,7 @@ func ArticlesAuthor(lang, username, author, from_str string) (models []Article, 
 
 	from_int, _ := strconv.Atoi(from_str)
 	var limit_int, firstkey uint32
-	limit_int = 5
+	limit_int = 20
 
 	fAUser := fmt.Sprintf(dbAUser, lang, author)
 	var from []byte
@@ -279,7 +279,7 @@ func ArticlesAuthor(lang, username, author, from_str string) (models []Article, 
 		last = BintoUint32(lastkeys[0])
 	}
 	// prev article
-	prevkeys, _ := sp.Keys(fAUser, Uint32toBin(firstkey), uint32(1), uint32(5), false)
+	prevkeys, _ := sp.Keys(fAUser, Uint32toBin(firstkey), uint32(1), limit_int, false)
 	if len(prevkeys) > 0 {
 		prev = BintoUint32(prevkeys[0])
 	}

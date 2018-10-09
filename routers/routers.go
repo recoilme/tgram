@@ -53,6 +53,7 @@ const (
 // CheckAuth - general hook sets all param like lang, user
 func CheckAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		//log.Println("CheckAuth", "CheckAuth")
 		c.Set("config", Config)
 		c.Set("path", c.Request.URL.Path)
 
@@ -224,6 +225,7 @@ func SetVar(x *interface{}, v interface{}) (string, error) {
 
 // Home - main page
 func Main(c *gin.Context) {
+	//log.Println("Main")
 	username := c.GetString("username")
 	if username == "" {
 		models.DauSet(c.GetString("lang"), c.ClientIP())
@@ -288,7 +290,9 @@ func renderHome(c *gin.Context) {
 }
 
 // All all page
+// curl --header "Content-type:application/json" 'http://sub.localhost:8081/mid'
 func All(c *gin.Context) {
+	//log.Println("All")
 	articles, page, prev, next, last, err := models.AllArticles(c.GetString("lang"), c.Query("p"), c.Query("tag"))
 	if err != nil {
 		renderErr(c, err)
@@ -304,7 +308,20 @@ func All(c *gin.Context) {
 		from_int, _ := strconv.Atoi(c.Query("p"))
 		c.Set("p", from_int)
 	}
-	c.HTML(http.StatusOK, "all.html", c.Keys)
+
+	switch c.Request.Header.Get("Content-type") {
+	case "application/json":
+		// Respond with JSON
+		var newa = make([]models.Article, 0, 0)
+		for _, a := range articles {
+			a.HTML = ""
+			a.Body = GetLead(a.Body)
+			newa = append(newa, a)
+		}
+		c.JSON(http.StatusOK, newa)
+	default:
+		c.HTML(http.StatusOK, "all.html", c.Keys)
+	}
 }
 
 func Top(c *gin.Context) {
@@ -328,7 +345,7 @@ func Btm(c *gin.Context) {
 }
 
 func renderErr(c *gin.Context, err error) {
-	switch c.Request.Header.Get("Accept") {
+	switch c.Request.Header.Get("Content-type") {
 	case "application/json":
 		// Respond with JSON
 		c.JSON(http.StatusUnprocessableEntity, err)
@@ -380,6 +397,7 @@ func Register(c *gin.Context) {
 		}
 		if rf.Privacy != "privacy" {
 			err = errors.New("Error: You must read and accept our Privacy Statement")
+			//log.Println("eeeee", err)
 		}
 		if rf.Terms != "terms" {
 			err = errors.New("Error: You must read and accept our Terms of Service")
@@ -413,9 +431,9 @@ func Register(c *gin.Context) {
 		//cc.Set(ip, time.Now().Unix(), cache.DefaultExpiration)
 
 		c.SetCookie("token", tokenString, CookieTime, "/", "", false, true)
-		switch c.Request.Header.Get("Accept") {
+		switch c.Request.Header.Get("Content-type") {
 		case "application/json":
-			c.JSON(http.StatusCreated, u)
+			c.JSON(http.StatusCreated, tokenString)
 		default:
 			c.Redirect(http.StatusFound, "/home")
 		}
@@ -510,12 +528,12 @@ func Settings(c *gin.Context) {
 				renderErr(c, err)
 				return
 			}
-			if c.Request.Header.Get("Accept") != "application/json" {
+			if c.Request.Header.Get("Content-type") != "application/json" {
 				c.SetCookie("token", tokenString, CookieTime, "/", "", false, true)
 			}
 
 		}
-		switch c.Request.Header.Get("Accept") {
+		switch c.Request.Header.Get("Content-type") {
 		case "application/json":
 			c.JSON(http.StatusOK, u)
 		default:
@@ -542,6 +560,7 @@ func Login(c *gin.Context) {
 		var u models.User
 		err := c.ShouldBind(&u)
 		if err != nil {
+			//log.Println("err", err)
 			renderErr(c, err)
 			return
 		}
@@ -561,9 +580,10 @@ func Login(c *gin.Context) {
 			return
 		}
 		c.SetCookie("token", tokenString, CookieTime, "/", "", false, true)
-		switch c.Request.Header.Get("Accept") {
+		switch c.Request.Header.Get("Content-type") {
 		case "application/json":
-			c.JSON(http.StatusOK, user)
+			//log.Println("application")
+			c.JSON(http.StatusOK, tokenString)
 		default:
 			c.Redirect(http.StatusFound, "/home")
 		}
@@ -654,8 +674,7 @@ func Editor(c *gin.Context) {
 			send2telegram(c.GetString("lang"), c.GetString("username"), a.Body, a.Title,
 				fmt.Sprintf("https://%s.tgr.am/@%s/%d#comments", c.GetString("lang"), a.Author, a.ID), a.OgImage, a.ID)
 
-			send2fcm("/topics/news", c.GetString("username"), a.Title, GetLead(a.Body),
-				fmt.Sprintf("https://%s.tgr.am/@%s/%d", c.GetString("lang"), a.Author, a.ID), a.ID, a.CreatedAt.Unix())
+			send2fcm(c.GetString("lang")+"/all", a)
 			//log.Println("aid2", a)
 			//log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 			c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
@@ -699,26 +718,28 @@ func Editor(c *gin.Context) {
 		send2telegram(c.GetString("lang"), c.GetString("username"), a.Body, a.Title,
 			fmt.Sprintf("https://%s.tgr.am/@%s/%d#comments", c.GetString("lang"), a.Author, a.ID), a.OgImage, a.ID)
 
-		send2fcm("/topics/news", c.GetString("username"), a.Title, GetLead(a.Body),
-			fmt.Sprintf("https://%s.tgr.am/@%s/%d", c.GetString("lang"), a.Author, a.ID), a.ID, a.CreatedAt.Unix())
+		send2fcm(c.GetString("lang")+"/all", &a)
 		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
 		return
 	}
 }
 
-func send2fcm(to, author, title, desc, url string, id uint32, date int64) {
+func send2fcm(to string, a *models.Article) {
 	if Config.FCMAuth == "" {
 		return
 	}
-	b := models.Send2fcm(to, author, title, desc, url, id, date)
+	a.Body = GetLead(a.Body)
+	a.HTML = ""
+	b := models.Send2fcm(to, a)
+	//log.Println(string(b))
 	if b != nil {
 		defHeaders := map[string]string{
 			"Authorization": "key=" + Config.FCMAuth,
 			"Content-type":  "application/json",
 		}
-		utils.HTTPPostJson("https://fcm.googleapis.com/fcm/send", defHeaders, b)
+		/*t := */ utils.HTTPPostJson("https://fcm.googleapis.com/fcm/send", defHeaders, b)
 		//if t != nil {
-		//	fmt.Println(string(t))
+		//fmt.Println(string(t))
 		//}
 	}
 }
@@ -739,6 +760,7 @@ func send2telegram(lang, username, text, title, link, img string, aid uint32) {
 }
 
 // Article page
+// curl --header "Content-type:application/json"   'http://sub.localhost:8081/@recoilme/38'
 func Article(c *gin.Context) {
 	switch c.Request.Method {
 	case "GET":
@@ -783,7 +805,14 @@ func Article(c *gin.Context) {
 
 		c.Set("view", view)
 		c.Set("ogimage", a.OgImage)
-		c.HTML(http.StatusOK, "article.html", c.Keys)
+		switch c.Request.Header.Get("Content-type") {
+		case "application/json":
+			// Respond with JSON
+			c.JSON(http.StatusOK, a)
+		default:
+			c.HTML(http.StatusOK, "article.html", c.Keys)
+		}
+
 		//c.JSON(http.StatusOK, a)
 	}
 }
@@ -874,6 +903,7 @@ func Unfav(c *gin.Context) {
 
 // GoToRegister redirect to registration
 func GoToRegister() gin.HandlerFunc {
+	//log.Println("GoToRegister")
 	return func(c *gin.Context) {
 		if c.GetString("username") == "" {
 			c.Redirect(http.StatusFound, "/register")
