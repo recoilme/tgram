@@ -228,7 +228,6 @@ func Main(c *gin.Context) {
 	//log.Println("Main")
 	username := c.GetString("username")
 	if username == "" {
-		models.DauSet(c.GetString("lang"), c.ClientIP())
 		// unregistered on top
 		c.Redirect(http.StatusFound, "/top")
 		return
@@ -797,9 +796,7 @@ func Article(c *gin.Context) {
 
 		// view counter
 		view := models.ArticleViewGet(lang, c.ClientIP(), a.ID)
-		if c.GetString("username") == "" {
-			models.DauSet(c.GetString("lang"), c.ClientIP())
-		} else {
+		if c.GetString("username") != "" {
 			models.DauSet(c.GetString("lang"), c.GetString("username"))
 		}
 
