@@ -39,9 +39,6 @@
   <img align="left"  style="margin-right:20px" class="u-square medium" src="/a/{{.author.Username}}.png" >
   {{.author.Username}} 
   <br>{{.author.Bio}}
-  {{if eq .username .config.Admin }}
-  <br>ip:"{{.author.IP}}"
-  {{end}}
 </section>
 <hr>
   {{range .articles}}
