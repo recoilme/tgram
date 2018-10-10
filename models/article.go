@@ -209,7 +209,7 @@ func ArticlesSort(models []Article, by string, cnt uint32) (sorted []Article, er
 	var tmp []ArticleSort
 	for _, a := range models {
 		diff := now.Sub(a.CreatedAt)
-		min := diff.Minutes()
+		hours := diff.Hours()
 		var vote float64
 		switch by {
 		case "minus":
@@ -218,7 +218,7 @@ func ArticlesSort(models []Article, by string, cnt uint32) (sorted []Article, er
 			vote = float64(a.Plus)
 		}
 		//https://medium.com/hacking-and-gonzo/how-hacker-news-ranking-algorithm-works-1d9b0cf2c08d
-		score := vote / (math.Pow(float64(min+120), float64(1.8)))
+		score := vote / (math.Pow(float64(hours+2), float64(1.8)))
 		//log.Println(a.Title, a.Plus, int(min), score)
 		var as ArticleSort
 		as.Article = a
