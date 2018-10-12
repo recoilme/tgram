@@ -134,13 +134,13 @@ func ArticlesSelect(lang, fAids string, from []byte, limit, offset uint32, asc b
 		var model Article
 		uidb, err := sp.Get(fAids, key)
 		if err != nil {
-			break
-			//continue
+			//break
+			continue
 		}
 		fAUser := fmt.Sprintf(dbAUser, lang, string(uidb))
 		if err = sp.GetGob(fAUser, key, &model); err != nil {
-			break
-			//continue
+			//break
+			continue
 		}
 		if first == 0 {
 			first = BintoUint32(key)
