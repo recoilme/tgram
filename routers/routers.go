@@ -564,7 +564,7 @@ func Login(c *gin.Context) {
 			return
 		}
 
-		user, err := models.UserCheckGet(c.GetString("lang"), u.Username, u.Password)
+		user, err := models.UserCheckGet(c.GetString("lang"), strings.ToLower(strings.TrimSpace(u.Username)), u.Password)
 		if err != nil {
 			renderErr(c, err)
 			return
