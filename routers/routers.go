@@ -828,6 +828,9 @@ func ArticleDelete(c *gin.Context) {
 		// remove rate limit on delete
 		models.PostLimitDel(c.GetString("lang"), username)
 		//cc.Delete(c.GetString("lang") + ":p:" + username)
+		a := new(models.Article)
+		a.ID = uint32(aid)
+		send2fcm("/topics/"+c.GetString("lang")+"_del", a)
 		c.Redirect(http.StatusFound, "/")
 	}
 }
@@ -1053,6 +1056,9 @@ func ArticleBad(c *gin.Context) {
 		}
 		//cc.Set("ban:uid:"+author, time.Now().Unix(), cache.DefaultExpiration)
 		//}
+		a := new(models.Article)
+		a.ID = uint32(aid)
+		send2fcm("/topics/"+c.GetString("lang")+"_del", a)
 		c.Redirect(http.StatusFound, "/@"+author)
 	}
 }
