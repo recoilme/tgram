@@ -71,6 +71,38 @@ Comments are positive only. I do not know why. Do not ask. I just want to give m
 Each article may have a global tag. But only one. Be smart, then choose a tag for your article.
 
 
+**Monsters**
+
+Each user has a personal monster/avatar. Approximately this:
+![](https://en.tgr.am/i/en/recoilme/5.png)
+
+
+**Notification**
+
+If user add email in profile he will receive notifications when someone mentions him in comments
+
+**Auto-publishing from Typegram to Telegram**
+
+Formatting posts in telegram is not very convenient. Usually, you have to use bots and type text manually in a markdown. Write to yourself - to see what happened. And if you need to insert in the post a link to the picture - then this is inconvenient doubly.
+
+On typegram appeared the experimental mode of autopublishing to telegram. The site has a convenient editor, with autosave, uploading pictures, editing and publishing. Now, there is the possibility of automatic publication to telegram.
+
+All what you need:
+ - add  @type2telegrambot as administrator in channel
+ - add telegram channel in profile settings
+
+![](https://ru.tgr.am/i/ru/recoilme/23_.png)
+
+That's all. At the next publication - the typegram converts the post into a telegram markup and publishes it. Public and private channels are supported. And you can edit article directly on the site. 
+
+**Stats**
+
+All stats are open and available at this site: [stat.tgr.am](https://stat.tgr.am)
+
+**Android**
+
+[Experimental app](https://github.com/vogster/Typegram-android)
+
 **Openness**
 
 The project is free and open source. I always welcome comments and suggestions on [github](https://github.com/recoilme/tgram)
