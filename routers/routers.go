@@ -347,7 +347,8 @@ func renderErr(c *gin.Context, err error) {
 	switch c.Request.Header.Get("Content-type") {
 	case "application/json":
 		// Respond with JSON
-		c.JSON(http.StatusUnprocessableEntity, err)
+		c.Error(err)
+		c.JSON(http.StatusUnprocessableEntity, c.Errors)
 	default:
 		// Respond with HTML
 		c.Set("err", err)
