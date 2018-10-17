@@ -677,7 +677,15 @@ func Editor(c *gin.Context) {
 			send2fcm("/topics/"+c.GetString("lang")+"_all", a)
 			//log.Println("aid2", a)
 			//log.Println("Author", a.Author, "a.ID", a.ID, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
-			c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
+
+			switch c.Request.Header.Get("Content-type") {
+			case "application/json":
+				// Respond with JSON
+				c.JSON(http.StatusOK, a)
+			default:
+				c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
+			}
+
 			return
 		}
 		wait := models.PostLimitGet(c.GetString("lang"), c.GetString("username")) //ratelimit(postRate, RatePost)
@@ -719,7 +727,13 @@ func Editor(c *gin.Context) {
 			fmt.Sprintf("https://%s.tgr.am/@%s/%d#comments", c.GetString("lang"), a.Author, a.ID), a.OgImage, a.ID)
 
 		send2fcm("/topics/"+c.GetString("lang")+"_all", &a)
-		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
+		switch c.Request.Header.Get("Content-type") {
+		case "application/json":
+			// Respond with JSON
+			c.JSON(http.StatusOK, a)
+		default:
+			c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d", a.Author, a.ID))
+		}
 		return
 	}
 }
@@ -1000,10 +1014,15 @@ func CommentNew(c *gin.Context) {
 		models.SendMentions(lang, Config.SMTPHost, Config.SMTPPort, Config.SMTPUser, Config.SMTPPassword, Config.Domain, mentions)
 		// add to cache on success
 		models.ComLimitSet(lang, c.GetString("username"))
-		//cc.Set(rateComKey, time.Now().Unix(), cache.DefaultExpiration)
-		c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d#comment%d", username, aid, cid))
-		//c.JSON(http.StatusCreated, a) //gin.H{"article": serializer.Response()})
-		//c.Redirect(http.Sta
+
+		switch c.Request.Header.Get("Content-type") {
+		case "application/json":
+			// Respond with JSON
+			c.JSON(http.StatusOK, a)
+		default:
+			c.Redirect(http.StatusFound, fmt.Sprintf("/@%s/%d#comment%d", username, aid, cid))
+		}
+
 	}
 }
 
