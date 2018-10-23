@@ -20,6 +20,7 @@
 	<input name="ogimage" type="text" placeholder="{{$img}}, 0..255" value="{{.ogimage}}">
 	<textarea id="mde" name="body">{{.body}}</textarea>
 	<input name="tag" type="text" placeholder="{{$hashtag}}, 0..20" value="{{.tag}}">
+	<input name="token" type="hidden" value="{{.token}}">
   <button type="submit" onclick="simplemde.toTextArea();" accesskey="p" >{{$pub}}</button>
 </form>
 </section>

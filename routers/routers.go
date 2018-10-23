@@ -165,6 +165,7 @@ func CheckAuth() gin.HandlerFunc {
 				}
 			}
 		}
+		c.Set("token", tokenStr)
 		c.Set("username", username)
 		c.Set("image", image)
 		c.Set("nojs", nojs)
@@ -630,6 +631,25 @@ func Editor(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
+		//CSRF protection for web
+		conttype := c.Request.Header.Get("Content-type")
+		if conttype != "application/json" {
+			if c.Request.ParseForm() == nil {
+				tokens := c.Request.Form["token"]
+				if len(tokens) > 0 {
+					//log.Println("token", tokens[0])
+					if c.GetString("token") != tokens[0] {
+						//log.Println("token valid")
+						renderErr(c, errors.New("Invalid token("))
+						return
+					}
+				} else {
+					renderErr(c, errors.New("No token"))
+					return
+				}
+			}
+		}
+
 		username := c.GetString("username")
 		lang := c.GetString("lang")
 		proto := "https://"
