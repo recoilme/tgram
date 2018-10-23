@@ -21,6 +21,12 @@
       <nav>
         <a href="/vote/up/@{{.article.Author}}/{{.article.ID}}"  accesskey="u">+</a>&nbsp;{{.article.Plus}}:{{.article.Minus}}&nbsp;<a href="/vote/down/@{{.article.Author}}/{{.article.ID}}" accesskey="d">-</a>
         <ul id="comments" class="right">
+            {{if ne (.runes| tostr) "0"}}
+            <li>
+                {{.runes}}
+            </li>
+                
+            {{end}}
             {{if .article.Tag}}
             <li>
                 <a href="/mid/?tag={{.article.Tag}}" rel="nofollow">

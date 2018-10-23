@@ -817,6 +817,13 @@ func Article(c *gin.Context) {
 
 		c.Set("view", view)
 		c.Set("ogimage", a.OgImage)
+		var runes = 0
+		if c.GetString("username") == "egorevna" || c.GetString("username") == "sun4ik" {
+			runes = len([]rune(a.Body))
+
+		}
+		c.Set("runes", runes)
+
 		switch c.Request.Header.Get("Content-type") {
 		case "application/json":
 			// Respond with JSON
