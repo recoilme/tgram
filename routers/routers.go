@@ -817,10 +817,9 @@ func Article(c *gin.Context) {
 
 		c.Set("view", view)
 		c.Set("ogimage", a.OgImage)
-		var runes = 0
+		var runes = ""
 		if c.GetString("username") == "egorevna" || c.GetString("username") == "sun4ik" {
-			runes = len([]rune(a.Body))
-
+			runes = fmt.Sprintf("%d/%d", len([]rune(a.Body)), a.WordCount)
 		}
 		c.Set("runes", runes)
 

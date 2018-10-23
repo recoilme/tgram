@@ -124,7 +124,7 @@ func InitRouter() *gin.Engine {
 	r.LoadHTMLGlob("views/*.html")
 
 	r.Use(routers.CheckAuth())
-	r.Use(CORSMiddleware())
+	//r.Use(CORSMiddleware())
 	r.GET("/", routers.Main)
 	r.GET("/home", routers.Home)
 	r.GET("/mid", routers.All)
