@@ -105,25 +105,13 @@
 <br/>
 <form  action="/comments/@{{.article.Author}}/{{.article.ID}}" method="post">
     <textarea id="mde"  name="body" placeholder="Write a comment..." ></textarea>
-
+    <input name="token" type="hidden" value="{{.token}}">
     <button type="submit"  accesskey="c" >
      Comment
     </button>
 </form>
 
 {{if ne .nojs "true"}}
-<script>
-var simplemde = new InscrybMDE({
-    autoDownloadFontAwesome: false,
-	element: document.getElementById("mde"),
-	placeholder: "text, markdown, 10..65536",
-	spellChecker: false,
-	status: false,
-	toolbar: false,
-    minHeight: "100px",
-	toolbarTips: false,
-});
-</script>
 <script src="/m/js/main.js"></script>
 {{end}}
 

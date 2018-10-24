@@ -1007,6 +1007,25 @@ func CommentNew(c *gin.Context) {
 			renderErr(c, err)
 			return
 		}
+
+		//CSRF protection for web
+		conttype := c.Request.Header.Get("Content-type")
+		if conttype != "application/json" {
+			if c.Request.ParseForm() == nil {
+				tokens := c.Request.Form["token"]
+				if len(tokens) > 0 {
+					//log.Println("token", tokens[0])
+					if c.GetString("token") != tokens[0] {
+						//log.Println("token valid")
+						renderErr(c, errors.New("Invalid token("))
+						return
+					}
+				} else {
+					renderErr(c, errors.New("No token"))
+					return
+				}
+			}
+		}
 		//rateComKey := lang + ":c:" + c.GetString("username")
 		wait := models.ComLimitGet(lang, c.GetString("username")) //ratelimit(rateComKey, RateComment)
 		if wait > 0 {
