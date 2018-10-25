@@ -10,6 +10,7 @@
   <section>
     <input name="channel" type="text" placeholder="channel name (or id for private channels), @channel, text" value="{{.channel}}">
     <input type="checkbox" id="notext" name="notext" value="notext" {{.notextchecked}} />
+    <input name="token" type="hidden" value="{{.token}}">
     <label for="notext">don't send full text</label>
   </section>
   <button type="submit"  accesskey="u">Update</button>

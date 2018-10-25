@@ -1355,8 +1355,38 @@ func Type2tele(c *gin.Context) {
 		if notxt == "notext" {
 			notext = true
 		}
+		tokenstr := c.Request.FormValue("token")
+		//log.Println("t", tokenstr)
+		//CSRF protection for web
+		conttype := c.Request.Header.Get("Content-type")
+		if conttype != "application/json" {
+			//log.Println("token", tokens[0])
+			if c.GetString("token") != tokenstr {
+				//log.Println("token valid")
+				renderErr(c, errors.New("Invalid token("))
+				return
+			}
+		}
 		//log.Println("notxt:", notxt)
 		channel := c.Request.FormValue("channel")
+		if channel == "" {
+			//disable export
+			u, err := models.UserGet(c.GetString("lang"), c.GetString("username"))
+			if err != nil {
+				renderErr(c, err)
+				return
+			}
+			u.Type2Telegram = ""
+			u.Type2TeleNoTxt = notext
+			err = models.UserSave(u)
+			if err != nil {
+				renderErr(c, err)
+				return
+			}
+			c.Set("channel", u.Type2Telegram)
+			c.Redirect(http.StatusFound, "/export/type2tele")
+			return
+		}
 		if !goodChanName(channel) {
 			renderErr(c, errors.New("Wrong channel name, expected: @channel got:"+channel))
 			return
