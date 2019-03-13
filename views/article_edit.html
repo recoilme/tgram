@@ -18,7 +18,7 @@
 <form  action="{{.path}}" method="post">
 	<input name="title"  type="text" placeholder="{{$titl}}, 0..255" value="{{.title}}">
 	<input name="ogimage" type="text" placeholder="{{$img}}, 0..255" value="{{.ogimage}}">
-	<textarea id="mde" name="body">{{.body}}</textarea>
+	<textarea id="mde" rows="10" name="body">{{.body}}</textarea>
 	<input name="tag" type="text" placeholder="{{$hashtag}}, 0..20" value="{{.tag}}">
 	<input name="token" type="hidden" value="{{.token}}">
   <button type="submit" onclick="simplemde.toTextArea();" accesskey="p" >{{$pub}}</button>
@@ -34,6 +34,12 @@
 </section>
 {{if ne .nojs "true"}}
 	<script>
+		const element = document.getElementById('mde');
+		const settings = {};
+		const editor = new Editor(element, settings);
+
+		editor.init();
+
 	var simplemde = new InscrybMDE({
 		autoDownloadFontAwesome: true,
 		autofocus: true,
