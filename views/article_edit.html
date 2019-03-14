@@ -29,32 +29,31 @@
 		<summary>{{$upl}}</summary>
 		<p>
 			<a href="/upload" target="_blank" >upload from file</a>
-		</p>		
+		</p>
 	</details>
 </section>
 {{if ne .nojs "true"}}
 	<script>
-		const element = document.getElementById('mde');
-		const settings = {};
-		const editor = new Editor(element, settings);
+		var element = document.getElementById('mde');
+		var settings = {
+			params: {
+				autosave: 5,
+				wordwrap: {
+					paramVisible: false,
+					active: false
+				},
+				doubleReturn: {
+					modificator: 'shiftKey',
+					active: true
+				}
+			},
+			classes: {
+				container: ['tgram-editor']
+			}
+		};
+		var editor = new Editor(element, settings);
 
 		editor.init();
-
-	var simplemde = new InscrybMDE({
-		autoDownloadFontAwesome: true,
-		autofocus: true,
-		autosave: {
-			enabled: true,
-			uniqueId: "{{.uniqueid}}",
-			delay: 1000,
-		},
-		promptURLs: true,
-		placeholder: "text, markdown, 10..65536",
-		element: document.getElementById("mde"),
-		minHeight: "400px",
-		maxHeight: "400px",
-		spellChecker: false,
-	});
 	</script>
 {{end}}
 {{ template "footer" . }}
