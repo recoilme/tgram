@@ -371,6 +371,11 @@ noscript{
  * 2. Correct font properties not being inherited.
  * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
  */
+
+form input {
+  box-sizing: border-box;
+}
+
 button,
 input,
 optgroup,
@@ -384,7 +389,7 @@ textarea {
   /* 2 */
   padding: 10px;
   margin: 0;
-  /* 3 */ 
+  /* 3 */
 }
 textarea:hover,
 textarea:focus {
@@ -608,7 +613,7 @@ section header p{
 	white-space: nowrap;
 	vertical-align: baseline;
   border-radius: .25em;
-  background-color: #777;  
+  background-color: #777;
 }
 
 input {
@@ -745,4 +750,14 @@ glitch
   border-bottom-color: currentcolor;
   border-bottom-style: solid;
   border-bottom-width: 1px;
+}
+
+/* OH-MD */
+.tgram-editor.oh-md {
+  margin: 0.5rem 0;
+}
+
+.tgram-editor.oh-md .oh-md-area--text__element,
+.tgram-editor.oh-md .oh-md-area--text__element:focus {
+  border: 1px solid #777;
 }
