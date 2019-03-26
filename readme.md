@@ -182,13 +182,14 @@ TGRAMDOMAIN=tgr.am
 
 ## Thanks
 
+
+[oh-md (markdown-editor)](https://github.com/fr4nki/oh-md)
+
+
 [awsm.css](https://github.com/igoradamenko/awsm.css)
 
 
 [realworld.io](https://realworld.io)
-
-
-[inscryb-markdown-editor](https://github.com/Inscryb/inscryb-markdown-editor)
 
 
 [dithering](https://github.com/MaxHalford/halfgone)
