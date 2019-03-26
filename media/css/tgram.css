@@ -459,6 +459,11 @@ textarea {
   margin-top: .5rem;
   width: 100%; }
 
+input,
+textarea {
+  box-sizing: border-box;
+}
+
 /**
  * It's recommended that you don't attempt to style these elements.
  * Firefox's implementation doesn't respect box-sizing, padding, or width.
@@ -757,7 +762,16 @@ glitch
   margin: 0.5rem 0;
 }
 
+.tgram-editor.oh-md.oh-md-mode-fullscreen {
+  margin: 0
+}
+
 .tgram-editor.oh-md .oh-md-area--text__element,
 .tgram-editor.oh-md .oh-md-area--text__element:focus {
   border: 1px solid #777;
+}
+
+.tgram-editor.oh-md .oh-md-controls--button {
+  padding: 0;
+  margin: 0 5px 0 0;
 }
