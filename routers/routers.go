@@ -22,7 +22,7 @@ import (
 	"github.com/recoilme/tgram/utils"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/text/language"
-	"gopkg.in/russross/blackfriday.v2"
+	"github.com/russross/blackfriday"
 )
 
 //The SiteConfig struct stores site customisations
